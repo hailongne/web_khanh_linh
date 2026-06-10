@@ -51,7 +51,7 @@ const fleetItems = [
     description:
       "Dòng xe khách cao cấp cỡ lớn, không gian rộng rãi, ghế ngả êm ái và phù hợp cho những hành trình du lịch hoặc đưa đón đoàn đông.",
     price: "Liên hệ",
-    image: "/coach.svg",
+    image: "/images/29 chỗ.png",
     specs: [
       { label: "45 ghế ngả", icon: "seat" },
       { label: "Có A/C", icon: "comfort" },
@@ -64,7 +64,7 @@ const fleetItems = [
     description:
       "Lựa chọn cân bằng cho gia đình, doanh nghiệp nhỏ và các chuyến đi ngắn với khả năng vận hành êm, điều hòa tốt và chi phí hợp lý.",
     price: "1.200k/ngày",
-    image: "/minibus.svg",
+    image: "/images/16 chỗ.png",
     specs: [
       { label: "16 ghế", icon: "seat" },
       { label: "2 dàn lạnh", icon: "comfort" },
@@ -337,43 +337,46 @@ export default function HomePage() {
       </section>
 
       <section className="reasons-section" id="reasons">
-        <div className="section-shell reasons-section__inner">
-          <div className="reasons-section__copy">
+        <div className="section-shell">
+          <div className="reasons-section__header">
             <span className="section-kicker">Lý do khách hàng quay lại</span>
-            <h2>Tại Sao Chọn Khánh Linh Trans?</h2>
+            <h2>Tại Sao Nên Chọn Khánh Linh Trans?</h2>
             <p className="reasons-section__lead">
               Chúng tôi cam kết mang đến trải nghiệm di chuyển an toàn, thoải mái và chuyên nghiệp
               cho từng chuyến công tác, du lịch hay đưa đón sân bay.
             </p>
-
-            <div className="reasons-list">
-              {reasons.map((reason) => (
-                <article className="reason-card" key={reason.title}>
-                  <div className="reason-card__icon">
-                    <FontAwesomeIcon type={reason.icon} />
-                  </div>
-                  <div className="reason-card__body">
-                    <h3>{reason.title}</h3>
-                    <p>{reason.description}</p>
-                  </div>
-                </article>
-              ))}
-            </div>
           </div>
 
-          <div className="reasons-section__visual">
-            <div className="visual-card">
-              <div className="visual-card__image">
-                <Image
-                  src="/hero-fleet.svg"
-                  alt="Đội xe Khánh Linh Trans"
-                  fill
-                  priority
-                  sizes="(max-width: 900px) 100vw, 48vw"
-                />
+          <div className="reasons-section__inner">
+            <div className="reasons-section__copy">
+              <div className="reasons-list">
+                {reasons.map((reason) => (
+                  <article className="reason-card" key={reason.title}>
+                    <div className="reason-card__icon">
+                      <FontAwesomeIcon type={reason.icon} />
+                    </div>
+                    <div className="reason-card__body">
+                      <h3>{reason.title}</h3>
+                      <p>{reason.description}</p>
+                    </div>
+                  </article>
+                ))}
               </div>
             </div>
- 
+
+            <div className="reasons-section__visual">
+              <div className="visual-card">
+                <div className="visual-card__image">
+                  <Image
+                    src="/images/logo3D.png"
+                    alt="Đội xe Khánh Linh Trans"
+                    fill
+                    priority
+                    sizes="(max-width: 900px) 100vw, 48vw"
+                  />
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -654,11 +657,21 @@ export default function HomePage() {
 
       <footer className="site-footer" id="contact">
         <div className="section-shell site-footer__inner">
+          <div className="site-footer__logo-top">
+            <a href="#top" aria-label="Khánh Linh Trans">
+              <Image
+                className="site-footer__brand-logo"
+                src="/images/logoKhanhLinhFull.png"
+                alt="Khánh Linh Trans"
+                width={480}
+                height={144}
+                priority
+              />
+            </a>
+          </div>
+
           <div className="site-footer__grid">
             <div className="site-footer__brand-block">
-              <a className="site-footer__brand" href="#top" aria-label="Khánh Linh Trans">
-                Khánh Linh Trans
-              </a>
               <p className="site-footer__description">
                 Premium Tourist Transportation Services. Mang đến giải pháp di chuyển an toàn, tiện
                 lợi và đẳng cấp.

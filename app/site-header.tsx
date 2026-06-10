@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect, useLayoutEffect, useState } from "react";
 
 type HeaderLink = {
@@ -54,7 +55,14 @@ export function SiteHeader({ links }: SiteHeaderProps) {
     <header className="site-header">
       <div className="site-header__inner">
         <a className="site-header__brand" href="#top" aria-label="Khanh Linh Trans" onClick={handleCloseMenu}>
-          <span className="site-header__brand-name">Khanh Linh Trans</span>
+          <Image
+            className="site-header__logo"
+            src="/images/logoKhanhLinhFull.png"
+            alt="Khanh Linh Trans"
+            width={320}
+            height={64}
+            priority
+          />
         </a>
 
         <nav className="site-header__nav" aria-label="Main navigation">
@@ -109,7 +117,7 @@ export function SiteHeader({ links }: SiteHeaderProps) {
       >
         <div className="site-header__menu-head">
           <a className="site-header__menu-brand" href="#top" aria-label="Khanh Linh Trans" onClick={handleCloseMenu}>
-            <span className="site-header__menu-brand-name">Khanh Linh Trans</span>
+            <Image className="site-header__logo" src="/images/logoKhanhLinh.png" alt="Khanh Linh Trans" width={220} height={44} priority />
           </a>
 
           <button

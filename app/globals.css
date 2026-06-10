@@ -12,13 +12,15 @@
   --radius-lg: 24px;
   --radius-md: 16px;
   --container: 1240px;
-  --font-family-base: Arial, Helvetica, sans-serif;
+  --font-family-base: 'Inter', 'Noto Sans', Arial, Helvetica, sans-serif;
   --ease-out-smooth: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 * {
   box-sizing: border-box;
 }
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap&subset=vietnamese');
 
 html {
   font-size: 16px;
@@ -37,6 +39,8 @@ body {
     radial-gradient(circle at top left, rgba(25, 138, 198, 0.12), transparent 28%),
     linear-gradient(180deg, #fbfdff 0%, #f4f8fb 100%);
   font-family: var(--font-family-base);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   font-size: 1rem;
   line-height: 1.5;
   width: 100%;
@@ -302,10 +306,14 @@ img {
   position: relative;
   width: 100%;
   overflow: hidden;
-  background:
+  /* overlay gradients + hero background image (replace with /public/images/banner.png) */
+  background-image: 
     linear-gradient(90deg, rgba(7, 18, 26, 0.82) 0%, rgba(7, 18, 26, 0.68) 44%, rgba(7, 18, 26, 0.26) 100%),
     linear-gradient(180deg, rgba(8, 23, 32, 0.12) 0%, rgba(8, 23, 32, 0.28) 100%),
-    url("/hero-fleet.svg") center center / cover no-repeat;
+    url("/images/banner.png");
+  background-position: center center;
+  background-size: cover;
+  background-repeat: no-repeat;
 }
 
 .hero-section::before {
@@ -334,11 +342,16 @@ img {
   color: #fff;
 }
 
-.hero-section__copy h1 {
+  .hero-section__copy h1 {
   margin: 22px 0 24px;
-  font-size: clamp(3rem, 6vw, 5.4rem);
-  line-height: 0.96;
+  /* increased by 50% per request */
+  font-size: clamp(2.25rem, 3.75vw, 2.875rem);
+  line-height: 1.12;
   letter-spacing: -0.05em;
+  text-align: justify;
+  -webkit-text-align-last: left;
+  text-align-last: left;
+  text-justify: inter-word;
 }
 
 .hero-section__copy p {
@@ -465,8 +478,28 @@ img {
 .reasons-section__inner {
   display: grid;
   grid-template-columns: minmax(0, 0.98fr) minmax(320px, 0.92fr);
-  align-items: start;
+  align-items: center;
   gap: 52px;
+}
+
+.reasons-section__header {
+  text-align: center;
+  max-width: 980px;
+  margin: 0 auto 36px;
+}
+
+.reasons-section__header > .section-kicker {
+  display: inline-flex;
+  width: fit-content;
+  margin: 0 auto 12px;
+}
+
+.reasons-section__header h2 {
+  margin: 8px 0 14px;
+  font-size: clamp(2.3rem, 4.2vw, 4rem);
+  line-height: 1.02;
+  letter-spacing: -0.05em;
+  font-weight: 800;
 }
 
 .reasons-section__copy h2 {
@@ -478,7 +511,8 @@ img {
 
 .reasons-section__lead {
   max-width: 650px;
-  margin: 0 0 38px;
+  margin: 0 auto 38px;
+  text-align: center;
   color: var(--muted);
   font-size: 1.14rem;
   line-height: 1.8;
@@ -534,14 +568,17 @@ img {
 }
 
 .reasons-section__visual {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   position: relative;
-  min-height: 720px;
-  padding: 24px 0 56px 44px;
+  padding: 24px 0 56px 0;
+  min-height: 0;
 }
 
 .visual-card {
   position: relative;
-  margin-left: auto;
+  margin: 0 auto;
   width: min(100%, 640px);
   border-radius: 30px;
   box-shadow: var(--shadow-md);
@@ -1349,10 +1386,10 @@ img {
 }
 
 .faq-item__summary span:first-child {
-  font-size: clamp(1.4rem, 2vw, 2rem);
-  font-weight: 800;
-  line-height: 1.2;
-  letter-spacing: -0.04em;
+  font-size: clamp(1.15rem, 1.6vw, 1.45rem);
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
 }
 
 .faq-item__icon {
@@ -1521,6 +1558,10 @@ img {
 
 .site-footer__brand-block {
   max-width: 420px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 18px;
 }
 
 .site-footer__brand {
@@ -1544,6 +1585,24 @@ img {
   align-items: center;
   gap: 18px;
   margin-top: 28px;
+}
+
+.site-footer__logo {
+  display: block;
+}
+
+.site-footer__logo-top {
+  margin-bottom: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.site-footer__brand-logo {
+  display: block;
+  width: clamp(160px, 20vw, 480px);
+  max-width: 480px;
+  height: auto;
 }
 
 .site-footer__social-link {
@@ -1570,12 +1629,14 @@ img {
 }
 
 .site-footer__heading {
-  margin: 0 0 28px;
+  margin: 0 0 20px;
   color: #1f2329;
-  font-size: 1.05rem;
-  font-weight: 800;
-  letter-spacing: 0.06em;
-  line-height: 1.2;
+  font-family: var(--font-family-base);
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  line-height: 1.25;
+  text-transform: none;
 }
 
 .site-footer__nav,
@@ -1698,9 +1759,16 @@ img {
   .reasons-section__copy > .section-kicker {
     display: flex;
     width: fit-content;
-    margin: 0 auto;
+    margin: 0 auto 12px;
   }
 
+  .reasons-section__header > .section-kicker {
+    display: flex;
+    width: fit-content;
+    margin: 0 auto 12px;
+  }
+
+  .reasons-section__header h2,
   .reasons-section__copy h2,
   .reasons-section__lead {
     text-align: center;
@@ -1749,6 +1817,9 @@ img {
   }
 
   .reasons-section__visual {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     min-height: 0;
     width: min(100%, 760px);
     margin: 0 auto;
@@ -1921,6 +1992,11 @@ img {
     padding: 72px 0 88px;
   }
 
+  .reasons-section__header {
+    margin-bottom: 28px;
+  }
+
+  .reasons-section__header h2,
   .reasons-section__copy h2 {
     font-size: clamp(2rem, 5vw, 2.6rem);
   }
@@ -1951,6 +2027,9 @@ img {
   .reasons-section__visual {
     width: 100%;
     padding-bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .visual-card {
@@ -2306,7 +2385,13 @@ img {
   }
 
   .hero-section__copy h1 {
-    font-size: clamp(2.4rem, 13vw, 3.6rem);
+    /* increased by 50% on small screens as well */
+    font-size: clamp(2.7rem, 14.625vw, 4.05rem);
+    line-height: 1.06;
+    text-align: justify;
+    -webkit-text-align-last: left;
+    text-align-last: left;
+    text-justify: inter-word;
   }
 
   .hero-section__copy p {
@@ -2331,6 +2416,7 @@ img {
     font-size: 0.96rem;
   }
 
+  .reasons-section__header h2,
   .reasons-section__copy h2 {
     font-size: clamp(2rem, 10vw, 3rem);
   }
@@ -2538,7 +2624,9 @@ img {
   }
 
   .faq-item__summary span:first-child {
-    font-size: 1.24rem;
+    font-size: 1.05rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
   }
 
   .faq-item__icon {

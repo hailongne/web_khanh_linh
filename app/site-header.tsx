@@ -66,16 +66,21 @@ export function SiteHeader({ links }: SiteHeaderProps) {
         </a>
 
         <nav className="site-header__nav" aria-label="Main navigation">
-          {links.map((item) => (
-            <a
-              key={item.label}
-              href={item.href}
-              className={item.active ? "is-active" : undefined}
-              aria-current={item.active ? "page" : undefined}
-            >
-              {item.label}
-            </a>
-          ))}
+          {links.map((item) => {
+            const isExternal = item.href.startsWith("http");
+            return (
+              <a
+                key={item.label}
+                href={item.href}
+                className={item.active ? "is-active" : undefined}
+                aria-current={item.active ? "page" : undefined}
+                target={isExternal ? "_blank" : undefined}
+                rel={isExternal ? "noopener noreferrer" : undefined}
+              >
+                {item.label}
+              </a>
+            );
+          })}
         </nav>
 
         <div className="site-header__actions">
@@ -131,17 +136,22 @@ export function SiteHeader({ links }: SiteHeaderProps) {
         </div>
 
         <nav className="site-header__drawer-nav" aria-label="Mobile navigation">
-          {links.map((item) => (
-            <a
-              key={`mobile-${item.label}`}
-              href={item.href}
-              className={item.active ? "is-active" : undefined}
-              aria-current={item.active ? "page" : undefined}
-              onClick={handleCloseMenu}
-            >
-              {item.label}
-            </a>
-          ))}
+          {links.map((item) => {
+            const isExternal = item.href.startsWith("http");
+            return (
+              <a
+                key={`mobile-${item.label}`}
+                href={item.href}
+                className={item.active ? "is-active" : undefined}
+                aria-current={item.active ? "page" : undefined}
+                onClick={handleCloseMenu}
+                target={isExternal ? "_blank" : undefined}
+                rel={isExternal ? "noopener noreferrer" : undefined}
+              >
+                {item.label}
+              </a>
+            );
+          })}
         </nav>
 
         <div className="site-header__drawer-actions">

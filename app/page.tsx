@@ -1,12 +1,13 @@
 import Image from "next/image";
 import { SiteHeader } from "./site-header";
+import FleetSection from "./fleet-section";
 
 const headerLinks = [
   { label: "Trang chủ", href: "#top", active: true },
-  { label: "Lý do chọn", href: "#reasons" },
   { label: "Đội xe", href: "#fleet" },
   { label: "Bảng giá", href: "#pricing" },
-  { label: "Liên hệ", href: "#contact" }
+  { label: "Liên hệ", href: "#contact" },
+  { label: "Vé máy bay", href: "https://klfly.com" }
 ];
 
 const heroHighlights = [
@@ -42,36 +43,7 @@ const reasons = [
   }
 ];
 
-const fleetCategories = ["Tất cả", "Xe 4-7 chỗ", "Xe 16 chỗ", "Xe 29 chỗ", "Xe 45 chỗ"];
-
-const fleetItems = [
-  {
-    name: "Hyundai Universe",
-    badge: "45 chỗ",
-    description:
-      "Dòng xe khách cao cấp cỡ lớn, không gian rộng rãi, ghế ngả êm ái và phù hợp cho những hành trình du lịch hoặc đưa đón đoàn đông.",
-    price: "Liên hệ",
-    image: "/images/29 chỗ.png",
-    specs: [
-      { label: "45 ghế ngả", icon: "seat" },
-      { label: "Có A/C", icon: "comfort" },
-      { label: "Khoang lớn", icon: "storage" }
-    ]
-  },
-  {
-    name: "Ford Transit",
-    badge: "16 chỗ",
-    description:
-      "Lựa chọn cân bằng cho gia đình, doanh nghiệp nhỏ và các chuyến đi ngắn với khả năng vận hành êm, điều hòa tốt và chi phí hợp lý.",
-    price: "1.200k/ngày",
-    image: "/images/16 chỗ.png",
-    specs: [
-      { label: "16 ghế", icon: "seat" },
-      { label: "2 dàn lạnh", icon: "comfort" },
-      { label: "Vừa phải", icon: "storage" }
-    ]
-  }
-];
+// Fleet data and interactive UI moved to a client component: ./fleet-section
 
 const pricingRows = [
   {
@@ -381,69 +353,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="fleet-section" id="fleet">
-        <div className="section-shell">
-          <div className="fleet-section__header">
-            <div className="fleet-section__intro">
-              <span className="section-kicker">Đội xe linh hoạt</span>
-              <h2>Dòng Xe Nổi Bật</h2>
-              <p>Khám phá các dòng xe đa dạng, đáp ứng linh hoạt cho mọi nhu cầu di chuyển.</p>
-            </div>
-
-            <div className="fleet-section__filters" aria-label="Danh mục đội xe">
-              {fleetCategories.map((category, index) => (
-                <span key={category} className={index === 0 ? "is-active" : undefined}>
-                  {category}
-                </span>
-              ))}
-            </div>
-          </div>
-
-          <div className="fleet-grid">
-            {fleetItems.map((item) => (
-              <article className="fleet-card" key={item.name}>
-                <div className="fleet-card__media">
-                  <Image
-                    src={item.image}
-                    alt={item.name}
-                    fill
-                    sizes="(max-width: 900px) 100vw, 50vw"
-                  />
-                </div>
-
-                <div className="fleet-card__content">
-                  <div className="fleet-card__headline">
-                    <h3>{item.name}</h3>
-                    <span>{item.badge}</span>
-                  </div>
-
-                  <p>{item.description}</p>
-
-                  <div className="fleet-card__specs">
-                    {item.specs.map((spec) => (
-                      <div className="fleet-card__spec" key={spec.label}>
-                        <FontAwesomeIcon type={spec.icon} />
-                        <span>{spec.label}</span>
-                      </div>
-                    ))}
-                  </div>
-
-                  <div className="fleet-card__footer">
-                    <div className="fleet-card__price">
-                      <small>Giá từ</small>
-                      <strong>{item.price}</strong>
-                    </div>
-
-                    <a className="fleet-card__cta" href="#contact">
-                      Đặt Xe
-                    </a>
-                  </div>
-                </div>
-              </article>
-            ))}
-          </div>
-        </div>
-      </section>
+      <FleetSection />
 
       <section className="process-section">
         <div className="section-shell">

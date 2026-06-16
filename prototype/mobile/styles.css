@@ -1,0 +1,121 @@
+:root{
+  --primary:#0B6FD8;
+  --accent:#FFB800;
+  --bg-soft:#F4F8FF;
+  --text-dark:#1A1A2E;
+  --text-body:#4A5568;
+  --radius-card:16px;
+  --shadow-card:0 8px 24px rgba(11,111,216,0.12);
+}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0;font-family:'Be Vietnam Pro',system-ui,-apple-system,Segoe UI,Roboto,'Helvetica Neue',Arial; color:var(--text-body);background:#fff;overscroll-behavior-y:contain}
+body{max-width:390px;margin:0 auto;overflow-x:hidden;padding-top:calc(56px + env(safe-area-inset-top));}
+.site-header{position:fixed;top:0;left:50%;transform:translateX(-50%);width:100%;max-width:390px;height:calc(56px + env(safe-area-inset-top));display:flex;align-items:center;justify-content:space-between;padding:0 12px;padding-top:env(safe-area-inset-top);background:#fff;z-index:70;transition:box-shadow .22s ease}
+.site-header.scrolled{box-shadow:0 6px 18px rgba(10,30,60,0.08)}
+.logo{font-weight:700;color:var(--text-dark);font-size:15px}
+.logo span{font-weight:500;color:var(--primary);margin-left:4px}
+.hotline{background:var(--primary);color:white;padding:8px 12px;border-radius:22px;display:inline-flex;align-items:center;gap:8px;text-decoration:none;font-weight:600;font-size:13px}
+
+.hero{position:relative;height:260px;display:flex;align-items:flex-end;padding:16px}
+.hero-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-bottom-left-radius:14px;border-bottom-right-radius:14px}
+.hero-overlay{position:absolute;inset:0;background:linear-gradient(180deg, rgba(11,111,216,0.72), rgba(11,111,216,0.6));mix-blend-mode:normal}
+.hero-content{position:relative;color:#fff;z-index:2;padding-bottom:10px}
+.hero-title{margin:0;font-size:20px;line-height:1.05;color:#fff;font-weight:700}
+.hero-sub{font-size:13px;color:rgba(255,255,255,0.88);margin:6px 0}
+.hero-ctas{display:flex;gap:8px;margin-top:6px}
+.btn{min-height:44px;min-width:44px;border-radius:10px;padding:10px 14px;border:0;font-weight:600;cursor:pointer;transition:all .22s ease}
+.btn:active{transform:translateY(1px)}
+.btn-accent{background:var(--accent);color:var(--text-dark)}
+.btn-primary{background:var(--primary);color:#fff}
+.btn-outline{background:#fff;color:var(--text-dark);border:1px solid rgba(255,255,255,0.18)}
+.floating-advice{position:absolute;right:16px;top:18px;background:rgba(255,255,255,0.08);color:#fff;padding:8px 10px;border-radius:12px;display:inline-flex;align-items:center;gap:8px;border:1px solid rgba(255,255,255,0.06)}
+
+/* focus-visible for keyboard users */
+.btn:focus-visible, .hotline:focus-visible, .service-card:focus-visible, .tab:focus-visible {outline:3px solid rgba(11,111,216,0.14);outline-offset:2px}
+
+.usp-strip{background:var(--bg-soft);padding:12px 10px}
+.usp-scroll{display:flex;gap:12px;overflow-x:auto;padding-bottom:6px;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch}
+.usp-item{flex:0 0 auto;width:96px;background:transparent;border-radius:12px;padding:8px;display:flex;flex-direction:column;align-items:center;gap:6px;scroll-snap-align:start}
+.usp-icon{font-size:20px}
+.usp-dots{display:flex;gap:6px;justify-content:center;margin-top:8px}
+/* touch-friendly indicator buttons (visual dot kept small) */
+.car-dots .dot, .usp-dots .dot-mini{min-width:44px;min-height:44px;display:inline-flex;align-items:center;justify-content:center;border:0;background:transparent;padding:0;border-radius:22px}
+.car-dots .dot::before, .usp-dots .dot-mini::before{content:'';width:6px;height:6px;border-radius:50%;background:#e6eefc;display:block}
+.car-dots .dot.active::before, .usp-dots .dot-mini.active::before{background:var(--primary)}
+.car-dots .dot:focus, .usp-dots .dot-mini:focus{outline:2px solid rgba(11,111,216,0.12);outline-offset:2px}
+
+.popular-cars{padding:14px}
+.section-head{display:flex;align-items:center;gap:8px}
+.badge{background:var(--bg-soft);color:var(--text-body);padding:4px 8px;border-radius:12px;font-size:12px}
+.car-carousel{display:flex;gap:10px;overflow-x:auto;padding:10px 8px;scroll-snap-type:x mandatory}
+.car-card{flex:0 0 74vw;background:#fff;border-radius:var(--radius-card);box-shadow:var(--shadow-card);display:flex;overflow:hidden;scroll-snap-align:center}
+.car-media img{width:50%;height:100%;object-fit:cover}
+.car-body{padding:10px;width:50%;display:flex;flex-direction:column;justify-content:space-between}
+.car-title{font-weight:700;color:var(--text-dark);margin-bottom:6px}
+.seat-pill{background:var(--primary);color:#fff;padding:4px 8px;border-radius:14px;font-size:12px;margin-left:6px;font-weight:600}
+.car-specs{font-size:13px;color:var(--text-body)}
+.car-foot{display:flex;align-items:center;justify-content:space-between;margin-top:8px}
+.price{color:var(--primary);font-weight:700}
+.car-dots{display:flex;gap:6px;justify-content:center;margin-top:10px}
+
+.timeline{padding:14px}
+.timeline-list{list-style:none;padding:0;margin:0;position:relative}
+.timeline-list::before{content:'';position:absolute;left:24px;top:6px;bottom:6px;width:3px;background:var(--primary);border-radius:2px}
+.step{display:flex;gap:12px;padding:12px 0;opacity:0;transform:translateY(8px);transition:opacity .28s ease,transform .28s ease}
+.step.visible{opacity:1;transform:none}
+.num{width:32px;height:32px;border-radius:50%;background:var(--primary);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700}
+.step-body strong{color:var(--text-dark);display:block}
+
+.pricing{padding:14px}
+.tabs{display:flex;gap:8px;overflow-x:auto;padding-bottom:8px}
+.tab{background:transparent;border:1px solid #e6eefc;padding:6px 10px;border-radius:10px;color:var(--text-dark);font-weight:600}
+.tab.active{background:var(--primary);color:#fff}
+.tab-panel{display:none;padding-top:8px}
+.tab-panel.active{display:block}
+.price-list{list-style:none;padding:0;margin:0}
+.price-list li{display:flex;justify-content:space-between;padding:12px;border-radius:12px;background:white;margin-bottom:8px}
+.price-list li:nth-child(even){background:var(--bg-soft)}
+.pv{color:var(--primary);font-weight:700}
+.footnote{font-size:12px;color:var(--text-body);margin-top:8px}
+
+.services{padding:14px}
+.services-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.service-card{background:linear-gradient(180deg,#eaf4ff,white);border-radius:12px;padding:10px;display:flex;flex-direction:column;align-items:flex-start;gap:8px;border:0}
+.svc-icon{font-size:24px}
+.service-card:active,.service-card:focus{transform:translateY(-4px);box-shadow:var(--shadow-card)}
+
+.testimonials{padding:14px}
+.rating{display:flex;gap:8px;align-items:center}
+.score{font-weight:800;color:var(--primary);font-size:26px}
+.testi-carousel{display:flex;gap:10px;overflow-x:auto;padding-top:10px}
+.testi{flex:0 0 70%;background:#fff;padding:10px;border-radius:12px;box-shadow:var(--shadow-card)}
+.testi img{width:36px;height:36px;border-radius:50%}
+
+.faq{padding:16px}
+.faq-item{width:100%;display:flex;align-items:center;justify-content:space-between;padding:12px;border-bottom:1px solid #eef4ff;background:transparent;border:0}
+.faq-panel{display:none;padding:12px 0;color:var(--text-body)}
+.faq-item.open .chev{transform:rotate(180deg)}
+
+.final-cta{padding:14px;border-radius:12px;background:linear-gradient(180deg,var(--primary),#084f9a);color:#fff;margin:12px}
+.final-ctas{display:flex;gap:8px;margin-top:8px}
+.btn-inverse{background:#fff;color:var(--primary)}
+.btn-zalo{background:#00AC0C;color:#fff}
+
+.site-footer{padding:16px;font-size:13px;color:var(--text-body)}
+.footer-links details{margin-bottom:8px}
+.socials{margin-top:8px;color:var(--text-body)}
+
+.floating-book{position:fixed;right:14px;bottom:12px;width:50px;height:50px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:0;background:linear-gradient(135deg,var(--primary),var(--accent));box-shadow:0 8px 20px rgba(11,111,216,0.2);z-index:60;animation:ping 2s infinite}
+@keyframes ping{0%{box-shadow:0 0 0 0 rgba(11,111,216,0.18)}50%{box-shadow:0 0 0 10px rgba(11,111,216,0.04)}100%{box-shadow:0 0 0 0 rgba(11,111,216,0.00)}}
+
+.modal{position:fixed;inset:0;display:none;z-index:80}
+.modal.show{display:block}
+.modal-backdrop{position:absolute;inset:0;background:rgba(0,0,0,0.36)}
+.modal-sheet{position:absolute;left:0;right:0;bottom:0;background:#fff;border-top-left-radius:16px;border-top-right-radius:16px;padding:10px;transform:translateY(100%);transition:transform .28s ease}
+.modal.show .modal-sheet{transform:translateY(0)}
+.modal-head{display:flex;justify-content:space-between;align-items:center}
+.booking-form label{display:block;margin:8px 0}
+.booking-form input,.booking-form select{width:100%;padding:10px;border-radius:8px;border:1px solid #e6eefc}
+
+/* small screens tweaks */
+@media (max-width:420px){ .hero{height:240px} .car-card{flex:0 0 76vw} }

@@ -1,7 +1,24 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useLayoutEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useState, type SVGProps } from "react";
+import { translations } from "./translations";
+import { VNFlag, USFlag } from "./flag-icons";
+
+const MenuIcon = (props: SVGProps<SVGSVGElement>) => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false" {...props}>
+    <path d="M3 6h18" />
+    <path d="M3 12h18" />
+    <path d="M3 18h18" />
+  </svg>
+);
+
+const XIcon = (props: SVGProps<SVGSVGElement>) => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false" {...props}>
+    <path d="M18 6L6 18" />
+    <path d="M6 6l12 12" />
+  </svg>
+);
 
 type HeaderLink = {
   label: string;
@@ -11,9 +28,13 @@ type HeaderLink = {
 
 type SiteHeaderProps = {
   links: HeaderLink[];
+  // current language code ('vi' | 'en') — used to render the flag icon
+  lang?: string;
+  // callback to toggle language (handled by parent)
+  onToggleLang?: () => void;
 };
 
-export function SiteHeader({ links }: SiteHeaderProps) {
+export function SiteHeader({ links, lang = "vi", onToggleLang }: SiteHeaderProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   useEffect(() => {
@@ -51,10 +72,12 @@ export function SiteHeader({ links }: SiteHeaderProps) {
     setIsMenuOpen(false);
   };
 
+  const t = (translations as any)[lang] ?? translations.vi;
+
   return (
     <header className="site-header">
       <div className="site-header__inner">
-        <a className="site-header__brand" href="#top" aria-label="Khanh Linh Trans" onClick={handleCloseMenu}>
+        <a className="site-header__brand" href="#top" aria-label={t.header.brand} onClick={handleCloseMenu}>
           <Image
             className="site-header__logo"
             src="/images/logoKhanhLinhFull.png"
@@ -84,12 +107,22 @@ export function SiteHeader({ links }: SiteHeaderProps) {
         </nav>
 
         <div className="site-header__actions">
-          <a className="site-header__phone" href="tel:+84916012589">
-            +84 916 012 589
+          <a className="site-header__phone" href={`tel:${t.header.phone.replace(/\s+/g, "")}`}>
+            {t.header.phone}
           </a>
           <a className="site-header__cta" href="#contact">
-            Đặt xe ngay
+            {t.header.cta}
           </a>
+          {/* Language toggle button: shows target flag (🇬🇧 when current is 'vi', 🇻🇳 when current is 'en') */}
+          <button
+            type="button"
+            className="site-header__lang-toggle"
+            aria-label={lang === "vi" ? "Chuyển sang Tiếng Anh" : "Switch to Vietnamese"}
+            onClick={() => onToggleLang?.()}
+            style={{ padding: "4px", background: "transparent", border: "none", cursor: "pointer", display: "inline-flex", alignItems: "center", justifyContent: "center" }}
+          >
+            {lang === "vi" ? <USFlag width={60} height={31.5} /> : <VNFlag width={60} height={40} />}
+          </button>
         </div>
 
         <button
@@ -97,12 +130,10 @@ export function SiteHeader({ links }: SiteHeaderProps) {
           className={`site-header__menu-toggle${isMenuOpen ? " is-open" : ""}`}
           aria-expanded={isMenuOpen}
           aria-controls="site-header-menu"
-          aria-label={isMenuOpen ? "Dong menu dieu huong" : "Mo menu dieu huong"}
+          aria-label={isMenuOpen ? "Đóng menu điều hướng" : "Mở menu điều hướng"}
           onClick={handleToggleMenu}
         >
-          <span />
-          <span />
-          <span />
+          {isMenuOpen ? <XIcon /> : <MenuIcon />}
         </button>
       </div>
 
@@ -121,17 +152,17 @@ export function SiteHeader({ links }: SiteHeaderProps) {
         aria-hidden={!isMenuOpen}
       >
         <div className="site-header__menu-head">
-          <a className="site-header__menu-brand" href="#top" aria-label="Khanh Linh Trans" onClick={handleCloseMenu}>
+          <a className="site-header__menu-brand" href="#top" aria-label={t.header.brand} onClick={handleCloseMenu}>
             <Image className="site-header__logo" src="/images/logoKhanhLinh.png" alt="Khanh Linh Trans" width={220} height={44} priority />
           </a>
 
           <button
             type="button"
             className="site-header__menu-close"
-            aria-label="Dong menu dieu huong"
+            aria-label="Đóng menu điều hướng"
             onClick={handleCloseMenu}
           >
-            <i className="fa-icon fas fa-times" aria-hidden="true" />
+            <XIcon />
           </button>
         </div>
 
@@ -155,11 +186,11 @@ export function SiteHeader({ links }: SiteHeaderProps) {
         </nav>
 
         <div className="site-header__drawer-actions">
-          <a className="site-header__phone" href="tel:+84916012589" onClick={handleCloseMenu}>
-            0916012589
+          <a className="site-header__phone" href={`tel:${t.header.phone.replace(/\s+/g, "")}`} onClick={handleCloseMenu}>
+            {t.header.phone}
           </a>
           <a className="site-header__cta" href="#contact" onClick={handleCloseMenu}>
-            Đặt xe ngay
+            {t.header.cta}
           </a>
         </div>
       </aside>

@@ -72,6 +72,11 @@ html {
   overflow-x: hidden;
 }
 
+/* Override global fragment offset for the sales section so its top aligns with viewport */
+#sales {
+  scroll-margin-top: 0;
+}
+
 body {
   margin: 0;
   min-height: 100vh;
@@ -116,6 +121,7 @@ img {
   width: 100%;
   max-width: 100%;
   overflow-x: clip;
+  padding-top: calc(110px + env(safe-area-inset-top));
 }
 
 .section-shell {
@@ -147,13 +153,15 @@ img {
 }
 
 .site-header {
-  position: sticky;
+  position: fixed;
   top: 0;
-  z-index: 40;
+  left: 0;
+  z-index: 100;
   width: 100%;
   background: rgba(255, 255, 255, 0.96);
   border-bottom: 1px solid var(--line);
   box-shadow: 0 14px 36px rgba(10, 47, 67, 0.06);
+  -webkit-backdrop-filter: blur(14px);
   backdrop-filter: blur(14px);
 }
 
@@ -238,38 +246,37 @@ img {
 .site-header__menu-toggle {
   display: none;
   place-items: center;
-  width: 52px;
-  height: 52px;
+  width: 44px;
+  height: 44px;
   padding: 0;
-  border: 1px solid rgba(16, 33, 43, 0.1);
-  border-radius: 16px;
+  border: 1px solid rgba(16, 33, 43, 0.06);
+  border-radius: 12px;
   background: rgba(255, 255, 255, 0.98);
   color: var(--ink);
-  box-shadow: 0 14px 30px rgba(10, 47, 67, 0.08);
+  box-shadow: 0 8px 20px rgba(10, 47, 67, 0.06);
   cursor: pointer;
   touch-action: manipulation;
   -webkit-tap-highlight-color: transparent;
+  transition: transform 0.12s ease;
 }
 
 .site-header__menu-toggle span {
   display: block;
-  width: 20px;
+  width: 18px;
   height: 2px;
   border-radius: 999px;
   background: currentColor;
   transform-origin: center;
   will-change: transform, opacity;
-  transition:
-    transform 0.18s var(--ease-out-smooth),
-    opacity 0.16s ease;
+  transition: transform 0.18s var(--ease-out-smooth), opacity 0.16s ease;
 }
 
 .site-header__menu-toggle span + span {
-  margin-top: 5px;
+  margin-top: 3px;
 }
 
 .site-header__menu-toggle.is-open span:nth-child(1) {
-  transform: translateY(7px) rotate(45deg);
+  transform: translateY(5px) rotate(45deg);
 }
 
 .site-header__menu-toggle.is-open span:nth-child(2) {
@@ -277,7 +284,7 @@ img {
 }
 
 .site-header__menu-toggle.is-open span:nth-child(3) {
-  transform: translateY(-7px) rotate(-45deg);
+  transform: translateY(-5px) rotate(-45deg);
 }
 
 .site-header__menu-brand {
@@ -472,6 +479,17 @@ img {
   font-size: clamp(2rem, 3vw, 2.7rem);
   line-height: 1.05;
   letter-spacing: -0.04em;
+}
+
+/* Mobile header sizing fixes: reduce top padding so no blue gap appears */
+@media (max-width: 768px) {
+  .site-header__inner { min-height: 88px; gap: 20px; }
+  .page-shell { padding-top: calc(88px + env(safe-area-inset-top)); }
+}
+
+@media (max-width: 480px) {
+  .site-header__inner { min-height: 72px; gap: 12px; }
+  .page-shell { padding-top: calc(72px + env(safe-area-inset-top)); }
 }
 
 .consult-card__role {
@@ -901,6 +919,98 @@ img {
   letter-spacing: -0.03em;
 }
 
+/* Compact fleet card content for small screens (<=480px) */
+@media (max-width: 480px) {
+  .fleet-card__content {
+    padding: 10px 10px 8px;
+    gap: 4px;
+  }
+
+  /* Make the horizontal scroller cards fit narrower mobile viewports */
+  .fleet-scroll {
+    padding-left: 12px;
+    padding-right: 12px;
+    gap: 16px;
+  }
+
+  .fleet-scroll .fleet-card {
+    flex: 0 0 calc(92% - 8px);
+    max-width: calc(92% - 8px);
+  }
+
+  .fleet-card__media {
+    aspect-ratio: auto;
+    height: 150px;
+  }
+
+  .fleet-card__media img {
+    padding: 4px 8px 0;
+    object-fit: contain;
+  }
+
+  .fleet-card__headline {
+    gap: 6px;
+  }
+
+  .fleet-card__headline h3 {
+    font-size: 0.98rem;
+    line-height: 1.08;
+    margin-right: 4px;
+  }
+
+  .fleet-card__headline span {
+    min-height: 28px;
+    padding: 0 8px;
+    font-size: 0.88rem;
+  }
+
+  .fleet-card__content p {
+    margin: 6px 0 0;
+    font-size: 0.92rem;
+    line-height: 1.4;
+    display: block;
+  }
+
+  .fleet-card__specs {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 6px;
+    margin-top: 8px;
+    padding: 6px 0;
+  }
+
+  .fleet-card__spec { gap: 6px; font-size: 0.88rem; }
+  .fleet-card__spec .fa-icon { font-size: 15px; }
+
+  .fleet-card__footer { gap: 8px; }
+
+  .fleet-card__price small { font-size: 0.84rem; margin-bottom: 4px; display: block; }
+  .fleet-card__price strong { font-size: 1.1rem; }
+  
+  /* Reorder content to surface headline and CTA earlier and push media lower */
+  .fleet-card__content { order: 1; display: flex; flex-direction: column; }
+  .fleet-card__media { order: 2; }
+  .fleet-card__headline { order: 0; }
+  .fleet-card__footer { order: 1; margin-top: 0; }
+  .fleet-card__content p { order: 2; }
+  .fleet-card__specs { order: 3; }
+
+  /* Reduce media height so cards are shorter overall */
+  .fleet-card__media { height: 120px; }
+
+}
+
+/* Very small screens: hide non-essential details to save vertical space */
+@media (max-width: 360px) {
+  .fleet-card__content { padding: 8px; }
+  .fleet-card__content p { display: none; }
+  .fleet-card__specs { display: none; }
+  .fleet-card__headline h3 { font-size: 0.95rem; }
+  .fleet-card__headline span { font-size: 0.86rem; padding: 0 6px; min-height: 26px; }
+  .fleet-card__price small { display: none; }
+  .fleet-card__price strong { font-size: 1rem; }
+  .fleet-card__cta { min-width: 110px; min-height: 40px; padding: 0 14px; }
+}
+
 .fleet-card__cta {
   display: inline-flex;
   align-items: center;
@@ -924,9 +1034,72 @@ img {
   background: var(--brand);
   color: #fff;
 }
-
 .pricing-section {
   padding: 0 0 118px;
+}
+
+/* Compact other cards for small screens */
+@media (max-width: 480px) {
+  .card,
+  .addon-card,
+  .consult-card,
+  .fleet-card,
+  .testimonial-spotlight,
+  .testimonial-mini {
+    padding: 8px;
+    border-radius: 14px;
+  }
+
+  .card img,
+  .addon-card__icon,
+  .consult-card__avatar,
+  .testimonial-person__avatar img {
+    width: 64px;
+    height: 64px;
+    object-fit: cover;
+  }
+
+  .addon-card__icon { width: 72px; height: 72px; }
+
+  .card h3,
+  .addon-card h3,
+  .consult-card h2,
+  .fleet-card__headline h3 {
+    font-size: 1rem;
+    line-height: 1.1;
+    margin: 0;
+  }
+
+  .card p,
+  .addon-card p,
+  .consult-card__note,
+  .fleet-card__content p {
+    font-size: 0.9rem;
+    line-height: 1.35;
+    margin: 6px 0 0;
+  }
+
+  .testimonial-spotlight blockquote { font-size: 0.96rem; margin: 8px 0; }
+  .testimonial-mini p { display: none; }
+  .testimonial-mini small { display: block; font-size: 0.82rem; }
+
+  .card .card-foot,
+  .fleet-card__footer,
+  .consult-card__primary {
+    gap: 8px;
+    min-height: 40px;
+    padding: 0 8px;
+  }
+
+  .addon-card h3 { font-size: 1.05rem; }
+}
+
+/* Extra compact tweaks for very small devices */
+@media (max-width: 360px) {
+  .card, .addon-card, .consult-card, .fleet-card { padding: 6px; }
+  .card h3, .addon-card h3, .consult-card h2 { font-size: 0.95rem; }
+  .addon-card__icon, .consult-card__avatar { width: 56px; height: 56px; }
+  .card .card-foot, .fleet-card__footer { min-height: 36px; }
 }
 
 .pricing-section__heading,
@@ -1057,6 +1230,23 @@ img {
   color: var(--muted);
   font-size: 1.03rem;
   line-height: 1.72;
+}
+
+/* Two-column variant for the sales contact section (centers two cards) */
+.addons-grid--two {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  justify-content: center;
+  gap: 28px;
+}
+
+.contact-list p {
+  margin: 8px 0;
+}
+
+.contact-list a {
+  color: var(--brand);
+  font-weight: 700;
+  text-decoration: none;
 }
 
 .process-section {
@@ -1769,6 +1959,8 @@ img {
   .site-header__brand {
     grid-area: brand;
   }
+  .fleet-scroll .fleet-card { flex: 0 0 94%; max-width: 94%; }
+  .fleet-card__media { aspect-ratio: auto; height: 130px; }
 
   .site-header__nav {
     grid-area: nav;

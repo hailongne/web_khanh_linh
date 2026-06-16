@@ -1,12 +1,15 @@
+"use client";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { SiteHeader } from "./site-header";
 import FleetSection from "./fleet-section";
+import { translations } from "./translations";
 
 const headerLinks = [
   { label: "Trang chủ", href: "#top", active: true },
   { label: "Đội xe", href: "#fleet" },
   { label: "Bảng giá", href: "#pricing" },
-  { label: "Liên hệ", href: "#contact" },
+  { label: "Liên hệ", href: "#sales" },
   { label: "Vé máy bay", href: "https://klfly.com" }
 ];
 
@@ -78,31 +81,28 @@ const pricingRows = [
   }
 ];
 
-const addOnServices = [
-  {
-    title: "Cho Thuê Xe Cưới",
-    description: "Các dòng xe hoa cao cấp, trang trí đẹp mắt và phù hợp concept lễ cưới sang trọng.",
-    label: "Setup theo concept",
-    icon: "wedding"
-  },
-  {
-    title: "Hướng Dẫn Viên",
-    description: "Cung cấp HDV du lịch chuyên nghiệp, am hiểu văn hóa vùng miền và lịch trình đoàn.",
-    label: "Đi cùng đoàn",
-    icon: "guide"
-  },
-  {
-    title: "Bảo Hiểm Du Lịch",
-    description: "Hỗ trợ mua bảo hiểm du lịch trọn gói, tăng an tâm cho cá nhân, gia đình và doanh nghiệp.",
-    label: "An tâm hành trình",
-    icon: "insurance"
-  },
-  {
-    title: "Cho Thuê Lái Xe",
-    description: "Cung cấp lái xe riêng chuyên nghiệp theo ngày, theo giờ hoặc theo lịch trình linh hoạt.",
-    label: "Linh hoạt thời gian",
-    icon: "chauffeur"
-  }
+
+
+const salesHotlines = [
+  { name: "Hà Nội - Sales 1", number: "+84 916 012 589" },
+  { name: "Hà Nội - Sales 2", number: "+84 912 345 678" },
+  { name: "Hồ Chí Minh - Sales 1", number: "+84 909 876 543" },
+  { name: "Hồ Chí Minh - Sales 2", number: "+84 908 765 432" },
+  { name: "Đà Nẵng - Sales", number: "+84 905 123 456" },
+  { name: "Tổng đài (24/7)", number: "+84 800 123 456" },
+  { name: "Bán hàng VIP", number: "+84 987 654 321" },
+  { name: "Hỗ trợ nhanh", number: "+84 903 210 987" }
+];
+
+const salesZaloContacts = [
+  { name: "Dũng (GĐ)", id: "84916012589" },
+  { name: "Minh", id: "84912345678" },
+  { name: "Hằng", id: "84909876543" },
+  { name: "Tú", id: "84900111222" },
+  { name: "Bộ phận B2B", id: "84988123456" },
+  { name: "Hỗ trợ 24/7", id: "84800123456" },
+  { name: "Đặt xe nhanh", id: "84800123457" },
+  { name: "Kinh doanh", id: "84987654321" }
 ];
 
 const testimonials = [
@@ -235,9 +235,27 @@ function FontAwesomeIcon({ type, className = "fa-fw" }: { type: string; classNam
 }
 
 export default function HomePage() {
+  const [lang, setLang] = useState<"vi" | "en">(() => {
+    if (typeof window === "undefined") return "vi";
+    return (localStorage.getItem("site_lang") as "vi" | "en") ?? "vi";
+  });
+
+  useEffect(() => {
+    try {
+      document.documentElement.lang = lang;
+      localStorage.setItem("site_lang", lang);
+    } catch (e) {
+      // ignore on server
+    }
+  }, [lang]);
+
+  const t = (translations as any)[lang] ?? translations.vi;
+
+  const toggleLang = () => setLang((l) => (l === "vi" ? "en" : "vi"));
+
   return (
     <main className="page-shell" id="top">
-      <SiteHeader links={headerLinks} />
+      <SiteHeader links={t.header.links} lang={lang} onToggleLang={toggleLang} />
       {false && <header className="site-header">
         <div className="site-header__inner">
           <a className="site-header__brand" href="#top" aria-label="Khánh Linh Trans">
@@ -271,19 +289,16 @@ export default function HomePage() {
       <section className="hero-section" id="services">
         <div className="section-shell hero-section__inner">
           <div className="hero-section__copy">
-            <span className="section-kicker section-kicker--light">Khánh Linh Trans</span>
-            <h1>Dịch Vụ Cho Thuê Xe Du Lịch &amp; Tự Lái Uy Tín Hàng Đầu</h1>
-            <p>
-              Trải nghiệm hành trình trọn vẹn với dàn xe đời mới, tài xế chuyên nghiệp và quy
-              trình điều phối chỉn chu cho khách doanh nghiệp, gia đình và khách đoàn.
-            </p>
+            <span className="section-kicker section-kicker--light">{t.hero.kicker}</span>
+            <h1>{t.hero.title}</h1>
+            <p>{t.hero.description}</p>
 
             <div className="hero-section__actions">
               <a className="button button--primary" href="#fleet">
-                Khám Phá Đội Xe
+                {t.hero.primaryCta}
               </a>
               <a className="button button--ghost" href="#contact">
-                Nhận Báo Giá Nhanh
+                {t.hero.secondaryCta}
               </a>
             </div>
  
@@ -293,17 +308,17 @@ export default function HomePage() {
             <div className="consult-card__avatar" aria-hidden="true">
               <i className="fas fa-user-headset consult-card__avatar-icon" />
             </div>
-            <h2>Tư Vấn Miễn Phí</h2>
-            <p className="consult-card__role">Mr. Dũng - Giám đốc điều hành</p>
+            <h2>{t.consultCard.title}</h2>
+            <p className="consult-card__role">{t.consultCard.role}</p>
 
             <a className="consult-card__primary" href="tel:+84916012589">
-              Hotline: 0916 012 589
+              {t.consultCard.hotlineLabel} {t.consultCard.hotline}
             </a>
             <a className="consult-card__secondary" href="https://zalo.me/84916012589">
-              Chat Zalo Ngay
+              {t.consultCard.chatZalo}
             </a>
 
-            <p className="consult-card__note">Hỗ trợ 24/7. Phản hồi trong vòng 5 phút.</p>
+            <p className="consult-card__note">{t.consultCard.note}</p>
           </aside>
         </div>
       </section>
@@ -311,18 +326,15 @@ export default function HomePage() {
       <section className="reasons-section" id="reasons">
         <div className="section-shell">
           <div className="reasons-section__header">
-            <span className="section-kicker">Lý do khách hàng quay lại</span>
-            <h2>Tại Sao Nên Chọn Khánh Linh Trans?</h2>
-            <p className="reasons-section__lead">
-              Chúng tôi cam kết mang đến trải nghiệm di chuyển an toàn, thoải mái và chuyên nghiệp
-              cho từng chuyến công tác, du lịch hay đưa đón sân bay.
-            </p>
+            <span className="section-kicker">{t.reasons.kicker}</span>
+            <h2>{t.reasons.heading}</h2>
+            <p className="reasons-section__lead">{t.reasons.lead}</p>
           </div>
 
           <div className="reasons-section__inner">
             <div className="reasons-section__copy">
               <div className="reasons-list">
-                {reasons.map((reason) => (
+                {t.reasons.items.map((reason: any) => (
                   <article className="reason-card" key={reason.title}>
                     <div className="reason-card__icon">
                       <FontAwesomeIcon type={reason.icon} />
@@ -341,7 +353,7 @@ export default function HomePage() {
                 <div className="visual-card__image">
                   <Image
                     src="/images/logo3D.png"
-                    alt="Đội xe Khánh Linh Trans"
+                    alt={t.hero.imageAlt}
                     fill
                     priority
                     sizes="(max-width: 900px) 100vw, 48vw"
@@ -353,18 +365,18 @@ export default function HomePage() {
         </div>
       </section>
 
-      <FleetSection />
+      <FleetSection lang={lang} />
 
       <section className="process-section">
         <div className="section-shell">
           <div className="process-section__heading">
-            <span className="section-kicker">Đặt xe đơn giản</span>
-            <h2>Quy Trình Đặt Xe</h2>
-            <p>Đơn giản, nhanh chóng và chuyên nghiệp chỉ với 4 bước rõ ràng.</p>
+            <span className="section-kicker">{t.booking.kicker}</span>
+            <h2>{t.booking.heading}</h2>
+            <p>{t.booking.lead}</p>
           </div>
 
           <div className="process-grid">
-            {bookingSteps.map((step) => (
+            {t.booking.steps.map((step: any) => (
               <article className="process-card" key={step.title}>
                 <div className="process-card__icon">
                   <FontAwesomeIcon type={step.icon} />
@@ -380,63 +392,74 @@ export default function HomePage() {
       <section className="pricing-section" id="pricing">
         <div className="section-shell">
           <div className="pricing-section__heading">
-            <span className="section-kicker">Chi phí minh bạch</span>
-            <h2>Bảng Giá Tham Khảo Nhanh</h2>
-            <p>
-              Giá cước có thể thay đổi tùy theo thời điểm và yêu cầu cụ thể. Vui lòng liên hệ để
-              có báo giá chính xác nhất.
-            </p>
+            <span className="section-kicker">{t.pricing.kicker}</span>
+            <h2>{t.pricing.heading}</h2>
+            <p>{t.pricing.lead}</p>
           </div>
 
           <div className="pricing-table-wrap">
             <table className="pricing-table">
               <thead>
                 <tr>
-                  <th scope="col">Loại xe</th>
-                  <th scope="col">City Tour (1 ngày)</th>
-                  <th scope="col">Đi tỉnh (từ 100km)</th>
-                  <th scope="col">Sân bay (1 chiều)</th>
+                  {t.pricing.table.cols.map((c: string, idx: number) => (
+                    <th scope="col" key={idx}>{c}</th>
+                  ))}
                 </tr>
               </thead>
               <tbody>
-                {pricingRows.map((row) => (
+                {t.pricing.rows.map((row: any) => (
                   <tr key={row.vehicle}>
                     <th scope="row">{row.vehicle}</th>
-                    <td data-label="City Tour (1 ngày)">{row.cityTour}</td>
-                    <td data-label="Đi tỉnh (từ 100km)">{row.provinceTrip}</td>
-                    <td data-label="Sân bay (1 chiều)">{row.airport}</td>
+                    <td data-label={t.pricing.table.cols[1]}>{row.cityTour}</td>
+                    <td data-label={t.pricing.table.cols[2]}>{row.provinceTrip}</td>
+                    <td data-label={t.pricing.table.cols[3]}>{row.airport}</td>
                   </tr>
                 ))}
               </tbody>
             </table>
           </div>
-
-          <p className="pricing-section__note">
-            * Bảng giá chỉ mang tính chất tham khảo. Đã bao gồm lương lái xe, chi phí cầu đường,
-            xăng xe.
-          </p>
+          <p className="pricing-section__note">{t.pricing.note}</p>
         </div>
       </section>
 
-      <section className="addons-section">
+      <section className="addons-section" id="sales">
         <div className="section-shell">
           <div className="addons-section__heading">
-            <span className="section-kicker">Tiện ích đi kèm</span>
-            <h2>Dịch Vụ Thêm</h2>
-            <p>Các tiện ích đi kèm giúp chuyến đi của bạn thêm phần trọn vẹn và chủ động hơn.</p>
+            <span className="section-kicker">{t.sales.kicker}</span>
+            <h2>{t.sales.heading}</h2>
+            <p>{t.sales.lead}</p>
           </div>
 
-          <div className="addons-grid">
-            {addOnServices.map((service) => (
-              <article className="addon-card" key={service.title}>
-                <div className="addon-card__icon">
-                  <FontAwesomeIcon type={service.icon} />
-                </div>
-                <span className="addon-card__label">{service.label}</span>
-                <h3>{service.title}</h3>
-                <p>{service.description}</p>
-              </article>
-            ))}
+          <div className="addons-grid addons-grid--two">
+            <article className="addon-card" key="hotline">
+              <div className="addon-card__icon">
+                <FontAwesomeIcon type="phone" />
+              </div>
+              <span className="addon-card__label">{t.sales.hotlineLabel}</span>
+              <h3>{t.sales.hotlineTitle}</h3> (sẽ thay sau khi có thông tin)
+              <div className="contact-list">
+                {salesHotlines.map((h) => (
+                  <p key={h.number}>
+                    <a href={`tel:${h.number.split(' ').join('')}`}>{h.name}: {h.number}</a>
+                  </p>
+                ))}
+              </div>
+            </article>
+
+            <article className="addon-card" key="zalo">
+              <div className="addon-card__icon">
+                <FontAwesomeIcon type="chat" />
+              </div>
+              <span className="addon-card__label">{t.sales.zaloLabel}</span>
+              <h3>{t.sales.zaloTitle}</h3> (sẽ thay sau khi có thông tin)
+              <div className="contact-list">
+                {salesZaloContacts.map((z) => (
+                  <p key={z.id}>
+                    <a href={`https://zalo.me/${z.id}`} target="_blank" rel="noreferrer">{z.name}: {z.id}</a>
+                  </p>
+                ))}
+              </div>
+            </article>
           </div>
         </div>
       </section>
@@ -444,27 +467,24 @@ export default function HomePage() {
       <section className="testimonials-section" aria-labelledby="testimonials-heading">
         <div className="section-shell testimonials-section__inner">
           <div className="testimonials-section__heading">
-            <span className="section-kicker">Cảm nhận khách hàng</span>
-            <h2 id="testimonials-heading">Khách Hàng Nói Gì</h2>
-            <p>
-              Những phản hồi thực tế sau các chuyến công tác, du lịch gia đình và hợp đồng đưa đón
-              dài hạn.
-            </p>
+            <span className="section-kicker">{t.testimonials.kicker}</span>
+            <h2 id="testimonials-heading">{t.testimonials.heading}</h2>
+            <p>{t.testimonials.lead}</p>
           </div>
 
           <div className="testimonials-layout">
             <article className="testimonial-spotlight">
               <div className="testimonial-spotlight__glow" aria-hidden="true" />
               <div className="testimonial-spotlight__topline">
-                <span>{testimonials[0].badge}</span>
-                <span>{testimonials[0].tag}</span>
+                <span>{t.testimonials.items[0].badge}</span>
+                <span>{t.testimonials.items[0].tag}</span>
               </div>
 
               <div className="testimonial-spotlight__quote-mark" aria-hidden="true">
                 “
               </div>
 
-              <blockquote>{testimonials[0].quote}</blockquote>
+              <blockquote>{t.testimonials.items[0].quote}</blockquote>
 
               <div className="testimonial-spotlight__footer">
                 <div className="testimonial-person">
@@ -473,21 +493,21 @@ export default function HomePage() {
                   </div>
 
                   <div className="testimonial-person__copy">
-                    <strong>{testimonials[0].name}</strong>
-                    <p>{testimonials[0].role}</p>
+                    <strong>{t.testimonials.items[0].name}</strong>
+                    <p>{t.testimonials.items[0].role}</p>
                   </div>
                 </div>
 
                 <div className="testimonial-spotlight__score">
                   <strong>5.0</strong>
-                  <span>Trải nghiệm được đánh giá xuất sắc</span>
+                  <span>{t.testimonials.scoreLabel}</span>
                 </div>
               </div>
             </article>
 
             <div className="testimonials-side">
               <div className="testimonial-stats">
-                {trustStats.map((item) => (
+                {t.testimonials.stats.map((item: any) => (
                   <article className="testimonial-stat" key={item.value}>
                     <strong>{item.value}</strong>
                     <p>{item.label}</p>
@@ -496,7 +516,7 @@ export default function HomePage() {
               </div>
 
               <div className="testimonial-list" aria-label="Phản hồi khác từ khách hàng">
-                {testimonials.slice(1).map((item) => (
+                {t.testimonials.items.slice(1).map((item: any) => (
                   <article className="testimonial-mini" key={item.name}>
                     <div className="testimonial-mini__meta">
                       <span>{item.badge}</span>
@@ -516,13 +536,13 @@ export default function HomePage() {
       <section className="faq-section" aria-labelledby="faq-heading">
         <div className="section-shell faq-section__inner">
           <div className="faq-section__heading">
-            <span className="section-kicker">Giải đáp nhanh</span>
-            <h2 id="faq-heading">Câu Hỏi Thường Gặp</h2>
-            <p>Giải đáp những thắc mắc phổ biến của khách hàng khi thuê xe.</p>
+            <span className="section-kicker">{t.faq.kicker}</span>
+            <h2 id="faq-heading">{t.faq.heading}</h2>
+            <p>{t.faq.lead}</p>
           </div>
 
           <div className="faq-list">
-            {faqItems.map((item) => (
+            {t.faq.items.map((item: any) => (
               <details className="faq-item" key={item.question}>
                 <summary className="faq-item__summary">
                   <span>{item.question}</span>
@@ -542,16 +562,14 @@ export default function HomePage() {
 
       <section className="contact-cta-section" aria-labelledby="contact-cta-heading">
         <div className="section-shell contact-cta-section__inner">
-          <span className="section-kicker section-kicker--light">Sẵn sàng khởi hành</span>
-          <h2 id="contact-cta-heading">Bạn Cần Thuê Xe Cho Chuyến Đi Sắp Tới?</h2>
-          <p>
-            Hãy liên hệ ngay với chúng tôi để nhận được tư vấn tận tình và báo giá tốt nhất.
-          </p>
+          <span className="section-kicker section-kicker--light">{t.contactCta.kicker}</span>
+          <h2 id="contact-cta-heading">{t.contactCta.heading}</h2>
+          <p>{t.contactCta.lead}</p>
 
           <div className="contact-cta-section__actions">
             <a className="contact-cta-button contact-cta-button--solid" href="tel:+84916012589">
               <FontAwesomeIcon type="phone" />
-              <span>Gọi Hotline: 0916 012 589</span>
+              <span>{t.contactCta.call}</span>
             </a>
 
             <a
@@ -559,7 +577,7 @@ export default function HomePage() {
               href="https://zalo.me/84916012589"
             >
               <FontAwesomeIcon type="chat" />
-              <span>Chat Zalo</span>
+              <span>{t.contactCta.chat}</span>
             </a>
           </div>
         </div>
@@ -567,12 +585,12 @@ export default function HomePage() {
 
       <footer className="site-footer" id="contact">
         <div className="section-shell site-footer__inner">
-          <div className="site-footer__logo-top">
-            <a href="#top" aria-label="Khánh Linh Trans">
+            <div className="site-footer__logo-top">
+            <a href="#top" aria-label={t.header.brand}>
               <Image
                 className="site-footer__brand-logo"
                 src="/images/logoKhanhLinhFull.png"
-                alt="Khánh Linh Trans"
+                alt={t.header.brand}
                 width={480}
                 height={144}
                 priority
@@ -582,13 +600,10 @@ export default function HomePage() {
 
           <div className="site-footer__grid">
             <div className="site-footer__brand-block">
-              <p className="site-footer__description">
-                Premium Tourist Transportation Services. Mang đến giải pháp di chuyển an toàn, tiện
-                lợi và đẳng cấp.
-              </p>
+                <p className="site-footer__description">{t.footer.brandDescription}</p>
 
-              <div className="site-footer__social" aria-label="Kênh thương hiệu">
-                {footerSocialLinks.map((item) => (
+              <div className="site-footer__social" aria-label="Brand channels">
+                {t.footer.social.map((item: any) => (
                   <a
                     key={item.label}
                     className="site-footer__social-link"
@@ -604,9 +619,9 @@ export default function HomePage() {
             </div>
 
             <div className="site-footer__column">
-              <h2 className="site-footer__heading">DỊCH VỤ</h2>
+              <h2 className="site-footer__heading">{t.footer.servicesHeading}</h2>
               <nav className="site-footer__nav" aria-label="Dịch vụ footer">
-                {footerServices.map((item) => (
+                {t.footer.services.map((item: any) => (
                   <a key={item.label} href={item.href}>
                     {item.label}
                   </a>
@@ -615,9 +630,9 @@ export default function HomePage() {
             </div>
 
             <div className="site-footer__column">
-              <h2 className="site-footer__heading">HỖ TRỢ</h2>
+              <h2 className="site-footer__heading">{t.footer.supportHeading}</h2>
               <nav className="site-footer__nav" aria-label="Hỗ trợ footer">
-                {footerSupportLinks.map((item) => (
+                {t.footer.supportLinks.map((item: any) => (
                   <a key={item.label} href={item.href}>
                     {item.label}
                   </a>
@@ -626,34 +641,34 @@ export default function HomePage() {
             </div>
 
             <div className="site-footer__column">
-              <h2 className="site-footer__heading">LIÊN HỆ</h2>
+              <h2 className="site-footer__heading">{t.footer.contactHeading}</h2>
               <div className="site-footer__contact-list">
                 <div className="site-footer__contact-item">
                   <span className="site-footer__contact-icon">
                     <FontAwesomeIcon type="location" />
                   </span>
-                  <span>Hà Nội, Việt Nam</span>
+                  <span>{t.footer.contactList.address}</span>
                 </div>
 
                 <div className="site-footer__contact-item">
                   <span className="site-footer__contact-icon">
                     <FontAwesomeIcon type="phone" />
                   </span>
-                  <a href="tel:+84916012589">+84 916 012 589</a>
+                  <a href={`tel:${t.footer.contactList.phone.replace(/\s+/g, "")}`}>{t.footer.contactList.phone}</a>
                 </div>
 
                 <div className="site-footer__contact-item">
                   <span className="site-footer__contact-icon">
                     <FontAwesomeIcon type="mail" />
                   </span>
-                  <a href="mailto:contact@khanhlinhtrans.com">contact@khanhlinhtrans.com</a>
+                  <a href={`mailto:${t.footer.contactList.email}`}>{t.footer.contactList.email}</a>
                 </div>
               </div>
             </div>
           </div>
 
           <div className="site-footer__bottom">
-            <p>© 2024 Khánh Linh Trans. Premium Tourist Transportation Services.</p>
+            <p>{t.footer.copyright}</p>
           </div>
         </div>
       </footer>

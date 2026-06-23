@@ -390,6 +390,16 @@ img {
   background-repeat: no-repeat;
 }
 
+/* Make hero background extend beneath the fixed header so there's no visible gap.
+   The page uses `.page-shell` padding to offset fixed header; here we cancel that
+   visually for the hero so the banner appears directly under the header while
+   keeping the content correctly offset. */
+.page-shell > .hero-section,
+.page-shell .hero-section {
+  margin-top: calc(-110px - env(safe-area-inset-top));
+  padding-top: calc(110px + env(safe-area-inset-top));
+}
+
 .hero-section::before {
   content: "";
   position: absolute;

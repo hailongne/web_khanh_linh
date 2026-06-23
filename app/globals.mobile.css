@@ -12,6 +12,13 @@
     padding-top: calc(72px + env(safe-area-inset-top));
   }
 
+  /* Ensure the hero background extends beneath the mobile header (no gap) */
+  .page-shell > .hero-section,
+  .page-shell .hero-section {
+    margin-top: calc(-72px - env(safe-area-inset-top));
+    padding-top: calc(72px + env(safe-area-inset-top));
+  }
+
   /* Header: logo left, hamburger right, hide desktop nav/actions */
   .site-header__inner {
     grid-template-columns: minmax(0, 1fr) auto;

@@ -1,0 +1,111 @@
+{
+  "path": "E:\\web-khanh-linh-trans\\app\\globals.css",
+  "totalSelectors": 120,
+  "uniqueSelectorCount": 117,
+  "duplicateSelectors": 2,
+  "identicalDuplicates": [],
+  "conflictingDuplicatesCount": 2,
+  "duplicateSelectorList": [
+    {
+      "selector": ".section-kicker",
+      "count": 2,
+      "occurrences": [
+        {
+          "content": "font-size: 0.86rem;\r\n  font-weight: 600;\r\n  letter-spacing: 0.06em;",
+          "line": 41
+        },
+        {
+          "content": "display: inline-flex;\r\n  align-items: center;\r\n  gap: 10px;\r\n  color: var(--brand);\r\n  font-size: 0.92rem;\r\n  font-weight: 700;\r\n  letter-spacing: 0.08em;\r\n  text-transform: uppercase;",
+          "line": 153
+        }
+      ]
+    },
+    {
+      "selector": ".hero-section__copy h1",
+      "count": 3,
+      "occurrences": [
+        {
+          "content": "font-size: clamp(1.8rem, 3.2vw, 2.4rem);\r\n  font-weight: 600;",
+          "line": 47
+        },
+        {
+          "content": "color: #fff !important;",
+          "line": 71
+        },
+        {
+          "content": "margin: 22px 0 24px;\r\n  \r\n  font-size: clamp(2.25rem, 3.75vw, 2.875rem);\r\n  line-height: 1.12;\r\n  letter-spacing: -0.05em;\r\n  text-align: justify;\r\n  -webkit-text-align-last: left;\r\n  text-align-last: left;\r\n  text-justify: inter-word;",
+          "line": 425
+        }
+      ]
+    }
+  ],
+  "totalMediaQueries": 1,
+  "mediaQueryMap": {
+    "(max-width: 480px)": 1
+  },
+  "duplicateMediaQueries": [],
+  "importantCount": 3,
+  "inlineStyleAttrs": 0,
+  "inlineJsStyleAssignments": 15,
+  "totalBlocks": 121,
+  "unusedSelectorsCount": 14,
+  "unusedSelectors": [
+    {
+      "selector": ".site-header__brand-name",
+      "occurrences": 1
+    },
+    {
+      "selector": ".site-header__menu-brand",
+      "occurrences": 1
+    },
+    {
+      "selector": ".site-header__menu-brand-name",
+      "occurrences": 1
+    },
+    {
+      "selector": ".hero-section__highlights",
+      "occurrences": 1
+    },
+    {
+      "selector": ".hero-section__highlights li",
+      "occurrences": 1
+    },
+    {
+      "selector": ".hero-section__highlights li::before",
+      "occurrences": 1
+    },
+    {
+      "selector": ".visual-badge",
+      "occurrences": 1
+    },
+    {
+      "selector": ".visual-badge strong",
+      "occurrences": 1
+    },
+    {
+      "selector": ".visual-badge p",
+      "occurrences": 1
+    },
+    {
+      "selector": ".visual-badge--rating",
+      "occurrences": 1
+    },
+    {
+      "selector": ".visual-badge--rating strong",
+      "occurrences": 1
+    },
+    {
+      "selector": ".visual-badge__star",
+      "occurrences": 1
+    },
+    {
+      "selector": ".visual-badge--metric",
+      "occurrences": 1
+    },
+    {
+      "selector": ".visual-badge--metric strong",
+      "occurrences": 1
+    }
+  ],
+  "longSelectors": []
+}

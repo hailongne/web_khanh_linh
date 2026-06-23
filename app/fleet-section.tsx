@@ -98,7 +98,7 @@ type FleetItem = {
             </div>
           </div>
 
-          {(active === "all" || active === "4-7") ? (
+          {( ["all", "4-7", "16", "29", "45"].includes(active) ) ? (
             <div className="fleet-scroll" aria-live="polite">
               {filteredItems.length === 0 ? (
                 <div className="fleet-empty">{t.fleet?.empty}</div>
@@ -106,7 +106,13 @@ type FleetItem = {
                 filteredItems.map((item) => (
                   <article className="fleet-card" key={item.name}>
                     <div className="fleet-card__media">
-                      <Image src={item.image} alt={item.name} fill sizes="(max-width: 900px) 100vw, 50vw" />
+                      <Image
+                        src={item.image}
+                        alt={item.name}
+                        fill
+                        sizes="(max-width: 900px) 100vw, 50vw"
+                        style={{ objectFit: "contain", objectPosition: "top center" }}
+                      />
                     </div>
 
                     <div className="fleet-card__content">
@@ -114,8 +120,6 @@ type FleetItem = {
                         <h3>{item.name}</h3>
                         <span>{item.badge}</span>
                       </div>
-
-                      <p>{item.description}</p>
 
                       <div className="fleet-card__specs">
                         {item.specs.map((spec) => (
@@ -149,7 +153,13 @@ type FleetItem = {
                 filteredItems.map((item) => (
                   <article className="fleet-card" key={item.name}>
                     <div className="fleet-card__media">
-                      <Image src={item.image} alt={item.name} fill sizes="(max-width: 900px) 100vw, 50vw" />
+                      <Image
+                        src={item.image}
+                        alt={item.name}
+                        fill
+                        sizes="(max-width: 900px) 100vw, 50vw"
+                        style={{ objectFit: "contain", objectPosition: "top center" }}
+                      />
                     </div>
 
                     <div className="fleet-card__content">
@@ -157,8 +167,6 @@ type FleetItem = {
                         <h3>{item.name}</h3>
                         <span>{item.badge}</span>
                       </div>
-
-                      <p>{item.description}</p>
 
                       <div className="fleet-card__specs">
                         {item.specs.map((spec) => (

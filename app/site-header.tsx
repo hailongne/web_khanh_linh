@@ -36,10 +36,13 @@ type SiteHeaderProps = {
 
 export function SiteHeader({ links, lang = "vi", onToggleLang }: SiteHeaderProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [touchStartX, setTouchStartX] = useState<number | null>(null);
+  const [touchStartY, setTouchStartY] = useState<number | null>(null);
+  const [touchMoved, setTouchMoved] = useState(false);
 
   useEffect(() => {
     const handleResize = () => {
-      if (window.innerWidth > 640) {
+      if (window.innerWidth > 900) {
         setIsMenuOpen(false);
       }
     };
@@ -49,19 +52,44 @@ export function SiteHeader({ links, lang = "vi", onToggleLang }: SiteHeaderProps
   }, []);
 
   useLayoutEffect(() => {
-    if (window.innerWidth > 640) {
-      document.documentElement.classList.remove("is-menu-open");
-      document.body.classList.remove("is-menu-open");
+    const html = document.documentElement;
+    const body = document.body;
+
+    // If viewport is wide, ensure classes/styles are cleared.
+    if (window.innerWidth > 900) {
+      html.classList.remove("is-menu-open");
+      body.classList.remove("is-menu-open");
+      html.style.paddingRight = "";
+      body.style.paddingRight = "";
       return;
     }
 
-    document.documentElement.classList.toggle("is-menu-open", isMenuOpen);
-    document.body.classList.toggle("is-menu-open", isMenuOpen);
+    // When opening the menu, reserve scrollbar width to avoid layout shift.
+    if (isMenuOpen) {
+      const prevHtmlPad = html.style.paddingRight || "";
+      const prevBodyPad = body.style.paddingRight || "";
+      const scrollbarWidth = window.innerWidth - html.clientWidth;
+      if (scrollbarWidth > 0) {
+        html.style.paddingRight = `${scrollbarWidth}px`;
+        body.style.paddingRight = `${scrollbarWidth}px`;
+      }
+      html.classList.add("is-menu-open");
+      body.classList.add("is-menu-open");
 
-    return () => {
-      document.documentElement.classList.remove("is-menu-open");
-      document.body.classList.remove("is-menu-open");
-    };
+      return () => {
+        html.classList.remove("is-menu-open");
+        body.classList.remove("is-menu-open");
+        html.style.paddingRight = prevHtmlPad;
+        body.style.paddingRight = prevBodyPad;
+      };
+    }
+
+    // Ensure menu classes/styles are removed when closed.
+    html.classList.remove("is-menu-open");
+    body.classList.remove("is-menu-open");
+    html.style.paddingRight = "";
+    body.style.paddingRight = "";
+    return;
   }, [isMenuOpen]);
 
   const handleToggleMenu = () => {
@@ -70,6 +98,44 @@ export function SiteHeader({ links, lang = "vi", onToggleLang }: SiteHeaderProps
 
   const handleCloseMenu = () => {
     setIsMenuOpen(false);
+  };
+
+  const handleTouchStart = (e: any) => {
+    if (!isMenuOpen) return;
+    const t = e.touches[0];
+    setTouchStartX(t.clientX);
+    setTouchStartY(t.clientY);
+    setTouchMoved(false);
+  };
+
+  const handleTouchMove = (e: any) => {
+    if (touchStartX === null || touchStartY === null) return;
+    const t = e.touches[0];
+    const dx = t.clientX - touchStartX;
+    const dy = t.clientY - touchStartY;
+    // if horizontal movement greater than vertical, mark moved
+    if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 8) {
+      setTouchMoved(true);
+    }
+  };
+
+  const handleTouchEnd = (e: any) => {
+    if (!touchMoved || touchStartX === null) {
+      setTouchStartX(null);
+      setTouchStartY(null);
+      setTouchMoved(false);
+      return;
+    }
+    const touch = e.changedTouches[0];
+    const dx = touch.clientX - touchStartX;
+    // swipe right to close (user drags from right to left? for right-panel drawer, swipe right-to-left closes?)
+    // Our drawer is on the right; closing swipe is to the right-to-left? We'll close on left swipe (dx < -50) or right swipe (dx > 50) conservatively.
+    if (dx > 50 || dx < -50) {
+      handleCloseMenu();
+    }
+    setTouchStartX(null);
+    setTouchStartY(null);
+    setTouchMoved(false);
   };
 
   const t = (translations as any)[lang] ?? translations.vi;
@@ -119,7 +185,6 @@ export function SiteHeader({ links, lang = "vi", onToggleLang }: SiteHeaderProps
             className="site-header__lang-toggle"
             aria-label={lang === "vi" ? "Chuyển sang Tiếng Anh" : "Switch to Vietnamese"}
             onClick={() => onToggleLang?.()}
-            style={{ padding: "4px", background: "transparent", border: "none", cursor: "pointer", display: "inline-flex", alignItems: "center", justifyContent: "center" }}
           >
             {lang === "vi" ? <USFlag width={60} height={31.5} /> : <VNFlag width={60} height={40} />}
           </button>
@@ -150,12 +215,11 @@ export function SiteHeader({ links, lang = "vi", onToggleLang }: SiteHeaderProps
         className={`site-header__menu-panel${isMenuOpen ? " is-open" : ""}`}
         id="site-header-menu"
         aria-hidden={!isMenuOpen}
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
       >
         <div className="site-header__menu-head">
-          <a className="site-header__menu-brand" href="#top" aria-label={t.header.brand} onClick={handleCloseMenu}>
-            <Image className="site-header__logo" src="/images/logoKhanhLinh.png" alt="Khanh Linh Trans" width={220} height={44} priority />
-          </a>
-
           <button
             type="button"
             className="site-header__menu-close"
@@ -175,7 +239,6 @@ export function SiteHeader({ links, lang = "vi", onToggleLang }: SiteHeaderProps
                 href={item.href}
                 className={item.active ? "is-active" : undefined}
                 aria-current={item.active ? "page" : undefined}
-                onClick={handleCloseMenu}
                 target={isExternal ? "_blank" : undefined}
                 rel={isExternal ? "noopener noreferrer" : undefined}
               >
@@ -186,12 +249,20 @@ export function SiteHeader({ links, lang = "vi", onToggleLang }: SiteHeaderProps
         </nav>
 
         <div className="site-header__drawer-actions">
-          <a className="site-header__phone" href={`tel:${t.header.phone.replace(/\s+/g, "")}`} onClick={handleCloseMenu}>
+          <a className="site-header__phone" href={`tel:${t.header.phone.replace(/\s+/g, "")}`}>
             {t.header.phone}
           </a>
-          <a className="site-header__cta" href="#contact" onClick={handleCloseMenu}>
+          <a className="site-header__cta" href="#contact">
             {t.header.cta}
           </a>
+          <button
+            type="button"
+            className="site-header__drawer-lang-toggle"
+            aria-label={lang === "vi" ? "Chuyển sang Tiếng Anh" : "Switch to Vietnamese"}
+            onClick={() => onToggleLang?.()}
+          >
+            {lang === "vi" ? <USFlag width={36} height={24} /> : <VNFlag width={36} height={24} />}
+          </button>
         </div>
       </aside>
     </header>

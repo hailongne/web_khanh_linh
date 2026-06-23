@@ -1,0 +1,22 @@
+[
+  {
+    "selector": ".contact-cta-section__inner h2",
+    "mergedCount": 2
+  },
+  {
+    "selector": ".consult-card__secondary",
+    "mergedCount": 3
+  },
+  {
+    "selector": ".testimonial-mini small",
+    "mergedCount": 3
+  },
+  {
+    "selector": ".testimonial-mini",
+    "mergedCount": 3
+  },
+  {
+    "selector": ".site-footer__contact-item",
+    "mergedCount": 3
+  }
+]

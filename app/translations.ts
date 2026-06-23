@@ -15,7 +15,7 @@ export const translations: Record<string, any> = {
         { label: "Liên hệ", href: "#sales" },
         { label: "Vé máy bay", href: "https://klfly.com" }
       ],
-      phone: "+84 916 012 589",
+      phone: "0962992555",
       cta: "Đặt xe ngay",
       menuOpenLabel: "Mở menu điều hướng",
       menuCloseLabel: "Đóng menu điều hướng"
@@ -35,7 +35,7 @@ export const translations: Record<string, any> = {
       title: "Tư Vấn Miễn Phí",
       role: "Mr. Dũng - Giám đốc điều hành",
       hotlineLabel: "Hotline:",
-      hotline: "0916 012 589",
+      hotline: "0962992555",
       chatZalo: "Chat Zalo Ngay",
       note: "Hỗ trợ 24/7. Phản hồi trong vòng 5 phút."
     },
@@ -137,7 +137,16 @@ export const translations: Record<string, any> = {
       hotlineLabel: "Hotline",
       hotlineTitle: "Liên hệ qua số điện thoại",
       zaloLabel: "Chat Zalo",
-      zaloTitle: "Liên hệ Zalo nhanh"
+      zaloTitle: "Liên hệ Zalo nhanh",
+      zaloAction: "Liên hệ qua Zalo",
+      hotlines: [
+        { name: "Phạm Dũng", number: "0962992555" },
+        { name: "Khánh Linh Hạnh", number: "0969083555" }
+      ],
+      zaloContacts: [
+        { id: "0962992555", name: "Phạm Dũng" },
+        { id: "0969083555", name: "Khánh Linh Hạnh" }
+      ]
     },
 
     testimonials: {
@@ -208,7 +217,7 @@ export const translations: Record<string, any> = {
       kicker: "Sẵn sàng khởi hành",
       heading: "Bạn Cần Thuê Xe Cho Chuyến Đi Sắp Tới?",
       lead: "Hãy liên hệ ngay với chúng tôi để nhận được tư vấn tận tình và báo giá tốt nhất.",
-      call: "Gọi Hotline: 0916 012 589",
+      call: "Gọi Hotline: 0962992555",
       chat: "Chat Zalo"
     },
 
@@ -234,7 +243,7 @@ export const translations: Record<string, any> = {
       ],
       contactList: {
         address: "Hà Nội, Việt Nam",
-        phone: "+84 916 012 589",
+        phone: "0962992555",
         email: "contact@khanhlinhtrans.com"
       },
       copyright: "© 2024 Khánh Linh Trans. Premium Tourist Transportation Services."
@@ -251,7 +260,7 @@ export const translations: Record<string, any> = {
         { label: "Contact", href: "#sales" },
         { label: "Flight Tickets", href: "https://klfly.com" }
       ],
-      phone: "+84 916 012 589",
+      phone: "0962992555",
       cta: "Book Now",
       menuOpenLabel: "Open navigation menu",
       menuCloseLabel: "Close navigation menu"
@@ -271,7 +280,7 @@ export const translations: Record<string, any> = {
       title: "Free Consultation",
       role: "Mr. Dung - Chief Operating Officer",
       hotlineLabel: "Hotline:",
-      hotline: "0916 012 589",
+      hotline: "0962992555",
       chatZalo: "Chat on Zalo",
       note: "Support 24/7. Typical response within 5 minutes."
     },
@@ -373,7 +382,16 @@ export const translations: Record<string, any> = {
       hotlineLabel: "Hotline",
       hotlineTitle: "Contact by phone",
       zaloLabel: "Zalo Chat",
-      zaloTitle: "Quick Zalo contact"
+      zaloTitle: "Quick Zalo contact",
+      zaloAction: "Contact via Zalo",
+      hotlines: [
+        { name: "Pham Dung", number: "0962992555" },
+        { name: "Khanh Linh Hanh", number: "0969083555" }
+      ],
+      zaloContacts: [
+        { id: "0962992555", name: "Pham Dung" },
+        { id: "0969083555", name: "Khanh Linh Hanh" }
+      ]
     },
 
     testimonials: {
@@ -444,7 +462,7 @@ export const translations: Record<string, any> = {
       kicker: "Ready to depart",
       heading: "Need a Vehicle for Your Upcoming Trip?",
       lead: "Contact us now for attentive consultation and the best quote.",
-      call: "Call Hotline: 0916 012 589",
+      call: "Call Hotline: 0962992555",
       chat: "Chat on Zalo"
     },
 
@@ -469,7 +487,7 @@ export const translations: Record<string, any> = {
       ],
       contactList: {
         address: "Hanoi, Vietnam",
-        phone: "+84 916 012 589",
+        phone: "0962992555",
         email: "contact@khanhlinhtrans.com"
       },
       copyright: "© 2024 Khánh Linh Trans. Premium Tourist Transportation Services."

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import "./globals.css";
+import "./globals.mobile.css";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://khanhlinhtrans.vn"),
@@ -41,6 +42,7 @@ export default function RootLayout({
   return (
     <html lang="vi">
       <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="stylesheet" href="/icon/font-awesome/css/all.css" />
       </head>
       <body>{children}</body>

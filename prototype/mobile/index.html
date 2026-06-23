@@ -1,412 +1,772 @@
 <!doctype html>
 <html lang="vi">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <title>Khánh Linh Trans — Thuê xe du lịch</title>
-  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-  <div class="app" id="app">
-    <header class="site-header" id="site-header">
-      <div class="logo">Khánh Linh <span>Trans</span></div>
-      <a class="hotline" href="tel:+84912345678" aria-label="Gọi hotline">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.86 19.86 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.86 19.86 0 0 1 3.08 4.18 2 2 0 0 1 5 2h3a2 2 0 0 1 2 1.72c.12 1.05.35 2.07.67 3.05a2 2 0 0 1-.45 2.11L9.91 10.09a16 16 0 0 0 6 6l1.21-1.21a2 2 0 0 1 2.11-.45c.98.32 2 .55 3.05.67A2 2 0 0 1 22 16.92z" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        <span>0912 345 678</span>
-      </a>
-    </header>
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width,initial-scale=1,viewport-fit=cover"
+    />
+    <title>Khánh Linh Trans — Thuê xe du lịch</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="app" id="app">
+      <header class="site-header" id="site-header">
+        <div class="logo">Khánh Linh <span>Trans</span></div>
+        <a class="hotline" href="tel:0962992555" aria-label="Gọi hotline">
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M22 16.92v3a2 2 0 0 1-2.18 2 19.86 19.86 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.86 19.86 0 0 1 3.08 4.18 2 2 0 0 1 5 2h3a2 2 0 0 1 2 1.72c.12 1.05.35 2.07.67 3.05a2 2 0 0 1-.45 2.11L9.91 10.09a16 16 0 0 0 6 6l1.21-1.21a2 2 0 0 1 2.11-.45c.98.32 2 .55 3.05.67A2 2 0 0 1 22 16.92z"
+              stroke="currentColor"
+              stroke-width="1.2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+          <span>0962992555</span>
+        </a>
+      </header>
 
-    <main class="site-main">
-      <!-- HERO -->
-      <section class="hero" aria-label="Hero">
-        <img class="hero-img" src="https://images.unsplash.com/photo-1542362567-b07e54358753?auto=format&fit=crop&w=1200&q=80" alt="Xe du lịch" loading="lazy">
-        <div class="hero-overlay"></div>
-        <div class="hero-content">
-          <h1 class="hero-title">Thuê xe uy tín<br>Hành trình an tâm</h1>
-          <p class="hero-sub">Xe mới, tài xế chuyên nghiệp, giá minh bạch — phục vụ 24/7.</p>
-          <div class="hero-ctas">
-            <button class="btn btn-accent" id="cta-book">Đặt xe ngay</button>
-            <button class="btn btn-outline" id="cta-prices">Xem giá</button>
-          </div>
-        </div>
-        <button class="floating-advice" aria-label="Tư vấn miễn phí">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M15 5a3 3 0 0 1 0 6" stroke="white" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          <span>Tư vấn miễn phí</span>
-        </button>
-      </section>
-
-      <!-- USP STRIP -->
-      <section class="usp-strip" aria-label="Ưu điểm">
-        <div class="usp-scroll" id="usp-scroll">
-          <div class="usp-item"><div class="usp-icon">🚗</div><div class="usp-text">Xe mới</div></div>
-          <div class="usp-item"><div class="usp-icon">👨‍✈️</div><div class="usp-text">Tài xế pro</div></div>
-          <div class="usp-item"><div class="usp-icon">💰</div><div class="usp-text">Giá minh bạch</div></div>
-          <div class="usp-item"><div class="usp-icon">⏰</div><div class="usp-text">24/7</div></div>
-        </div>
-        <div class="usp-dots" id="usp-dots" aria-hidden="true"></div>
-      </section>
-
-      <!-- CAROUSEL: Popular cars -->
-      <section class="popular-cars">
-        <div class="section-head">
-          <span class="badge">Phổ biến nhất</span>
-          <h2>Xe nổi bật</h2>
-        </div>
-        <div class="car-carousel" id="car-carousel" role="list">
-          <article class="car-card" role="listitem">
-            <div class="car-media"><img src="https://images.unsplash.com/photo-1502877338535-766e1452684a?auto=format&fit=crop&w=800&q=80" alt="Toyota Innova" loading="lazy"></div>
-            <div class="car-body">
-              <div class="car-title">Toyota Innova <span class="seat-pill">7 chỗ</span></div>
-              <div class="car-specs">⛽ Xăng • ❄️ Điều hòa • 👥 7 chỗ</div>
-              <div class="car-foot"><div class="price">450.000₫/ngày</div><button class="btn btn-primary">Đặt ngay</button></div>
+      <main class="site-main">
+        <!-- HERO -->
+        <section class="hero" aria-label="Hero">
+          <img
+            class="hero-img"
+            src="https://images.unsplash.com/photo-1542362567-b07e54358753?auto=format&fit=crop&w=1200&q=80"
+            alt="Xe du lịch"
+            loading="lazy"
+          />
+          <div class="hero-overlay"></div>
+          <div class="hero-content">
+            <h1 class="hero-title">Thuê xe uy tín<br />Hành trình an tâm</h1>
+            <p class="hero-sub">
+              Xe mới, tài xế chuyên nghiệp, giá minh bạch — phục vụ 24/7.
+            </p>
+            <div class="hero-ctas">
+              <button class="btn btn-accent" id="cta-book">Đặt xe ngay</button>
+              <button class="btn btn-outline" id="cta-prices">Xem giá</button>
             </div>
-          </article>
-          <article class="car-card" role="listitem">
-            <div class="car-media"><img src="https://images.unsplash.com/photo-1511919884226-fd3cad34687c?auto=format&fit=crop&w=800&q=80" alt="Toyota Vios" loading="lazy"></div>
-            <div class="car-body">
-              <div class="car-title">Toyota Vios <span class="seat-pill">4 chỗ</span></div>
-              <div class="car-specs">⛽ Xăng • ❄️ Điều hòa • 👥 4 chỗ</div>
-              <div class="car-foot"><div class="price">350.000₫/ngày</div><button class="btn btn-primary">Đặt ngay</button></div>
+          </div>
+          <button class="floating-advice" aria-label="Tư vấn miễn phí">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+              <path
+                d="M15 5a3 3 0 0 1 0 6"
+                stroke="white"
+                stroke-width="1.4"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+            <span>Tư vấn miễn phí</span>
+          </button>
+        </section>
+
+        <!-- USP STRIP -->
+        <section class="usp-strip" aria-label="Ưu điểm">
+          <div class="usp-scroll" id="usp-scroll">
+            <div class="usp-item">
+              <div class="usp-icon">🚗</div>
+              <div class="usp-text">Xe mới</div>
             </div>
-          </article>
-          <article class="car-card" role="listitem">
-            <div class="car-media"><img src="https://images.unsplash.com/photo-1549924231-f129b911e442?auto=format&fit=crop&w=800&q=80" alt="Xe 16 chỗ" loading="lazy"></div>
-            <div class="car-body">
-              <div class="car-title">Thaco 16 chỗ <span class="seat-pill">16 chỗ</span></div>
-              <div class="car-specs">⛽ Diesel • ❄️ Điều hòa • 👥 16 chỗ</div>
-              <div class="car-foot"><div class="price">1.200.000₫/ngày</div><button class="btn btn-primary">Đặt ngay</button></div>
+            <div class="usp-item">
+              <div class="usp-icon">👨‍✈️</div>
+              <div class="usp-text">Tài xế pro</div>
             </div>
-          </article>
-        </div>
-        <div class="car-dots" id="car-dots" aria-hidden="true"></div>
-      </section>
-
-      <!-- TIMELINE -->
-      <section class="timeline">
-        <h3>Quy trình đặt xe</h3>
-        <ol class="timeline-list">
-          <li class="step"><div class="num">1</div><div class="step-body"><strong>Chọn xe</strong><p>Chọn mẫu, số chỗ và ngày đi.</p></div></li>
-          <li class="step"><div class="num">2</div><div class="step-body"><strong>Xác nhận</strong><p>Nhân viên liên hệ xác nhận chi tiết.</p></div></li>
-          <li class="step"><div class="num">3</div><div class="step-body"><strong>Thanh toán</strong><p>Thanh toán an toàn, nhiều phương thức.</p></div></li>
-          <li class="step"><div class="num">4</div><div class="step-body"><strong>Nhận xe</strong><p>Giao nhận đúng thời gian, biên bản rõ ràng.</p></div></li>
-        </ol>
-      </section>
-
-      <!-- PRICING -->
-      <section class="pricing">
-        <div class="tabs" role="tablist">
-          <button class="tab active" data-target="tab-4">Xe 4 chỗ</button>
-          <button class="tab" data-target="tab-7">Xe 7 chỗ</button>
-          <button class="tab" data-target="tab-16">Xe 16 chỗ</button>
-          <button class="tab" data-target="tab-45">Xe 45 chỗ</button>
-        </div>
-        <div class="tab-panels">
-          <div id="tab-4" class="tab-panel active">
-            <ul class="price-list">
-              <li><div class="pf">Toyota Vios</div><div class="pv">320.000₫</div></li>
-              <li><div class="pf">Honda City</div><div class="pv">340.000₫</div></li>
-            </ul>
+            <div class="usp-item">
+              <div class="usp-icon">💰</div>
+              <div class="usp-text">Giá minh bạch</div>
+            </div>
+            <div class="usp-item">
+              <div class="usp-icon">⏰</div>
+              <div class="usp-text">24/7</div>
+            </div>
           </div>
-          <div id="tab-7" class="tab-panel">
-            <ul class="price-list">
-              <li><div class="pf">Toyota Innova</div><div class="pv">450.000₫</div></li>
-              <li><div class="pf">Mitsubishi Xpander</div><div class="pv">430.000₫</div></li>
-            </ul>
+          <div class="usp-dots" id="usp-dots" aria-hidden="true"></div>
+        </section>
+
+        <!-- CAROUSEL: Popular cars -->
+        <section class="popular-cars">
+          <div class="section-head">
+            <span class="badge">Phổ biến nhất</span>
+            <h2>Xe nổi bật</h2>
           </div>
-          <div id="tab-16" class="tab-panel">
-            <ul class="price-list">
-              <li><div class="pf">Thaco Town</div><div class="pv">1.100.000₫</div></li>
-            </ul>
+          <div class="car-carousel" id="car-carousel" role="list">
+            <article class="car-card" role="listitem">
+              <div class="car-media">
+                <img
+                  src="https://images.unsplash.com/photo-1502877338535-766e1452684a?auto=format&fit=crop&w=800&q=80"
+                  alt="Toyota Innova"
+                  loading="lazy"
+                />
+              </div>
+              <div class="car-body">
+                <div class="car-title">
+                  Toyota Innova <span class="seat-pill">7 chỗ</span>
+                </div>
+                <div class="car-specs">⛽ Xăng • ❄️ Điều hòa • 👥 7 chỗ</div>
+                <div class="car-foot">
+                  <div class="price">450.000₫/ngày</div>
+                  <button class="btn btn-primary">Đặt ngay</button>
+                </div>
+              </div>
+            </article>
+            <article class="car-card" role="listitem">
+              <div class="car-media">
+                <img
+                  src="https://images.unsplash.com/photo-1511919884226-fd3cad34687c?auto=format&fit=crop&w=800&q=80"
+                  alt="Toyota Vios"
+                  loading="lazy"
+                />
+              </div>
+              <div class="car-body">
+                <div class="car-title">
+                  Toyota Vios <span class="seat-pill">4 chỗ</span>
+                </div>
+                <div class="car-specs">⛽ Xăng • ❄️ Điều hòa • 👥 4 chỗ</div>
+                <div class="car-foot">
+                  <div class="price">350.000₫/ngày</div>
+                  <button class="btn btn-primary">Đặt ngay</button>
+                </div>
+              </div>
+            </article>
+            <article class="car-card" role="listitem">
+              <div class="car-media">
+                <img
+                  src="https://images.unsplash.com/photo-1549924231-f129b911e442?auto=format&fit=crop&w=800&q=80"
+                  alt="Xe 16 chỗ"
+                  loading="lazy"
+                />
+              </div>
+              <div class="car-body">
+                <div class="car-title">
+                  Thaco 16 chỗ <span class="seat-pill">16 chỗ</span>
+                </div>
+                <div class="car-specs">⛽ Diesel • ❄️ Điều hòa • 👥 16 chỗ</div>
+                <div class="car-foot">
+                  <div class="price">1.200.000₫/ngày</div>
+                  <button class="btn btn-primary">Đặt ngay</button>
+                </div>
+              </div>
+            </article>
           </div>
-          <div id="tab-45" class="tab-panel">
-            <ul class="price-list">
-              <li><div class="pf">Xe 45 chỗ</div><div class="pv">2.500.000₫</div></li>
-            </ul>
+          <div class="car-dots" id="car-dots" aria-hidden="true"></div>
+        </section>
+
+        <!-- TIMELINE -->
+        <section class="timeline">
+          <h3>Quy trình đặt xe</h3>
+          <ol class="timeline-list">
+            <li class="step">
+              <div class="num">1</div>
+              <div class="step-body">
+                <strong>Chọn xe</strong>
+                <p>Chọn mẫu, số chỗ và ngày đi.</p>
+              </div>
+            </li>
+            <li class="step">
+              <div class="num">2</div>
+              <div class="step-body">
+                <strong>Xác nhận</strong>
+                <p>Nhân viên liên hệ xác nhận chi tiết.</p>
+              </div>
+            </li>
+            <li class="step">
+              <div class="num">3</div>
+              <div class="step-body">
+                <strong>Thanh toán</strong>
+                <p>Thanh toán an toàn, nhiều phương thức.</p>
+              </div>
+            </li>
+            <li class="step">
+              <div class="num">4</div>
+              <div class="step-body">
+                <strong>Nhận xe</strong>
+                <p>Giao nhận đúng thời gian, biên bản rõ ràng.</p>
+              </div>
+            </li>
+          </ol>
+        </section>
+
+        <!-- PRICING -->
+        <section class="pricing">
+          <div class="tabs" role="tablist">
+            <button class="tab active" data-target="tab-4">Xe 4 chỗ</button>
+            <button class="tab" data-target="tab-7">Xe 7 chỗ</button>
+            <button class="tab" data-target="tab-16">Xe 16 chỗ</button>
+            <button class="tab" data-target="tab-45">Xe 45 chỗ</button>
           </div>
-        </div>
-        <div class="footnote">*Giá chưa bao gồm phụ phí</div>
-      </section>
+          <div class="tab-panels">
+            <div id="tab-4" class="tab-panel active">
+              <ul class="price-list">
+                <li>
+                  <div class="pf">Toyota Vios</div>
+                  <div class="pv">320.000₫</div>
+                </li>
+                <li>
+                  <div class="pf">Honda City</div>
+                  <div class="pv">340.000₫</div>
+                </li>
+              </ul>
+            </div>
+            <div id="tab-7" class="tab-panel">
+              <ul class="price-list">
+                <li>
+                  <div class="pf">Toyota Innova</div>
+                  <div class="pv">450.000₫</div>
+                </li>
+                <li>
+                  <div class="pf">Mitsubishi Xpander</div>
+                  <div class="pv">430.000₫</div>
+                </li>
+              </ul>
+            </div>
+            <div id="tab-16" class="tab-panel">
+              <ul class="price-list">
+                <li>
+                  <div class="pf">Thaco Town</div>
+                  <div class="pv">1.100.000₫</div>
+                </li>
+              </ul>
+            </div>
+            <div id="tab-45" class="tab-panel">
+              <ul class="price-list">
+                <li>
+                  <div class="pf">Xe 45 chỗ</div>
+                  <div class="pv">2.500.000₫</div>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div class="footnote">*Giá chưa bao gồm phụ phí</div>
+        </section>
 
-      <!-- SERVICES GRID -->
-      <section class="services">
-        <h3>Dịch vụ thêm</h3>
-        <div class="services-grid">
-          <button class="service-card"><div class="svc-icon">🧰</div><div class="svc-title">Cho thuê lái xe</div><div class="svc-sub">Tài xế chuyên nghiệp</div></button>
-          <button class="service-card"><div class="svc-icon">🧾</div><div class="svc-title">Thuê tự lái</div><div class="svc-sub">Giấy tờ đầy đủ</div></button>
-          <button class="service-card"><div class="svc-icon">📦</div><div class="svc-title">Cho thuê dài hạn</div><div class="svc-sub">Gói ưu đãi</div></button>
-          <button class="service-card"><div class="svc-icon">🛠️</div><div class="svc-title">Hỗ trợ 24/7</div><div class="svc-sub">Sẵn sàng khắc phục</div></button>
-        </div>
-      </section>
+        <!-- SERVICES GRID -->
+        <section class="services">
+          <h3>Dịch vụ thêm</h3>
+          <div class="services-grid">
+            <button class="service-card">
+              <div class="svc-icon">🧰</div>
+              <div class="svc-title">Cho thuê lái xe</div>
+              <div class="svc-sub">Tài xế chuyên nghiệp</div>
+            </button>
+            <button class="service-card">
+              <div class="svc-icon">🧾</div>
+              <div class="svc-title">Thuê tự lái</div>
+              <div class="svc-sub">Giấy tờ đầy đủ</div>
+            </button>
+            <button class="service-card">
+              <div class="svc-icon">📦</div>
+              <div class="svc-title">Cho thuê dài hạn</div>
+              <div class="svc-sub">Gói ưu đãi</div>
+            </button>
+            <button class="service-card">
+              <div class="svc-icon">🛠️</div>
+              <div class="svc-title">Hỗ trợ 24/7</div>
+              <div class="svc-sub">Sẵn sàng khắc phục</div>
+            </button>
+          </div>
+        </section>
 
-      <!-- TESTIMONIALS -->
-      <section class="testimonials">
-        <div class="rating">
-          <div class="score">4.95</div>
-          <div class="meta">200+ khách hàng</div>
-        </div>
-        <div class="testi-carousel" id="testi-carousel" role="list">
-          <article class="testi" role="listitem"><img src="https://i.pravatar.cc/56?img=1" alt="" loading="lazy"><strong>Lan</strong><div class="stars">★★★★★</div><p>Xe mới, tài xế thân thiện. Hài lòng dịch vụ.</p></article>
-          <article class="testi" role="listitem"><img src="https://i.pravatar.cc/56?img=2" alt="" loading="lazy"><strong>Hưng</strong><div class="stars">★★★★★</div><p>Giá rõ ràng, giao xe đúng giờ.</p></article>
-          <article class="testi" role="listitem"><img src="https://i.pravatar.cc/56?img=3" alt="" loading="lazy"><strong>Mai</strong><div class="stars">★★★★★</div><p>Rất đáng tin cậy, sẽ đặt lần nữa.</p></article>
-        </div>
-      </section>
+        <!-- TESTIMONIALS -->
+        <section class="testimonials">
+          <div class="rating">
+            <div class="score">4.95</div>
+            <div class="meta">200+ khách hàng</div>
+          </div>
+          <div class="testi-carousel" id="testi-carousel" role="list">
+            <article class="testi" role="listitem">
+              <img
+                src="https://i.pravatar.cc/56?img=1"
+                alt=""
+                loading="lazy"
+              /><strong>Lan</strong>
+              <div class="stars">★★★★★</div>
+              <p>Xe mới, tài xế thân thiện. Hài lòng dịch vụ.</p>
+            </article>
+            <article class="testi" role="listitem">
+              <img
+                src="https://i.pravatar.cc/56?img=2"
+                alt=""
+                loading="lazy"
+              /><strong>Hưng</strong>
+              <div class="stars">★★★★★</div>
+              <p>Giá rõ ràng, giao xe đúng giờ.</p>
+            </article>
+            <article class="testi" role="listitem">
+              <img
+                src="https://i.pravatar.cc/56?img=3"
+                alt=""
+                loading="lazy"
+              /><strong>Mai</strong>
+              <div class="stars">★★★★★</div>
+              <p>Rất đáng tin cậy, sẽ đặt lần nữa.</p>
+            </article>
+          </div>
+        </section>
 
-      <!-- FAQ -->
-      <section class="faq">
-        <h3>FAQ</h3>
-        <div class="faq-list">
-          <button class="faq-item"><span class="q">Làm sao để đặt xe nhanh?</span><svg class="chev" viewBox="0 0 24 24" width="18" height="18"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-          <div class="faq-panel">Bạn có thể gọi hotline hoặc dùng form "Đặt xe".</div>
-          <button class="faq-item"><span class="q">Chính sách hủy?</span><svg class="chev" viewBox="0 0 24 24" width="18" height="18"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-          <div class="faq-panel">Hủy trước 24h hoàn tiền 80% (tùy điều kiện).</div>
+        <!-- FAQ -->
+        <section class="faq">
+          <h3>FAQ</h3>
+          <div class="faq-list">
+            <button class="faq-item">
+              <span class="q">Làm sao để đặt xe nhanh?</span
+              ><svg class="chev" viewBox="0 0 24 24" width="18" height="18">
+                <path
+                  d="M6 9l6 6 6-6"
+                  stroke="currentColor"
+                  stroke-width="1.6"
+                  fill="none"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </button>
+            <div class="faq-panel">
+              Bạn có thể gọi hotline hoặc dùng form "Đặt xe".
+            </div>
+            <button class="faq-item">
+              <span class="q">Chính sách hủy?</span
+              ><svg class="chev" viewBox="0 0 24 24" width="18" height="18">
+                <path
+                  d="M6 9l6 6 6-6"
+                  stroke="currentColor"
+                  stroke-width="1.6"
+                  fill="none"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </button>
+            <div class="faq-panel">
+              Hủy trước 24h hoàn tiền 80% (tùy điều kiện).
+            </div>
+          </div>
+        </section>
+
+        <!-- FINAL CTA -->
+        <section class="final-cta">
+          <h2>Bạn cần thuê xe?</h2>
+          <div class="final-ctas">
+            <button class="btn btn-inverse">Gọi ngay</button>
+            <a
+              class="btn btn-zalo"
+              href="https://zalo.me/0962992555"
+              target="_blank"
+              rel="noreferrer"
+              >Chat Zalo</a
+            >
+          </div>
+        </section>
+
+        <!-- FOOTER -->
+        <footer class="site-footer">
+          <div class="footer-top">
+            <div class="footer-logo">Khánh Linh Trans</div>
+            <p class="footer-desc">
+              Dịch vụ cho thuê xe du lịch & tự lái — an tâm mỗi hành trình.
+            </p>
+          </div>
+          <div class="footer-links">
+            <details>
+              <summary>Dịch vụ</summary>
+              <ul>
+                <li>Xe 4 chỗ</li>
+                <li>Xe 7 chỗ</li>
+              </ul>
+            </details>
+            <details>
+              <summary>Hỗ trợ</summary>
+              <ul>
+                <li>FAQ</li>
+                <li>Hướng dẫn</li>
+              </ul>
+            </details>
+            <details>
+              <summary>Liên hệ</summary>
+              <ul>
+                <li>Hotline</li>
+                <li>Zalo</li>
+              </ul>
+            </details>
+          </div>
+          <div class="socials">Facebook • Zalo • YouTube</div>
+          <div class="copyright">
+            © 2026 Khánh Linh Trans. All rights reserved.
+          </div>
+        </footer>
+      </main>
+
+      <!-- FLOATING BOOK BUTTON / MODAL -->
+      <button
+        class="floating-book"
+        id="floating-book"
+        aria-label="Đặt xe nhanh"
+      >
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+          <path d="M3 13v6h2v-6H3zM7 8v11h8V8H7z" fill="white" />
+        </svg>
+      </button>
+
+      <div class="modal" id="booking-modal" aria-hidden="true">
+        <div class="modal-backdrop" id="modal-backdrop"></div>
+        <div
+          class="modal-sheet"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="modal-title"
+        >
+          <header class="modal-head">
+            <h4 id="modal-title">Đặt xe nhanh</h4>
+            <button class="close-modal" id="close-modal" aria-label="Đóng">
+              ✕
+            </button>
+          </header>
+          <form id="booking-form" class="booking-form">
+            <label
+              >Họ và tên<input
+                name="name"
+                type="text"
+                required
+                placeholder="Nguyễn Văn A"
+            /></label>
+            <label
+              >SĐT<input
+                name="phone"
+                type="tel"
+                required
+                placeholder="0962992555"
+            /></label>
+            <label>Ngày đi<input name="date" type="date" required /></label>
+            <label
+              >Loại xe
+              <select name="car">
+                <option>Xe 4 chỗ</option>
+                <option>Xe 7 chỗ</option>
+                <option>Xe 16 chỗ</option>
+              </select>
+            </label>
+            <button class="btn btn-primary" type="submit">Gửi</button>
+          </form>
         </div>
-      </section>
-
-      <!-- FINAL CTA -->
-      <section class="final-cta">
-        <h2>Bạn cần thuê xe?</h2>
-        <div class="final-ctas">
-          <button class="btn btn-inverse">Gọi ngay</button>
-          <button class="btn btn-zalo">Chat Zalo</button>
-        </div>
-      </section>
-
-      <!-- FOOTER -->
-      <footer class="site-footer">
-        <div class="footer-top">
-          <div class="footer-logo">Khánh Linh Trans</div>
-          <p class="footer-desc">Dịch vụ cho thuê xe du lịch & tự lái — an tâm mỗi hành trình.</p>
-        </div>
-        <div class="footer-links">
-          <details><summary>Dịch vụ</summary><ul><li>Xe 4 chỗ</li><li>Xe 7 chỗ</li></ul></details>
-          <details><summary>Hỗ trợ</summary><ul><li>FAQ</li><li>Hướng dẫn</li></ul></details>
-          <details><summary>Liên hệ</summary><ul><li>Hotline</li><li>Zalo</li></ul></details>
-        </div>
-        <div class="socials">Facebook • Zalo • YouTube</div>
-        <div class="copyright">© 2026 Khánh Linh Trans. All rights reserved.</div>
-      </footer>
-
-    </main>
-
-    <!-- FLOATING BOOK BUTTON / MODAL -->
-    <button class="floating-book" id="floating-book" aria-label="Đặt xe nhanh">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M3 13v6h2v-6H3zM7 8v11h8V8H7z" fill="white"/></svg>
-    </button>
-
-    <div class="modal" id="booking-modal" aria-hidden="true">
-      <div class="modal-backdrop" id="modal-backdrop"></div>
-      <div class="modal-sheet" role="dialog" aria-modal="true" aria-labelledby="modal-title">
-        <header class="modal-head"><h4 id="modal-title">Đặt xe nhanh</h4><button class="close-modal" id="close-modal" aria-label="Đóng">✕</button></header>
-        <form id="booking-form" class="booking-form">
-          <label>Họ và tên<input name="name" type="text" required placeholder="Nguyễn Văn A"></label>
-          <label>SĐT<input name="phone" type="tel" required placeholder="0912345678"></label>
-          <label>Ngày đi<input name="date" type="date" required></label>
-          <label>Loại xe
-            <select name="car">
-              <option>Xe 4 chỗ</option>
-              <option>Xe 7 chỗ</option>
-              <option>Xe 16 chỗ</option>
-            </select>
-          </label>
-          <button class="btn btn-primary" type="submit">Gửi</button>
-        </form>
       </div>
     </div>
-
-  </div>
-  <script src="app.js" defer></script>
-</body>
+    <script src="app.js" defer></script>
+  </body>
 </html>
 <!doctype html>
 <html lang="vi">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <title>Khánh Linh Trans — Thuê xe</title>
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-  <div class="app" id="app">
-    <header class="site-header" role="banner">
-      <div class="container header-inner">
-        <div class="logo"><span class="brand-main">Khánh Linh</span><span class="brand-sub">Trans</span></div>
-        <button class="hotline" aria-label="Gọi hotline">0909 123 456</button>
-      </div>
-    </header>
-
-    <main>
-      <section class="hero">
-        <img class="hero-bg" src="images/hero-car.jpg" alt="Xe du lịch" loading="lazy">
-        <div class="hero-overlay" aria-hidden="true"></div>
-        <div class="container hero-content">
-          <h1>Thuê xe uy tín<br>Hành trình an tâm</h1>
-          <p class="subtitle">Xe mới, tài xế chuyên nghiệp, hỗ trợ 24/7 — đặt nhanh trong vài phút.</p>
-          <div class="hero-ctas">
-            <button class="btn btn-accent">Đặt xe ngay</button>
-            <button class="btn btn-ghost">Xem giá</button>
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width,initial-scale=1,viewport-fit=cover"
+    />
+    <title>Khánh Linh Trans — Thuê xe</title>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="app" id="app">
+      <header class="site-header" role="banner">
+        <div class="container header-inner">
+          <div class="logo">
+            <span class="brand-main">Khánh Linh</span
+            ><span class="brand-sub">Trans</span>
           </div>
+          <button class="hotline" aria-label="Gọi hotline">0962992555</button>
         </div>
-        <button class="floating-advice" aria-label="Tư vấn miễn phí">
-          <span class="phone-icon">📞</span>
-          <div class="advice-text"><div class="small">Tư Vấn Miễn Phí</div><div class="muted">Gọi ngay</div></div>
-        </button>
-      </section>
+      </header>
 
-      <section class="usp-strip" aria-label="Lợi ích">
-        <div class="usp-scroll" role="list">
-          <div class="usp-item" role="listitem"><div class="usp-ic">🚗</div><div class="usp-text">Xe Mới</div></div>
-          <div class="usp-item" role="listitem"><div class="usp-ic">👨‍✈️</div><div class="usp-text">Tài Xế Pro</div></div>
-          <div class="usp-item" role="listitem"><div class="usp-ic">💰</div><div class="usp-text">Giá Minh Bạch</div></div>
-          <div class="usp-item" role="listitem"><div class="usp-ic">🕑</div><div class="usp-text">Hỗ trợ 24/7</div></div>
-        </div>
-        <div class="dots" aria-hidden="true"></div>
-      </section>
+      <main>
+        <section class="hero">
+          <img
+            class="hero-bg"
+            src="images/hero-car.jpg"
+            alt="Xe du lịch"
+            loading="lazy"
+          />
+          <div class="hero-overlay" aria-hidden="true"></div>
+          <div class="container hero-content">
+            <h1>Thuê xe uy tín<br />Hành trình an tâm</h1>
+            <p class="subtitle">
+              Xe mới, tài xế chuyên nghiệp, hỗ trợ 24/7 — đặt nhanh trong vài
+              phút.
+            </p>
+            <div class="hero-ctas">
+              <button class="btn btn-accent">Đặt xe ngay</button>
+              <button class="btn btn-ghost">Xem giá</button>
+            </div>
+          </div>
+          <button class="floating-advice" aria-label="Tư vấn miễn phí">
+            <span class="phone-icon">📞</span>
+            <div class="advice-text">
+              <div class="small">Tư Vấn Miễn Phí</div>
+              <div class="muted">Gọi ngay</div>
+            </div>
+          </button>
+        </section>
 
-      <section class="cars">
-        <div class="container section-head">
-          <span class="badge">Phổ biến nhất</span>
-          <h2>Dòng xe nổi bật</h2>
-        </div>
-        <div class="carousel" id="carCarousel">
-          <article class="card">
-            <img src="images/car-1.jpg" alt="Toyota Innova" loading="lazy">
-            <div class="card-body">
-              <div class="row">
-                <h3>Toyota Innova</h3>
-                <span class="pill">7 chỗ</span>
+        <section class="usp-strip" aria-label="Lợi ích">
+          <div class="usp-scroll" role="list">
+            <div class="usp-item" role="listitem">
+              <div class="usp-ic">🚗</div>
+              <div class="usp-text">Xe Mới</div>
+            </div>
+            <div class="usp-item" role="listitem">
+              <div class="usp-ic">👨‍✈️</div>
+              <div class="usp-text">Tài Xế Pro</div>
+            </div>
+            <div class="usp-item" role="listitem">
+              <div class="usp-ic">💰</div>
+              <div class="usp-text">Giá Minh Bạch</div>
+            </div>
+            <div class="usp-item" role="listitem">
+              <div class="usp-ic">🕑</div>
+              <div class="usp-text">Hỗ trợ 24/7</div>
+            </div>
+          </div>
+          <div class="dots" aria-hidden="true"></div>
+        </section>
+
+        <section class="cars">
+          <div class="container section-head">
+            <span class="badge">Phổ biến nhất</span>
+            <h2>Dòng xe nổi bật</h2>
+          </div>
+          <div class="carousel" id="carCarousel">
+            <article class="card">
+              <img src="images/car-1.jpg" alt="Toyota Innova" loading="lazy" />
+              <div class="card-body">
+                <div class="row">
+                  <h3>Toyota Innova</h3>
+                  <span class="pill">7 chỗ</span>
+                </div>
+                <div class="specs">⛽ Xăng • ❄️ Điều hòa • 👤 7 chỗ</div>
+                <div class="card-foot">
+                  <div class="price">1.200.000 đ/ngày</div>
+                  <button class="btn btn-primary">Đặt ngay</button>
+                </div>
               </div>
-              <div class="specs">⛽ Xăng • ❄️ Điều hòa • 👤 7 chỗ</div>
-              <div class="card-foot">
-                <div class="price">1.200.000 đ/ngày</div>
-                <button class="btn btn-primary">Đặt ngay</button>
+            </article>
+
+            <article class="card">
+              <img src="images/car-2.jpg" alt="Fortuner" loading="lazy" />
+              <div class="card-body">
+                <div class="row">
+                  <h3>Fortuner</h3>
+                  <span class="pill">7 chỗ</span>
+                </div>
+                <div class="specs">⛽ Xăng • ❄️ Điều hòa • 👤 7 chỗ</div>
+                <div class="card-foot">
+                  <div class="price">1.800.000 đ/ngày</div>
+                  <button class="btn btn-primary">Đặt ngay</button>
+                </div>
+              </div>
+            </article>
+          </div>
+          <div class="carousel-dots" id="carDots" aria-hidden="true"></div>
+        </section>
+
+        <section class="process container">
+          <h2>Quy trình đặt xe</h2>
+          <div class="timeline">
+            <div class="step">
+              <div class="marker">1</div>
+              <div class="content">
+                <h4>Chọn xe</h4>
+                <p>Chọn loại và thời gian thuê</p>
               </div>
             </div>
-          </article>
-
-          <article class="card">
-            <img src="images/car-2.jpg" alt="Fortuner" loading="lazy">
-            <div class="card-body">
-              <div class="row">
-                <h3>Fortuner</h3>
-                <span class="pill">7 chỗ</span>
-              </div>
-              <div class="specs">⛽ Xăng • ❄️ Điều hòa • 👤 7 chỗ</div>
-              <div class="card-foot">
-                <div class="price">1.800.000 đ/ngày</div>
-                <button class="btn btn-primary">Đặt ngay</button>
+            <div class="step">
+              <div class="marker">2</div>
+              <div class="content">
+                <h4>Xác nhận</h4>
+                <p>Nhận thông tin chi tiết</p>
               </div>
             </div>
-          </article>
-        </div>
-        <div class="carousel-dots" id="carDots" aria-hidden="true"></div>
-      </section>
-
-      <section class="process container">
-        <h2>Quy trình đặt xe</h2>
-        <div class="timeline">
-          <div class="step">
-            <div class="marker">1</div>
-            <div class="content"><h4>Chọn xe</h4><p>Chọn loại và thời gian thuê</p></div>
+            <div class="step">
+              <div class="marker">3</div>
+              <div class="content">
+                <h4>Thanh toán</h4>
+                <p>Thanh toán nhanh, an toàn</p>
+              </div>
+            </div>
+            <div class="step">
+              <div class="marker">4</div>
+              <div class="content">
+                <h4>Nhận xe</h4>
+                <p>Giao/nhận theo lịch</p>
+              </div>
+            </div>
           </div>
-          <div class="step">
-            <div class="marker">2</div>
-            <div class="content"><h4>Xác nhận</h4><p>Nhận thông tin chi tiết</p></div>
+        </section>
+
+        <section class="pricing container">
+          <h2>Bảng giá</h2>
+          <div class="tabs" role="tablist">
+            <button class="tab active" role="tab">Xe 4 chỗ</button>
+            <button class="tab" role="tab">Xe 7 chỗ</button>
+            <button class="tab" role="tab">Xe 16 chỗ</button>
+            <button class="tab" role="tab">Xe 45 chỗ</button>
           </div>
-          <div class="step">
-            <div class="marker">3</div>
-            <div class="content"><h4>Thanh toán</h4><p>Thanh toán nhanh, an toàn</p></div>
+          <div class="price-list" id="priceList">
+            <div class="price-row">
+              <div class="left">Toyota Vios</div>
+              <div class="right"><div class="price-text">800.000 đ</div></div>
+            </div>
+            <div class="price-row alt">
+              <div class="left">Hyundai Accent</div>
+              <div class="right"><div class="price-text">850.000 đ</div></div>
+            </div>
+            <div class="footnote">*Giá chưa bao gồm phụ phí</div>
           </div>
-          <div class="step">
-            <div class="marker">4</div>
-            <div class="content"><h4>Nhận xe</h4><p>Giao/nhận theo lịch</p></div>
+        </section>
+
+        <section class="services container">
+          <h2>Dịch vụ thêm</h2>
+          <div class="grid-2">
+            <div class="svc-card">
+              <div class="svc-ic">🧰</div>
+              <h4>Thuê kèm lái</h4>
+              <p>Thanh toán theo ngày</p>
+            </div>
+            <div class="svc-card">
+              <div class="svc-ic">🧳</div>
+              <h4>Hỗ trợ hành lý</h4>
+              <p>Hỗ trợ bốc dỡ</p>
+            </div>
+            <div class="svc-card">
+              <div class="svc-ic">🛡️</div>
+              <h4>Gói bảo hiểm</h4>
+              <p>Bảo hiểm toàn diện</p>
+            </div>
+            <div class="svc-card">
+              <div class="svc-ic">🧑‍🤝‍🧑</div>
+              <h4>Xe đoàn</h4>
+              <p>Ưu đãi cho đoàn</p>
+            </div>
+          </div>
+        </section>
+
+        <section class="testimonials container">
+          <h2>Đánh giá khách hàng</h2>
+          <div class="rating">
+            4.95 ★ &nbsp; <span class="muted">200+ khách hàng</span>
+          </div>
+          <div class="reviews" id="reviews">
+            <div class="review">
+              <img src="images/avatar1.jpg" alt="" loading="lazy" />
+              <div>
+                <strong>Minh</strong>
+                <p>Xe sạch, tài xế nhiệt tình.</p>
+              </div>
+            </div>
+            <div class="review">
+              <img src="images/avatar2.jpg" alt="" loading="lazy" />
+              <div>
+                <strong>Lan</strong>
+                <p>Dịch vụ chuyên nghiệp, đúng giờ.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="faq container">
+          <h2>FAQ</h2>
+          <div class="faq-item">
+            <button class="faq-q">
+              Có cần đặt cọc không? <span class="chev">▾</span>
+            </button>
+            <div class="faq-a">
+              Thông thường có, tuỳ theo loại xe và thời điểm.
+            </div>
+          </div>
+          <div class="faq-item">
+            <button class="faq-q">
+              Có giao xe tận nơi không? <span class="chev">▾</span>
+            </button>
+            <div class="faq-a">
+              Có, chúng tôi hỗ trợ giao nhận theo thỏa thuận.
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <footer class="site-footer">
+        <div class="container footer-inner">
+          <div class="ft-brand">
+            Khánh Linh Trans
+            <p class="muted">Dịch vụ thuê xe du lịch & tự lái</p>
+          </div>
+          <div class="ft-links">
+            <details>
+              <summary>Dịch vụ</summary>
+              <ul>
+                <li>Thuê xe</li>
+                <li>Thuê lái</li>
+              </ul>
+            </details>
+            <details>
+              <summary>Hỗ trợ</summary>
+              <ul>
+                <li>FAQ</li>
+                <li>Liên hệ</li>
+              </ul>
+            </details>
+            <details>
+              <summary>Liên hệ</summary>
+              <ul>
+                <li>Hotline</li>
+                <li>Zalo</li>
+              </ul>
+            </details>
           </div>
         </div>
-      </section>
+        <div class="copyright">© 2026 Khánh Linh Trans</div>
+      </footer>
 
-      <section class="pricing container">
-        <h2>Bảng giá</h2>
-        <div class="tabs" role="tablist">
-          <button class="tab active" role="tab">Xe 4 chỗ</button>
-          <button class="tab" role="tab">Xe 7 chỗ</button>
-          <button class="tab" role="tab">Xe 16 chỗ</button>
-          <button class="tab" role="tab">Xe 45 chỗ</button>
-        </div>
-        <div class="price-list" id="priceList">
-          <div class="price-row">
-            <div class="left">Toyota Vios</div>
-            <div class="right"><div class="price-text">800.000 đ</div></div>
-          </div>
-          <div class="price-row alt">
-            <div class="left">Hyundai Accent</div>
-            <div class="right"><div class="price-text">850.000 đ</div></div>
-          </div>
-          <div class="footnote">*Giá chưa bao gồm phụ phí</div>
-        </div>
-      </section>
+      <button class="fab" id="fab" aria-label="Đặt xe nhanh">🚘</button>
 
-      <section class="services container">
-        <h2>Dịch vụ thêm</h2>
-        <div class="grid-2">
-          <div class="svc-card"><div class="svc-ic">🧰</div><h4>Thuê kèm lái</h4><p>Thanh toán theo ngày</p></div>
-          <div class="svc-card"><div class="svc-ic">🧳</div><h4>Hỗ trợ hành lý</h4><p>Hỗ trợ bốc dỡ</p></div>
-          <div class="svc-card"><div class="svc-ic">🛡️</div><h4>Gói bảo hiểm</h4><p>Bảo hiểm toàn diện</p></div>
-          <div class="svc-card"><div class="svc-ic">🧑‍🤝‍🧑</div><h4>Xe đoàn</h4><p>Ưu đãi cho đoàn</p></div>
+      <div class="modal-sheet" id="bookingModal" aria-hidden="true">
+        <div
+          class="sheet"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Form đặt xe nhanh"
+        >
+          <div class="sheet-handle" aria-hidden="true"></div>
+          <h3>Đặt xe nhanh</h3>
+          <form id="quickForm">
+            <label>Họ tên<input required name="name" /></label>
+            <label>SĐT<input required name="phone" type="tel" /></label>
+            <label>Ngày đi<input required name="date" type="date" /></label>
+            <label
+              >Loại xe<select name="type">
+                <option>Xe 4 chỗ</option>
+                <option>Xe 7 chỗ</option>
+              </select></label
+            >
+            <div class="form-actions">
+              <button class="btn btn-accent">Gửi</button>
+            </div>
+          </form>
         </div>
-      </section>
-
-      <section class="testimonials container">
-        <h2>Đánh giá khách hàng</h2>
-        <div class="rating">4.95 ★ &nbsp; <span class="muted">200+ khách hàng</span></div>
-        <div class="reviews" id="reviews">
-          <div class="review"><img src="images/avatar1.jpg" alt="" loading="lazy"><div><strong>Minh</strong><p>Xe sạch, tài xế nhiệt tình.</p></div></div>
-          <div class="review"><img src="images/avatar2.jpg" alt="" loading="lazy"><div><strong>Lan</strong><p>Dịch vụ chuyên nghiệp, đúng giờ.</p></div></div>
-        </div>
-      </section>
-
-      <section class="faq container">
-        <h2>FAQ</h2>
-        <div class="faq-item">
-          <button class="faq-q">Có cần đặt cọc không? <span class="chev">▾</span></button>
-          <div class="faq-a">Thông thường có, tuỳ theo loại xe và thời điểm.</div>
-        </div>
-        <div class="faq-item">
-          <button class="faq-q">Có giao xe tận nơi không? <span class="chev">▾</span></button>
-          <div class="faq-a">Có, chúng tôi hỗ trợ giao nhận theo thỏa thuận.</div>
-        </div>
-      </section>
-    </main>
-
-    <footer class="site-footer">
-      <div class="container footer-inner">
-        <div class="ft-brand">Khánh Linh Trans<p class="muted">Dịch vụ thuê xe du lịch & tự lái</p></div>
-        <div class="ft-links">
-          <details><summary>Dịch vụ</summary><ul><li>Thuê xe</li><li>Thuê lái</li></ul></details>
-          <details><summary>Hỗ trợ</summary><ul><li>FAQ</li><li>Liên hệ</li></ul></details>
-          <details><summary>Liên hệ</summary><ul><li>Hotline</li><li>Zalo</li></ul></details>
-        </div>
-      </div>
-      <div class="copyright">© 2026 Khánh Linh Trans</div>
-    </footer>
-
-    <button class="fab" id="fab" aria-label="Đặt xe nhanh">🚘</button>
-
-    <div class="modal-sheet" id="bookingModal" aria-hidden="true">
-      <div class="sheet" role="dialog" aria-modal="true" aria-label="Form đặt xe nhanh">
-        <div class="sheet-handle" aria-hidden="true"></div>
-        <h3>Đặt xe nhanh</h3>
-        <form id="quickForm">
-          <label>Họ tên<input required name="name" /></label>
-          <label>SĐT<input required name="phone" type="tel" /></label>
-          <label>Ngày đi<input required name="date" type="date" /></label>
-          <label>Loại xe<select name="type"><option>Xe 4 chỗ</option><option>Xe 7 chỗ</option></select></label>
-          <div class="form-actions"><button class="btn btn-accent">Gửi</button></div>
-        </form>
       </div>
     </div>
-  </div>
-  <script src="app.js"></script>
-</body>
+    <script src="app.js"></script>
+  </body>
 </html>

@@ -1,0 +1,18 @@
+[
+  {
+    "cond": "(max-width: 480px)",
+    "countMerged": 5
+  },
+  {
+    "cond": "(max-width: 360px)",
+    "countMerged": 3
+  },
+  {
+    "cond": "(max-width: 768px)",
+    "countMerged": 2
+  },
+  {
+    "cond": "(max-width: 640px)",
+    "countMerged": 5
+  }
+]

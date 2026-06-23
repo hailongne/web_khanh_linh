@@ -651,6 +651,31 @@ img {
   line-height: 1.75;
 }
 
+/* Remove white background and center reason cards (user request) */
+.reasons-section .reason-card {
+  background: transparent !important;
+  background-color: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  border-radius: 0 !important;
+  grid-template-columns: 1fr !important;
+  align-items: center !important;
+  text-align: center !important;
+}
+
+.reasons-section .reason-card__icon {
+  margin: 0 auto !important;
+  width: 60px !important;
+  height: 60px !important;
+}
+
+.reasons-section .reason-card__body h3,
+.reasons-section .reason-card__body p {
+  text-align: center !important;
+}
+
+
 .reasons-section__visual {
   display: flex;
   align-items: center;

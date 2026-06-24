@@ -118,6 +118,20 @@ export default function HomePage() {
               </div>
 
               <div className="reasons-section__inner">
+                <div className="reasons-section__visual">
+                  <div className="visual-card">
+                    <div className="visual-card__image">
+                      <Image
+                        src="/images/logo3D.png"
+                        alt={t.hero.imageAlt}
+                        fill
+                        priority
+                        sizes="(max-width: 900px) 100vw, 48vw"
+                      />
+                    </div>
+                  </div>
+                </div> 
+            
                 <div className="reasons-section__copy">
                   <div className="reasons-list">
                     {t.reasons.items.map((reason: any) => (
@@ -131,20 +145,6 @@ export default function HomePage() {
                         </div>
                       </article>
                     ))}
-                  </div>
-                </div>
-
-                <div className="reasons-section__visual">
-                  <div className="visual-card">
-                    <div className="visual-card__image">
-                      <Image
-                        src="/images/logo3D.png"
-                        alt={t.hero.imageAlt}
-                        fill
-                        priority
-                        sizes="(max-width: 900px) 100vw, 48vw"
-                      />
-                    </div>
                   </div>
                 </div>
               </div>

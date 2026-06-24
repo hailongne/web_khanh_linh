@@ -1,0 +1,11 @@
+@media (max-width: 1000px) -> 314, 2455, 2734
+@media (max-width: 1180px) -> 2266
+@media (max-width: 1199px) -> 181
+@media (max-width: 360px) -> 3657
+@media (max-width: 480px) -> 3537
+@media (max-width: 600px) -> 322
+@media (max-width: 640px) -> 2904
+@media (max-width: 900px) -> 2826
+@media (min-width: 1200px) -> 66
+@media (min-width: 821px) -> 2419
+TOTAL_MEDIA_QUERIES: 10

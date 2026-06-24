@@ -111,7 +111,7 @@ type FleetItem = {
                         alt={item.name}
                         fill
                         sizes="(max-width: 900px) 100vw, 50vw"
-                        style={{ objectFit: "contain", objectPosition: "top center" }}
+                        style={{ objectFit: "contain", objectPosition: "center center" }}
                       />
                     </div>
 
@@ -122,12 +122,9 @@ type FleetItem = {
                       </div>
 
                       <div className="fleet-card__specs">
-                        {item.specs.map((spec) => (
-                          <div className="fleet-card__spec" key={spec.label}>
-                            <FontAwesomeIcon type={spec.icon} />
-                            <span>{spec.label}</span>
-                          </div>
-                        ))}
+                        {item.specs && item.specs.length
+                          ? item.specs.map((spec) => spec.label).join(" • ")
+                          : null}
                       </div>
 
                       <div className="fleet-card__footer">
@@ -158,7 +155,7 @@ type FleetItem = {
                         alt={item.name}
                         fill
                         sizes="(max-width: 900px) 100vw, 50vw"
-                        style={{ objectFit: "contain", objectPosition: "top center" }}
+                        style={{ objectFit: "contain", objectPosition: "center center" }}
                       />
                     </div>
 
@@ -169,12 +166,9 @@ type FleetItem = {
                       </div>
 
                       <div className="fleet-card__specs">
-                        {item.specs.map((spec) => (
-                          <div className="fleet-card__spec" key={spec.label}>
-                            <FontAwesomeIcon type={spec.icon} />
-                            <span>{spec.label}</span>
-                          </div>
-                        ))}
+                        {item.specs && item.specs.length
+                          ? item.specs.map((spec) => spec.label).join(" • ")
+                          : null}
                       </div>
 
                       <div className="fleet-card__footer">

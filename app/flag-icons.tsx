@@ -34,8 +34,9 @@ export function VNFlag({ width = 20, height = 14, className = "" }: IconProps) {
       xmlns="http://www.w3.org/2000/svg"
       aria-hidden="true"
       focusable="false"
+      style={{ borderRadius: 6, overflow: "hidden", display: "block" }}
     >
-      <rect width="96" height="64" fill="#da251d" />
+      <rect width="96" height="64" fill="#da251d" rx="6" />
       <polygon fill="#ffde00" points={points} />
     </svg>
   );
@@ -66,6 +67,9 @@ export function USFlag({ width = 20, height = 14, className = "" }: IconProps) {
     return pts.join(" ");
   }
 
+  const uid = React.useId().replace(/[:.]/g, "");
+  const clipId = `flag-clip-us-${uid}`;
+
   const stars: React.ReactNode[] = [];
   const hx = unionW / 6; // base horizontal spacing
   const vy = unionH / 9; // vertical spacing (9 rows)
@@ -89,13 +93,22 @@ export function USFlag({ width = 20, height = 14, className = "" }: IconProps) {
       xmlns="http://www.w3.org/2000/svg"
       aria-hidden="true"
       focusable="false"
+      style={{ borderRadius: 6, overflow: "hidden", display: "block" }}
     >
-      {stripes.map((i) => (
-        <rect key={i} y={i * stripeH} width={viewW} height={stripeH} fill={i % 2 === 0 ? "#b22234" : "#fff"} />
-      ))}
+      <defs>
+        <clipPath id={clipId}>
+          <rect width={viewW} height={viewH} rx="6" />
+        </clipPath>
+      </defs>
 
-      <rect width={unionW} height={unionH} fill="#3c3b6e" />
-      <g transform="translate(0,0)">{stars}</g>
+      <g clipPath={`url(#${clipId})`}>
+        {stripes.map((i) => (
+          <rect key={i} y={i * stripeH} width={viewW} height={stripeH} fill={i % 2 === 0 ? "#b22234" : "#fff"} />
+        ))}
+
+        <rect width={unionW} height={unionH} fill="#3c3b6e" />
+        <g transform="translate(0,0)">{stars}</g>
+      </g>
     </svg>
   );
 }

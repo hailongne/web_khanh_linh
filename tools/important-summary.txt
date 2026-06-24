@@ -1,0 +1,147 @@
+LINE 147: .site-header__menu-toggle { display: none !important; }
+  selector context: .site-header__cta (line 140)
+  NOTE: REVIEW (heuristic)
+
+LINE 308: min-height: 520px !important;
+  selector context: .hero-section__inner (line 307)
+  NOTE: REVIEW (heuristic)
+
+LINE 309: padding: 36px 0 44px !important;
+  selector context: .hero-section__inner (line 307)
+  NOTE: REVIEW (heuristic)
+
+LINE 310: gap: 36px !important;
+  selector context: .hero-section__inner (line 307)
+  NOTE: REVIEW (heuristic)
+
+LINE 316: padding: 28px 0 36px !important;
+  selector context: .hero-section__inner (line 315)
+  NOTE: REVIEW (heuristic)
+
+LINE 317: gap: 28px !important;
+  selector context: .hero-section__inner (line 315)
+  NOTE: REVIEW (heuristic)
+
+LINE 324: padding: 18px 0 24px !important;
+  selector context: .hero-section__inner (line 323)
+  NOTE: REVIEW (heuristic)
+
+LINE 325: gap: 18px !important;
+  selector context: .hero-section__inner (line 323)
+  NOTE: REVIEW (heuristic)
+
+LINE 327: .consult-card { padding: 18px 16px 18px !important; }
+  selector context: .hero-section__inner (line 323)
+  NOTE: REVIEW (heuristic)
+
+LINE 332: color: var(--ink) !important;
+  selector context: .hero-section .hero-section__copy h1 (line 331)
+  NOTE: REVIEW (heuristic)
+
+LINE 335: color: rgba(16,33,43,0.84) !important;
+  selector context: .hero-section .hero-section__copy p (line 334)
+  NOTE: REVIEW (heuristic)
+
+LINE 445: font-weight: 600 !important;
+  selector context: .contact-cta-section__inner h2 (line 444)
+  NOTE: REVIEW (heuristic)
+
+LINE 450: color: #fff !important;
+  selector context: .hero-section__copy h1 (line 449)
+  NOTE: REVIEW (heuristic)
+
+LINE 862: background: transparent !important;
+  selector context: .reasons-section .reason-card (line 861)
+  NOTE: REVIEW (heuristic)
+
+LINE 863: background-color: transparent !important;
+  selector context: .reasons-section .reason-card (line 861)
+  NOTE: REVIEW (heuristic)
+
+LINE 864: border: none !important;
+  selector context: .reasons-section .reason-card (line 861)
+  NOTE: REVIEW (heuristic)
+
+LINE 865: box-shadow: none !important;
+  selector context: .reasons-section .reason-card (line 861)
+  NOTE: REVIEW (heuristic)
+
+LINE 866: padding: 0 !important;
+  selector context: .reasons-section .reason-card (line 861)
+  NOTE: REVIEW (heuristic)
+
+LINE 867: border-radius: 0 !important;
+  selector context: .reasons-section .reason-card (line 861)
+  NOTE: REVIEW (heuristic)
+
+LINE 868: grid-template-columns: 1fr !important;
+  selector context: .reasons-section .reason-card (line 861)
+  NOTE: REVIEW (heuristic)
+
+LINE 869: align-items: center !important;
+  selector context: .reasons-section .reason-card (line 861)
+  NOTE: REVIEW (heuristic)
+
+LINE 870: text-align: center !important;
+  selector context: .reasons-section .reason-card (line 861)
+  NOTE: REVIEW (heuristic)
+
+LINE 874: margin: 0 auto !important;
+  selector context: .reasons-section .reason-card__icon (line 873)
+  NOTE: REVIEW (heuristic)
+
+LINE 875: width: 60px !important;
+  selector context: .reasons-section .reason-card__icon (line 873)
+  NOTE: REVIEW (heuristic)
+
+LINE 876: height: 60px !important;
+  selector context: .reasons-section .reason-card__icon (line 873)
+  NOTE: REVIEW (heuristic)
+
+LINE 881: text-align: center !important;
+  selector context: .reasons-section .reason-card__body p (line 880)
+  NOTE: REVIEW (heuristic)
+
+LINE 2243: padding: 0 !important;
+  selector context: .fleet-grid .fleet-card__media img (line 2242)
+  NOTE: REVIEW (heuristic)
+
+LINE 2244: width: 100% !important;
+  selector context: .fleet-grid .fleet-card__media img (line 2242)
+  NOTE: REVIEW (heuristic)
+
+LINE 2245: height: 100% !important;
+  selector context: .fleet-grid .fleet-card__media img (line 2242)
+  NOTE: REVIEW (heuristic)
+
+LINE 2246: object-fit: contain !important;
+  selector context: .fleet-grid .fleet-card__media img (line 2242)
+  NOTE: REVIEW (heuristic)
+
+LINE 2247: object-position: top center !important;
+  selector context: .fleet-grid .fleet-card__media img (line 2242)
+  NOTE: REVIEW (heuristic)
+
+LINE 2248: background: transparent !important;
+  selector context: .fleet-grid .fleet-card__media img (line 2242)
+  NOTE: REVIEW (heuristic)
+
+LINE 2249: display: block !important;
+  selector context: .fleet-grid .fleet-card__media img (line 2242)
+  NOTE: REVIEW (heuristic)
+
+LINE 2253: padding: 0 !important;
+  selector context: .fleet-card__media (line 2252)
+  NOTE: REVIEW (heuristic)
+
+LINE 2254: overflow: hidden !important;
+  selector context: .fleet-card__media (line 2252)
+  NOTE: REVIEW (heuristic)
+
+LINE 2259: padding: 0 !important;
+  selector context: .fleet-grid .fleet-card (line 2258)
+  NOTE: REVIEW (heuristic)
+
+LINE 2797: display: none !important;
+  selector context: .pricing-avatar (line 2796)
+  NOTE: REVIEW (heuristic)

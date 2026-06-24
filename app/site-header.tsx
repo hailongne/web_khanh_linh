@@ -172,34 +172,36 @@ export function SiteHeader({ links, lang = "vi", onToggleLang }: SiteHeaderProps
           })}
         </nav>
 
-        <div className="site-header__actions">
-          <a className="site-header__phone" href={`tel:${t.header.phone.replace(/\s+/g, "")}`}>
-            {t.header.phone}
-          </a>
-          <a className="site-header__cta" href="#contact">
-            {t.header.cta}
-          </a>
-          {/* Language toggle button: shows target flag (🇬🇧 when current is 'vi', 🇻🇳 when current is 'en') */}
+        <div className="site-header__right">
+          <div className="site-header__actions">
+            <a className="site-header__phone" href={`tel:${t.header.phone.replace(/\s+/g, "")}`}>
+              {t.header.phone}
+            </a>
+            <a className="site-header__cta" href="#contact">
+              {t.header.cta}
+            </a>
+            {/* Language toggle button: shows target flag (🇬🇧 when current is 'vi', 🇻🇳 when current is 'en') */}
+            <button
+              type="button"
+              className="site-header__lang-toggle"
+              aria-label={lang === "vi" ? "Chuyển sang Tiếng Anh" : "Switch to Vietnamese"}
+              onClick={() => onToggleLang?.()}
+            >
+              {lang === "vi" ? <USFlag width={65} height={36.5} /> : <VNFlag width={65} height={45} />}
+            </button>
+          </div>
+
           <button
             type="button"
-            className="site-header__lang-toggle"
-            aria-label={lang === "vi" ? "Chuyển sang Tiếng Anh" : "Switch to Vietnamese"}
-            onClick={() => onToggleLang?.()}
+            className={`site-header__menu-toggle${isMenuOpen ? " is-open" : ""}`}
+            aria-expanded={isMenuOpen}
+            aria-controls="site-header-menu"
+            aria-label={isMenuOpen ? "Đóng menu điều hướng" : "Mở menu điều hướng"}
+            onClick={handleToggleMenu}
           >
-            {lang === "vi" ? <USFlag width={60} height={31.5} /> : <VNFlag width={60} height={40} />}
+            {isMenuOpen ? <XIcon /> : <MenuIcon />}
           </button>
         </div>
-
-        <button
-          type="button"
-          className={`site-header__menu-toggle${isMenuOpen ? " is-open" : ""}`}
-          aria-expanded={isMenuOpen}
-          aria-controls="site-header-menu"
-          aria-label={isMenuOpen ? "Đóng menu điều hướng" : "Mở menu điều hướng"}
-          onClick={handleToggleMenu}
-        >
-          {isMenuOpen ? <XIcon /> : <MenuIcon />}
-        </button>
       </div>
 
       <button
@@ -261,7 +263,7 @@ export function SiteHeader({ links, lang = "vi", onToggleLang }: SiteHeaderProps
             aria-label={lang === "vi" ? "Chuyển sang Tiếng Anh" : "Switch to Vietnamese"}
             onClick={() => onToggleLang?.()}
           >
-            {lang === "vi" ? <USFlag width={36} height={24} /> : <VNFlag width={36} height={24} />}
+            {lang === "vi" ? <USFlag width={41} height={29} /> : <VNFlag width={41} height={29} />}
           </button>
         </div>
       </aside>

@@ -223,19 +223,19 @@ export const translations: Record<string, any> = {
 
     footer: {
       brandDescription:
-        "Premium Tourist Transportation Services. Mang đến giải pháp di chuyển an toàn, tiện lợi và đẳng cấp.",
+        "Chúng tôi cung cấp dịch vụ vận tải trên toàn quốc, với nhiều sản phẩm dịch vụ cao cấp như Limousine, xe 47 chỗ, xe 30 chỗ.... Mang đến giải pháp di chuyển an toàn, tiện lợi và đẳng cấp.",
       servicesHeading: "DỊCH VỤ",
       supportHeading: "HỖ TRỢ",
       contactHeading: "LIÊN HỆ",
       services: [
-        { label: "Vehicle Rental", href: "#fleet" },
-        { label: "Airport Transfer", href: "#pricing" },
-        { label: "Corporate Travel", href: "#contact-cta-heading" }
+        { label: "Cho thuê xe", href: "#fleet" },
+        { label: "Đưa đón sân bay", href: "#pricing" },
+        { label: "Du lịch doanh nghiệp", href: "#contact-cta-heading" }
       ],
       supportLinks: [
-        { label: "Booking Guide", href: "#faq-heading" },
-        { label: "Privacy Policy", href: "#faq-heading" },
-        { label: "Terms of Service", href: "#faq-heading" }
+        { label: "Hướng dẫn đặt xe", href: "#faq-heading" },
+        { label: "Chính sách bảo mật", href: "#faq-heading" },
+        { label: "Điều khoản dịch vụ", href: "#faq-heading" }
       ],
       social: [
         { label: "Tripadvisor", href: "https://www.tripadvisor.com", icon: "tripadvisor" },
@@ -244,7 +244,7 @@ export const translations: Record<string, any> = {
       contactList: {
         address: "Hà Nội, Việt Nam",
         phone: "0962992555",
-        email: "contact@khanhlinhtrans.com"
+        email: "info@khanhlinhtrans.com"
       },
       copyright: "© 2024 Khánh Linh Trans. Premium Tourist Transportation Services."
     }

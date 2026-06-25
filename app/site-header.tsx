@@ -174,9 +174,6 @@ export function SiteHeader({ links, lang = "vi", onToggleLang }: SiteHeaderProps
 
         <div className="site-header__right">
           <div className="site-header__actions">
-            <a className="site-header__phone" href={`tel:${t.header.phone.replace(/\s+/g, "")}`}>
-              {t.header.phone}
-            </a>
             <a className="site-header__cta" href="#contact">
               {t.header.cta}
             </a>
@@ -187,7 +184,7 @@ export function SiteHeader({ links, lang = "vi", onToggleLang }: SiteHeaderProps
               aria-label={lang === "vi" ? "Chuyển sang Tiếng Anh" : "Switch to Vietnamese"}
               onClick={() => onToggleLang?.()}
             >
-              {lang === "vi" ? <USFlag width={65} height={36.5} /> : <VNFlag width={65} height={45} />}
+              {lang === "vi" ? <USFlag width={85} height={55} /> : <VNFlag width={85} height={55} />}
             </button>
           </div>
 

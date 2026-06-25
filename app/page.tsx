@@ -97,22 +97,45 @@ export default function HomePage() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
+  const isTablet = useMediaQuery("(max-width: 1200px)");
+
+  const heroBannerSlides = [
+    { desktopSrc: "/images/banner.png", mobileSrc: "/images/banner.png", alt: "Banner dịch vụ 1" },
+    { desktopSrc: "/images/banner+.png", mobileSrc: "/images/banner+.png", alt: "Banner dịch vụ 2" },
+  ];
+
+  const [bannerIndex, setBannerIndex] = useState(0);
+  useEffect(() => {
+    const interval = window.setInterval(() => {
+      setBannerIndex((current) => (current + 1) % heroBannerSlides.length);
+    }, 5000);
+    return () => window.clearInterval(interval);
+  }, []);
+
+  
+
   return (
     <main className="page-shell" id="top">
       <SiteHeader links={t.header.links} lang={lang} onToggleLang={toggleLang} />
-          <section className="hero-section" id="services">
-              <div className="hero-section__copy">
-                <span className="section-kicker section-kicker--light">{t.hero.kicker}</span>
-                <h1>{t.hero.title}</h1>
-                <p>{t.hero.description}</p>
-                <div className="hero-section__actions">
-                  <a className="button button--primary" href="#fleet">
-                    {t.hero.primaryCta}7 ghế
-                  </a>
-                  <a className="button button--ghost" href="#contact">
-                    {t.hero.secondaryCta}
-                  </a>
+          <section className="hero-section hero-banner" id="services">
+            <div className="hero-banner__slider">
+              {heroBannerSlides.map((banner, index) => (
+                <div
+                  key={banner.desktopSrc}
+                  className={`hero-banner__slide${index === bannerIndex ? " is-active" : ""}`}
+                >
+                  <div className="hero-banner__image">
+                    <Image
+                      src={isTablet ? banner.mobileSrc : banner.desktopSrc}
+                      alt={banner.alt}
+                      fill
+                      priority={index === 0}
+                      sizes="100vw"
+                      className="hero-banner__img"
+                    />
+                  </div>
                 </div>
+              ))}
             </div>
           </section>
 
@@ -449,18 +472,6 @@ export default function HomePage() {
                 <div className="site-footer__brand-block">
                   <p className="site-footer__description">{t.footer.brandDescription}</p>
                   <div className="site-footer__social" aria-label="Brand channels">
-                    {t.footer.social.map((item: any) => (
-                      <a
-                        key={item.label}
-                        className="site-footer__social-link"
-                        href={item.href}
-                        aria-label={item.label}
-                        target="_blank"
-                        rel="noreferrer"
-                      >
-                        <FontAwesomeIcon type={item.icon} />
-                      </a>
-                    ))}
                   </div>
                 </div>
 
@@ -512,7 +523,7 @@ export default function HomePage() {
         onClick={scrollToTop}
         aria-label="Lên đầu trang"
       >
-        <i className="fa-icon fas fa-chevron-up fa-fw" aria-hidden="true" />
+        <img src="/icon/muiTen.png" alt="" />
       </button>
     </main>
             

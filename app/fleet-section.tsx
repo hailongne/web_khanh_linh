@@ -122,14 +122,11 @@ type FleetItem = {
                       </div>
 
                       <div className="fleet-card__specs">
-                        {item.specs && item.specs.length
-                          ? item.specs.map((spec) => spec.label).join(" • ")
-                          : null}
+                          <small>{t.fleet?.priceFromLabel}</small>
                       </div>
 
                       <div className="fleet-card__footer">
                         <div className="fleet-card__price">
-                          <small>{t.fleet?.priceFromLabel}</small>
                           <strong>{item.price}</strong>
                         </div>
 

@@ -82,26 +82,37 @@ export default function HomePage() {
   const toggleLang = () => setLang((l) => (l === "vi" ? "en" : "vi"));
   const isMobile = useMediaQuery("(max-width: 768px)");
 
+  const [showScrollTop, setShowScrollTop] = useState(false);
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const handleScroll = () => setShowScrollTop(window.scrollY > 320);
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    handleScroll();
+
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
   return (
     <main className="page-shell" id="top">
       <SiteHeader links={t.header.links} lang={lang} onToggleLang={toggleLang} />
           <section className="hero-section" id="services">
-            <div className="section-shell hero-section__inner">
               <div className="hero-section__copy">
                 <span className="section-kicker section-kicker--light">{t.hero.kicker}</span>
                 <h1>{t.hero.title}</h1>
                 <p>{t.hero.description}</p>
                 <div className="hero-section__actions">
                   <a className="button button--primary" href="#fleet">
-                    {t.hero.primaryCta}
+                    {t.hero.primaryCta}7 ghế
                   </a>
                   <a className="button button--ghost" href="#contact">
                     {t.hero.secondaryCta}
                   </a>
                 </div>
-              </div>
-
-              {/* Consult card removed per request. See removed/consult-card-removed.md for backup. */}
             </div>
           </section>
 
@@ -494,7 +505,16 @@ export default function HomePage() {
                 <p>{t.footer.copyright}</p>
               </div>
             </div>
-              </footer>
-            </main>
+      </footer>
+      <button
+        type="button"
+        className={showScrollTop ? "scroll-top-button is-visible" : "scroll-top-button"}
+        onClick={scrollToTop}
+        aria-label="Lên đầu trang"
+      >
+        <i className="fa-icon fas fa-chevron-up fa-fw" aria-hidden="true" />
+      </button>
+    </main>
+            
   );
 }

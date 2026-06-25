@@ -303,29 +303,6 @@ a { color: inherit; text-decoration: none; }
 /* ensure interactivity inside the pill */
 .site-header__inner * { pointer-events: auto; }
 
-/* Reduce vertical size of hero inner (desktop) */
-.hero-section__inner {
-  min-height: 520px !important;
-  padding: 36px 0 44px !important;
-  gap: 36px !important;
-}
-
-/* Slightly tighter hero on medium screens */
-@media (max-width: 1000px) {
-  .hero-section__inner {
-    padding: 28px 0 36px !important;
-    gap: 28px !important;
-  }
-}
-
-/* Compact hero on small screens */
-@media (max-width: 600px) {
-  .hero-section__inner {
-    padding: 18px 0 24px !important;
-    gap: 18px !important;
-  }
-}
-
 /* After removing the banner image, ensure hero text is readable on light background */
 .hero-section .hero-section__copy h1 {
   color: var(--ink) !important;
@@ -488,7 +465,7 @@ img {
 
 .section-shell {
   width: min(calc(100% - 48px), var(--container));
-  margin: 0 auto;
+  margin: 20px auto;
 }
 
 .section-kicker {
@@ -534,7 +511,6 @@ img {
 .button--primary {
   background: var(--brand);
   color: #fff;
-  box-shadow: 0 14px 26px rgba(15, 109, 157, 0.18);
 }
 
 .button--primary:hover {
@@ -580,23 +556,11 @@ img {
   pointer-events: none;
 }
 
-.hero-section__inner {
-  position: relative;
-  z-index: 1;
-  display: grid;
-  grid-template-columns: 1fr;
-  align-items: center;
-  justify-items: center;
-  gap: 48px;
-  min-height: 760px;
-  padding: 72px 0 84px;
-}
-
 .hero-section__copy {
   max-width: 720px;
   color: #fff;
   margin: 0 auto;
-  text-align: center;
+  text-align: center;padding-inline: clamp(16px, 4vw, 48px);
 }
 
 .hero-section__copy h1 {
@@ -992,7 +956,7 @@ img {
   border: 1px solid rgba(16, 33, 43, 0.08);
   border-radius: 26px;
   background: rgba(255, 255, 255, 0.94);
-  box-shadow: 0 16px 40px rgba(13, 44, 64, 0.08);
+  box-shadow: none;
 }
 
 .fleet-card__media {
@@ -1041,21 +1005,15 @@ img {
   white-space: nowrap;
 }
 
-.fleet-card__content p {
-  margin: 18px 0 0;
-  color: var(--muted);
-  font-size: 1.06rem;
-  line-height: 1.72;
-}
-
 .fleet-card__specs {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 12px;
+  font-size: 20px;
+  font-weight: 500;
+  color: #4d5c67;
   margin-top: 18px;
   padding: 14px 0;
   border-top: 1px solid rgba(16, 33, 43, 0.08);
-  border-bottom: 1px solid rgba(16, 33, 43, 0.08);
 }
 
 .fleet-card__spec {
@@ -1143,20 +1101,21 @@ img {
 .pricing-table-wrap {
   overflow-x: auto;
   margin-top: 42px;
-  border: 1px solid rgba(16, 33, 43, 0.1);
-  border-radius: 28px;
+  border-radius: 8px;
   background: rgba(255, 255, 255, 0.96);
-  box-shadow: 0 18px 44px rgba(13, 44, 64, 0.08);
 }
 
+/* Table: no row gap so hover feels connected */
 .pricing-table {
   width: 100%;
   min-width: 860px;
   border-collapse: collapse;
+  border-spacing: 0;
 }
 
+/* Header */
 .pricing-table thead th {
-  padding: 26px 32px;
+  padding: 18px 24px;
   background: linear-gradient(180deg, #1f92cf 0%, #167db6 100%);
   color: #fff;
   font-size: 1rem;
@@ -1165,32 +1124,60 @@ img {
   white-space: nowrap;
 }
 
+/* Cells */
 .pricing-table tbody th,
 .pricing-table tbody td {
-  padding: 28px 32px;
-  border-bottom: 1px solid rgba(16, 33, 43, 0.08);
+  padding: 14px 24px;
+  border: 0; /* remove inner separators */
   color: #465863;
   font-size: 1rem;
   line-height: 1.5;
   text-align: left;
+  background: transparent;
 }
 
+/* Row heading */
 .pricing-table tbody th {
   color: var(--ink);
-  font-size: 1.16rem;
+  font-size: 1.06rem;
   font-weight: 700;
 }
 
-.pricing-table tbody tr:last-child th,
-.pricing-table tbody tr:last-child td {
-  border-bottom: 0;
+/* Rows: remove spacing so they sit flush */
+.pricing-table tbody tr {
+  transition: background-color .18s var(--ease-out-smooth);
+  background-clip: padding-box;
 }
 
+/* Zebra: alternate row background (subtle) */
+.pricing-table tbody tr:nth-child(odd) {
+  background: #ffffff;
+}
+.pricing-table tbody tr:nth-child(even) {
+  background: rgba(16, 33, 43, 0.03);
+}
+
+/* Subtle divider between rows (keeps rows visually linked while separating content) */
+.pricing-table tbody tr + tr {
+  border-top: 1px solid rgba(16,33,43,0.06);
+}
+
+/* Hover: change background only (no lift) */
+.pricing-table tbody tr:hover {
+  background: rgba(25, 138, 198, 0.08);
+}
+
+/* Ensure cell corners remain square so rows look connected */
+.pricing-table tbody tr td:first-child,
+.pricing-table tbody tr th:first-child,
+.pricing-table tbody tr td:last-child {
+  border-radius: 0;
+}
+
+
 .pricing-section__note {
-  margin: 24px 0 0;
   color: #667883;
   font-size: 0.98rem;
-  font-style: italic;
   text-align: center;
 }
 
@@ -2157,10 +2144,6 @@ img {
   padding: 0 !important;
 }
 
-/* ══════════════════════════════════
-   RESPONSIVE
-   ══════════════════════════════════ */
-
 @media (max-width: 1180px) {
   html {
     font-size: 15px;
@@ -2174,11 +2157,6 @@ img {
   .fleet-card__media {
     aspect-ratio: auto;
     height: 130px;
-  }
-
-  .hero-section__inner,
-  .reasons-section__inner {
-    grid-template-columns: 1fr;
   }
 
   .reasons-section__inner {
@@ -2310,14 +2288,10 @@ img {
 }
 
 @media (min-width: 821px) and (max-width: 1180px) {
-  .hero-section__inner {
-    justify-items: center;
-  }
-
   .hero-section__copy {
     width: min(100%, 860px);
     margin: 0 auto;
-    text-align: center;
+    text-align: center;padding-inline: clamp(16px, 4vw, 48px);
   }
 
   .hero-section__copy>.section-kicker {
@@ -2357,18 +2331,16 @@ img {
     padding: 0 24px;
   }
 
+  .pricing-table{
+    border-radius: 30px;
+  }
+
   .hero-section__actions {
     flex-wrap: wrap;
   }
 
   .hero-section {
     background-position: center right 28%;
-  }
-
-  .hero-section__inner {
-    min-height: auto;
-    padding: 48px 0 60px;
-    gap: 28px;
   }
 
   .hero-section__copy h1 {
@@ -2616,14 +2588,6 @@ img {
     min-height: 400px;
   }
 
-  .hero-section__inner {
-    grid-template-columns: 1fr;
-    align-items: start;
-    gap: 20px;
-    padding: 40px 0 48px;
-    min-height: auto;
-  }
-
   .hero-section__copy {
     max-width: 100%;
     padding: 0;
@@ -2779,11 +2743,6 @@ img {
 
   .hero-section {
     min-height: 360px;
-  }
-
-  .hero-section__inner {
-    padding: 32px 0 40px;
-    gap: 16px;
   }
 
   .hero-section__copy h1 {
@@ -3369,19 +3328,10 @@ img {
     min-height: 320px;
   }
 
-  .hero-section__inner {
-    padding: 24px 0 32px;
-    gap: 14px;
-  }
-
   .hero-section__copy h1 {
     font-size: clamp(1.2rem, 5vw, 1.55rem);
     margin: 10px 0 12px;
   }
-
-  
-
-  
 
   .fleet-scroll .fleet-card {
     flex: 0 0 calc(96% - 8px);
@@ -3496,27 +3446,12 @@ html, body, #__next, main, .page-shell {
   background: var(--surface);
 }
 
-/* === HERO: Force single-column centered layout === */
-/* Ensures hero uses full container width, centers content horizontally and vertically, and limits readable
-   content width to ~700-900px. Uses !important to override scattered breakpoints safely. */
-.hero-section__inner {
-  grid-template-columns: 1fr !important;
-  place-items: center !important;
-  justify-items: center !important;
-  width: 100% !important;
-  margin: 0 auto !important;
-  padding-left: 0 !important;
-  padding-right: 0 !important;
-  /* Reduced vertical spacing */
-  padding: 48px 0 !important;
-  min-height: 420px !important;
-}
-
 .hero-section__copy {
   max-width: 880px;
   width: 100%;
   margin: 0 auto;
   text-align: center !important;
+  padding-inline: clamp(16px, 4vw, 48px);
 }
 
 .hero-section__copy h1,
@@ -3561,26 +3496,6 @@ html, body, #__next, main, .page-shell {
   justify-content: center !important;
   gap: 16px;
   margin-top: 24px;
-}
-
-/* Hide possible empty visual column placeholders inside hero */
-.hero-section__inner > .hero-section__visual,
-.hero-section__inner > .hero-placeholder,
-.hero-section__inner > aside[aria-hidden] {
-  display: none !important;
-}
-
-/* HERO spacing adjustments per breakpoint */
-@media (max-width: 1000px) {
-  .hero-section__inner { padding: 36px 0 !important; min-height: auto !important; }
-}
-
-@media (max-width: 640px) {
-  .hero-section__inner { padding: 28px 0 !important; }
-}
-
-@media (max-width: 480px) {
-  .hero-section__inner { padding: 20px 0 !important; }
 }
 
 /* ── Fleet image normalization (moved to file end): consistent image container, centered, no-crop ── */
@@ -3681,7 +3596,7 @@ html, body, #__next, main, .page-shell {
 
   /* Shrink flag (language toggle) a bit */
   .site-header__lang-toggle svg {
-    width: 48px !important;
+    width: 35px !important;
     height: 28px !important;
   }
 
@@ -3708,3 +3623,151 @@ html, body, #__next, main, .page-shell {
     padding: 6px 8px;
   }
 }
+
+@media (max-width: 1023px) {
+
+  /* Wrapper giữ nguyên, chỉ giảm padding */
+  .pricing-table-wrap {
+    border-radius: 20px;
+    overflow: visible;
+    background: rgba(255, 255, 255, 0.96);
+  }
+
+  /* Danh sách cards */
+  .pricing-cards {
+    display: block;
+  }
+
+  /* Card mỗi xe */
+  .pricing-card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 12px;
+    margin-bottom: 12px;
+    box-shadow: 0 8px 28px rgba(13, 44, 64, 0.06);
+    border: 1px solid rgba(16, 33, 43, 0.07);
+  }
+
+  .pricing-card:last-child {
+    margin-bottom: 0;
+  }
+
+  /* Header: tên xe (trái) + giá sân bay dạng pill (phải) */
+  .pricing-card .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 8px;
+  }
+
+  .pricing-card .vehicle {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  /* Giá sân bay — pill màu brand */
+  .pricing-card .airport-price {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--brand-soft);
+    color: var(--brand-deep);
+    border-radius: 9999px;
+    padding: 4px 12px;
+    font-size: 0.82rem;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+
+  .pricing-card .airport-price::before {
+    content: "";
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--brand);
+    flex-shrink: 0;
+  }
+
+  /* Hàng giá: label (trái) + value (phải) */
+  .pricing-card .price-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-top: 1px solid rgba(16, 33, 43, 0.06);
+    font-size: 0.95rem;
+  }
+
+  .pricing-card .price-row .label {
+    color: var(--muted);
+  }
+
+  .pricing-card .price-row .value {
+    font-weight: 700;
+    color: var(--ink);
+  }
+}
+
+/* Điện thoại nhỏ */
+@media (max-width: 480px) {
+  .pricing-table-wrap {
+    padding: 8px;
+    border-radius: 16px;
+  }
+
+  .pricing-card {
+    padding: 10px;
+  }
+
+  .pricing-card .price-row {
+    font-size: 0.92rem;
+  }
+
+  .pricing-card .airport-price {
+    font-size: 0.78rem;
+    padding: 3px 10px;
+  }
+}
+
+.scroll-top-button {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  width: 52px;
+  height: 52px;
+  border-radius: 9999px;
+  border: none;
+  background: var(--brand);
+  color: #fff;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  box-shadow: 0 18px 44px rgba(13, 44, 64, 0.18);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(16px) scale(0.92);
+  transition: opacity 180ms ease, transform 180ms ease, visibility 180ms ease, box-shadow 180ms ease;
+  z-index: 1200;
+}
+
+.scroll-top-button.is-visible {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0) scale(1);
+}
+
+.scroll-top-button:hover {
+  box-shadow: 0 24px 48px rgba(13, 44, 64, 0.22);
+}
+
+@media (max-width: 640px) {
+  .scroll-top-button {
+    right: 16px;
+    bottom: 16px;
+    width: 48px;
+    height: 48px;
+  }
+}
+

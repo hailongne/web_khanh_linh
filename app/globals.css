@@ -511,7 +511,7 @@ img {
 }
 
 .section-kicker--light {
-  color: var(--brand);
+  color: #fff;
 }
 
 .button {
@@ -3525,6 +3525,31 @@ html, body, #__next, main, .page-shell {
   text-align: center !important;
 }
 
+/* 1) Kicker màu trắng (scoped cho CTA để không ảnh hưởng chỗ khác) */
+.contact-cta-section .section-kicker,
+.contact-cta-section .section-kicker--light {
+  color: #fff;
+}
+
+/* 2) Make section backgrounds full-bleed while keeping .section-shell centered */
+.contact-cta-section,
+.site-footer {
+  position: relative;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
+  width: 100vw;
+  box-sizing: border-box;
+}
+
+/* Preserve the inner centered content */
+.contact-cta-section .section-shell,
+.site-footer .section-shell {
+  width: min(calc(100% - 48px), var(--container));
+  margin: 0 auto;
+}
+
 .hero-section__copy p {
   margin: 0 auto !important;
   text-align: center !important;
@@ -3634,5 +3659,52 @@ html, body, #__next, main, .page-shell {
     object-position: center center !important;
     height: 72% !important;
     max-width: calc(100% - (var(--fleet-media-padding) * 2)) !important;
+  }
+}
+
+/* Mobile tweaks: shrink flag + hamburger and reduce header pill height */
+@media (max-width: 600px) {
+
+  /* Shorten the header pill */
+  .site-header__inner {
+    padding: 6px 10px;
+    min-height: 56px;
+    gap: 12px;
+  }
+
+  /* Shrink brand logo */
+  .site-header__logo {
+    max-height: 36px !important;
+    width: auto !important;
+    object-fit: contain;
+  }
+
+  /* Shrink flag (language toggle) a bit */
+  .site-header__lang-toggle svg {
+    width: 48px !important;
+    height: 28px !important;
+  }
+
+  /* Shrink hamburger button and icon */
+  .site-header__menu-toggle {
+    width: 40px;
+    height: 40px;
+    padding: 6px;
+  }
+
+  .site-header__menu-toggle svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  /* Slightly smaller CTA / phone to fit the narrower header */
+  .site-header__cta {
+    padding: 8px 10px;
+    font-size: 0.92rem;
+  }
+
+  .site-header__phone {
+    font-size: 0.92rem;
+    padding: 6px 8px;
   }
 }

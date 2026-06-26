@@ -374,15 +374,23 @@ a { color: inherit; text-decoration: none; }
 
 @media (max-width: 900px) {
   .hero-banner__slider {
-    aspect-ratio: 16 / 3.5;
-    max-height: 380px;
+    aspect-ratio: 16 / 2.8;
+    max-height: 420px;
+  }
+  .hero-banner__img {
+    object-fit: cover;
+    object-position: center;
   }
 }
 
 @media (max-width: 640px) {
   .hero-banner__slider {
-    aspect-ratio: 16 / 3.2;
-    max-height: 300px;
+    aspect-ratio: 16 / 5;
+    max-height: 440px !important;
+  }
+  .hero-banner__img {
+    object-fit: cover;
+    object-position: center;
   }
 }
 

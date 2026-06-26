@@ -2626,18 +2626,22 @@ img {
 
   .fleet-section__filters {
     flex-wrap: nowrap;
-    gap: 0 18px;
+    gap: 0 5px;
     overflow-x: auto;
-    padding-bottom: 10px;
+    padding-bottom: 8px;
     scrollbar-width: none;
+    margin-right: -8px;
   }
 
   .fleet-section__filters::-webkit-scrollbar {
     display: none;
   }
 
-  .fleet-section__filters button {
+  .fleet-section__filters button,
+  .fleet-section__filters span {
     flex: 0 0 auto;
+    padding: 10px 10px 14px;
+    font-size: 0.62rem;
   }
 
   .fleet-scroll {

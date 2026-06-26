@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { SiteHeader } from "./site-header";
 import FleetSection from "./fleet-section";
+import FloatingContactWidget from "./FloatingContactWidget";
 import { translations } from "./translations";
 
 type FontAwesomePrefix = "fas" | "fab";
@@ -111,8 +112,6 @@ export default function HomePage() {
     }, 5000);
     return () => window.clearInterval(interval);
   }, []);
-
-  
 
   return (
     <main className="page-shell" id="top">
@@ -517,6 +516,7 @@ export default function HomePage() {
               </div>
             </div>
       </footer>
+      <FloatingContactWidget />
       <button
         type="button"
         className={showScrollTop ? "scroll-top-button is-visible" : "scroll-top-button"}

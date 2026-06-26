@@ -41,9 +41,8 @@ export const translations: Record<string, any> = {
     },
 
     fleet: {
-      kicker: "Đội xe linh hoạt",
-      heading: "Dòng Xe Nổi Bật",
-      intro: "Khám phá các dòng xe đa dạng, đáp ứng linh hoạt cho mọi nhu cầu di chuyển.",
+      kicker: "Dòng xe đa dạng",
+      intro: "Đáp ứng linh hoạt cho mọi nhu cầu di chuyển.",
       empty: "Không có xe phù hợp",
       priceFromLabel: "Giá tham khảo từ",
       bookCta: "Đặt Xe",

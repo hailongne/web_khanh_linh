@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import { translations } from "./translations";
 
@@ -72,13 +72,43 @@ type FleetItem = {
       });
     }
 
+    const scrollRef = useRef<HTMLDivElement | null>(null);
+
+    useEffect(() => {
+      const el = scrollRef.current;
+      if (!el) return;
+
+      let paused = false;
+
+      const interval = window.setInterval(() => {
+        if (paused) return;
+        const maxScrollLeft = el.scrollWidth - el.clientWidth;
+        // nếu đã tới cuối thì quay về đầu, ngược lại cuộn sang phải một trang
+        if (el.scrollLeft >= maxScrollLeft - 1) {
+          el.scrollTo({ left: 0, behavior: "smooth" });
+        } else {
+          el.scrollBy({ left: el.clientWidth, behavior: "smooth" });
+        }
+      }, 2000);
+
+      const onEnter = () => (paused = true);
+      const onLeave = () => (paused = false);
+      el.addEventListener("mouseenter", onEnter);
+      el.addEventListener("mouseleave", onLeave);
+
+      return () => {
+        window.clearInterval(interval);
+        el.removeEventListener("mouseenter", onEnter);
+        el.removeEventListener("mouseleave", onLeave);
+      };
+    }, [active, filteredItems.length]);
+
     return (
       <section className="fleet-section" id="fleet">
         <div className="section-shell">
           <div className="fleet-section__header">
             <div className="fleet-section__intro">
               <span className="section-kicker">{t.fleet?.kicker}</span>
-              <h2>{t.fleet?.heading}</h2>
               <p>{t.fleet?.intro}</p>
             </div>
 
@@ -98,8 +128,8 @@ type FleetItem = {
             </div>
           </div>
 
-          {( ["all", "4-7", "16", "29", "45"].includes(active) ) ? (
-            <div className="fleet-scroll" aria-live="polite">
+            {( ["all", "4-7", "16", "29", "45"].includes(active) ) ? (
+            <div className="fleet-scroll" aria-live="polite" ref={scrollRef}>
               {filteredItems.length === 0 ? (
                 <div className="fleet-empty">{t.fleet?.empty}</div>
               ) : (
@@ -130,7 +160,7 @@ type FleetItem = {
                           <strong>{item.price}</strong>
                         </div>
 
-                        <a className="fleet-card__cta" href="#contact">
+                        <a className="fleet-card__cta" href="#contact-cta-heading">
                           {t.fleet?.bookCta}
                         </a>
                       </div>
@@ -174,7 +204,7 @@ type FleetItem = {
                             <strong>{item.price}</strong>
                           </div>
 
-                          <a className="fleet-card__cta" href="#contact">
+                          <a className="fleet-card__cta" href="#contact-cta-heading">
                             {t.fleet?.bookCta}
                           </a>
                       </div>

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import "./globals.css";
+import "./FloatingContactWidget.css";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://khanhlinhtrans.vn"),

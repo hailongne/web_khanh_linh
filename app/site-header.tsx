@@ -1,6 +1,5 @@
-"use client";
-
 import Image from "next/image";
+import { createPortal } from "react-dom";
 import { useEffect, useLayoutEffect, useState, type SVGProps } from "react";
 import { translations } from "./translations";
 import { VNFlag, USFlag } from "./flag-icons";
@@ -174,7 +173,7 @@ export function SiteHeader({ links, lang = "vi", onToggleLang }: SiteHeaderProps
 
         <div className="site-header__right">
           <div className="site-header__actions">
-            <a className="site-header__cta" href="#contact">
+            <a className="site-header__cta" href="#contact-cta-heading">
               {t.header.cta}
             </a>
             {/* Language toggle button: shows target flag (🇬🇧 when current is 'vi', 🇻🇳 when current is 'en') */}
@@ -201,69 +200,74 @@ export function SiteHeader({ links, lang = "vi", onToggleLang }: SiteHeaderProps
         </div>
       </div>
 
-      <button
-        type="button"
-        className={`site-header__menu-backdrop${isMenuOpen ? " is-open" : ""}`}
-        aria-label="Dong menu dieu huong"
-        aria-hidden={!isMenuOpen}
-        tabIndex={isMenuOpen ? 0 : -1}
-        onClick={handleCloseMenu}
-      />
-
-      <aside
-        className={`site-header__menu-panel${isMenuOpen ? " is-open" : ""}`}
-        id="site-header-menu"
-        aria-hidden={!isMenuOpen}
-        onTouchStart={handleTouchStart}
-        onTouchMove={handleTouchMove}
-        onTouchEnd={handleTouchEnd}
-      >
-        <div className="site-header__menu-head">
+      {typeof document !== "undefined" && createPortal(
+        <>
           <button
             type="button"
-            className="site-header__menu-close"
+            className={`site-header__menu-backdrop${isMenuOpen ? " is-open" : ""}`}
             aria-label="Đóng menu điều hướng"
+            aria-hidden={!isMenuOpen}
+            tabIndex={isMenuOpen ? 0 : -1}
             onClick={handleCloseMenu}
-          >
-            <XIcon />
-          </button>
-        </div>
+          />
 
-        <nav className="site-header__drawer-nav" aria-label="Mobile navigation">
-          {links.map((item) => {
-            const isExternal = item.href.startsWith("http");
-            return (
-              <a
-                key={`mobile-${item.label}`}
-                href={item.href}
-                className={item.active ? "is-active" : undefined}
-                aria-current={item.active ? "page" : undefined}
-                target={isExternal ? "_blank" : undefined}
-                rel={isExternal ? "noopener noreferrer" : undefined}
+          <aside
+            className={`site-header__menu-panel${isMenuOpen ? " is-open" : ""}`}
+            id="site-header-menu"
+            aria-hidden={!isMenuOpen}
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleTouchEnd}
+          >
+            <div className="site-header__menu-head">
+              <button
+                type="button"
+                className="site-header__menu-close"
+                aria-label="Đóng menu điều hướng"
+                onClick={handleCloseMenu}
               >
-                {item.label}
-              </a>
-            );
-          })}
-        </nav>
+                <XIcon />
+              </button>
+            </div>
 
-        <div className="site-header__drawer-actions">
-          <a className="site-header__phone" href={`tel:${t.header.phone.replace(/\s+/g, "")}`}>
-            {t.header.phone}
-          </a>
-          <a className="site-header__cta" href="#contact">
-            {t.header.cta}
-          </a>
-          <button
-            type="button"
-            className="site-header__drawer-lang-toggle"
-            aria-label={lang === "vi" ? "Chuyển sang Tiếng Anh" : "Switch to Vietnamese"}
-            onClick={() => onToggleLang?.()}
-          >
-            {lang === "vi" ? <USFlag width={41} height={29} /> : <VNFlag width={41} height={29} />}
-          </button>
-        </div>
-      </aside>
+            <nav className="site-header__drawer-nav" aria-label="Mobile navigation">
+              {links.map((item) => {
+                const isExternal = item.href.startsWith("http");
+                return (
+                  <a
+                    key={`mobile-${item.label}`}
+                    href={item.href}
+                    className={item.active ? "is-active" : undefined}
+                    aria-current={item.active ? "page" : undefined}
+                    target={isExternal ? "_blank" : undefined}
+                    rel={isExternal ? "noopener noreferrer" : undefined}
+                  >
+                    {item.label}
+                  </a>
+                );
+              })}
+            </nav>
+
+            <div className="site-header__drawer-actions">
+              <a className="site-header__phone" href={`tel:${t.header.phone.replace(/\s+/g, "")}`}>
+                {t.header.phone}
+              </a>
+              <a className="site-header__cta" href="#contact-cta-heading">
+                {t.header.cta}
+              </a>
+              <button
+                type="button"
+                className="site-header__drawer-lang-toggle"
+                aria-label={lang === "vi" ? "Chuyển sang Tiếng Anh" : "Switch to Vietnamese"}
+                onClick={() => onToggleLang?.()}
+              >
+                {lang === "vi" ? <USFlag width={41} height={29} /> : <VNFlag width={41} height={29} />}
+              </button>
+            </div>
+          </aside>
+        </>,
+        document.body
+      )}
     </header>
   );
 }

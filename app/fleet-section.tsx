@@ -122,24 +122,17 @@ export default function FleetSection({ lang = "vi" }: { lang?: string }) {
                     sizes="(max-width: 900px) 100vw, 50vw"
                     style={{ objectFit: "contain", objectPosition: "center center" }}
                   />
-                  <button type="button" className="fleet-card__favorite" aria-label="Yêu thích">
-                    <FontAwesomeIcon type="favorite" />
-                  </button>
+                  <span className="fleet-card__subtitle">{item.badge}</span>
                 </div>
 
                 <div className="fleet-card__content">
-                  <div className="fleet-card__headline">
-                    <h3>{item.name}</h3>
-                    <span className="fleet-card__subtitle">{item.badge}</span>
+                  <h3>{item.name}</h3>
+                  <div className="fleet-card__price">
+                    {item.price}
                   </div>
-                  <div className="fleet-card__footer">
-                    <div className="fleet-card__price">
-                      <strong>{item.price}</strong>
-                    </div>
-                    <a className="fleet-card__cta" href="#contact-cta-heading" aria-label={`Đặt ${item.name}`}>
-                      <FontAwesomeIcon type="bag" />
-                    </a>
-                  </div>
+                  <a className="fleet-card__cta" href="#contact-cta-heading" aria-label={`Đặt ${item.name}`}>
+                    Đặt Ngay
+                  </a>
                 </div>
               </article>
             ))

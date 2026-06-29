@@ -22,7 +22,6 @@ export const translations: Record<string, any> = {
     },
 
     hero: {
-      kicker: "Khánh Linh Trans",
       title: "Dịch Vụ Cho Thuê Xe Du Lịch & Tự Lái Uy Tín Hàng Đầu",
       description:
         "Trải nghiệm hành trình trọn vẹn với dàn xe đời mới, tài xế chuyên nghiệp và quy trình điều phối chỉn chu cho khách doanh nghiệp, gia đình và khách đoàn.",
@@ -39,36 +38,8 @@ export const translations: Record<string, any> = {
       chatZalo: "Chat Zalo Ngay",
       note: "Hỗ trợ 24/7. Phản hồi trong vòng 5 phút."
     },
-
-    fleet: {
-      kicker: "Dòng xe đa dạng",
-      intro: "Đáp ứng linh hoạt cho mọi nhu cầu di chuyển.",
-      empty: "Không có xe phù hợp",
-      priceFromLabel: "Giá tham khảo từ",
-      bookCta: "Đặt Xe",
-      categories: [
-        { id: "all", label: "Tất cả" },
-        { id: "4-7", label: "Xe 4-7 chỗ" },
-        { id: "16", label: "Xe 16 chỗ" },
-        { id: "29", label: "Xe 29 chỗ" },
-        { id: "45", label: "Xe 45 chỗ" }
-      ],
-      filtersAriaLabel: "Danh mục đội xe",
-      items: [
-        { categoryId: "4-7", category: "Xe 4-7 chỗ", name: "Xe 7 chỗ", badge: "7 chỗ", description: "Xe gia đình, tiện nghi, phù hợp di chuyển nhóm nhỏ.", price: "800k/ngày", image: "/images/7.png", specs: [{ label: "7 ghế", icon: "seat" }, { label: "A/C", icon: "comfort" }, { label: "Hành lý vừa", icon: "storage" }] },
-        { categoryId: "4-7", category: "Xe 4-7 chỗ", name: "Xe 4 chỗ", badge: "4 chỗ", description: "Xe 4 chỗ cao cấp, thoải mái cho gia đình và đối tác.", price: "900k/ngày", image: "/images/4.png", specs: [{ label: "4 ghế", icon: "seat" }, { label: "A/C", icon: "comfort" }, { label: "Khoang rộng", icon: "storage" }] },
-        { categoryId: "4-7", category: "Xe 4-7 chỗ", name: "Xe 7 chỗ (Ảnh đính kèm)", badge: "7 chỗ", description: "Mẫu 7 chỗ tiện nghi (ảnh đính kèm).", price: "850k/ngày", image: "/images/7.webp", specs: [{ label: "7 ghế", icon: "seat" }, { label: "A/C", icon: "comfort" }, { label: "Hành lý vừa", icon: "storage" }] },
-        { categoryId: "16", category: "Xe 16 chỗ", name: "Ford Transit", badge: "16 chỗ", description: "Lựa chọn cân bằng cho gia đình, doanh nghiệp nhỏ và các chuyến đi ngắn với khả năng vận hành êm, điều hòa tốt.", price: "1.200k/ngày", image: "/images/16.png", specs: [{ label: "16 ghế", icon: "seat" }, { label: "2 dàn lạnh", icon: "comfort" }, { label: "Khoang vừa", icon: "storage" }] },
-        { categoryId: "16", category: "Xe 16 chỗ", name: "Mercedes Sprinter", badge: "16 chỗ", description: "Xe ghế da, phù hợp hành trình dài và khách doanh nghiệp.", price: "1.500k/ngày", image: "/images/16-2.png", specs: [{ label: "16 ghế", icon: "seat" }, { label: "A/C", icon: "comfort" }, { label: "Tiện nghi cao", icon: "storage" }] },
-        { categoryId: "29", category: "Xe 29 chỗ", name: "Hyundai County", badge: "29 chỗ", description: "Xe trung bình, phù hợp cho đoàn vừa và nhỏ.", price: "2.500k/ngày", image: "/images/29.png", specs: [{ label: "29 ghế", icon: "seat" }, { label: "A/C", icon: "comfort" }, { label: "Khoang lớn", icon: "storage" }] },
-        { categoryId: "29", category: "Xe 29 chỗ", name: "Thaco Town", badge: "29 chỗ", description: "Xe phục vụ đoàn vừa, kinh tế và ổn định.", price: "2.300k/ngày", image: "/images/29-2.png", specs: [{ label: "29 ghế", icon: "seat" }, { label: "A/C", icon: "comfort" }, { label: "Khoang đồ vừa", icon: "storage" }] },
-        { categoryId: "45", category: "Xe 45 chỗ", name: "Hyundai Universe", badge: "45 chỗ", description: "Dòng xe khách cao cấp cỡ lớn, không gian rộng rãi, ghế ngả êm ái và phù hợp cho những hành trình du lịch hoặc đưa đón đoàn đông.", price: "Liên hệ", image: "/images/45.png", specs: [{ label: "45 ghế ngả", icon: "seat" }, { label: "Có A/C", icon: "comfort" }, { label: "Khoang lớn", icon: "storage" }] },
-        { categoryId: "45", category: "Xe 45 chỗ", name: "Xe 45 chỗ", badge: "45 chỗ", description: "Xe lớn, phù hợp đoàn đông, an toàn cho tuyến dài.", price: "Liên hệ", image: "/images/45-2.png", specs: [{ label: "45 ghế", icon: "seat" }, { label: "A/C", icon: "comfort" }, { label: "Khoang rộng", icon: "storage" }] }
-      ]
-    },
-
+    
     reasons: {
-      kicker: "Lý do khách hàng quay lại",
       heading: "Tại Sao Nên Chọn Khánh Linh Trans?",
       lead:
         "Chúng tôi cam kết mang đến trải nghiệm di chuyển an toàn, thoải mái và chuyên nghiệp cho từng chuyến công tác, du lịch hay đưa đón sân bay.",
@@ -101,7 +72,6 @@ export const translations: Record<string, any> = {
     },
 
     booking: {
-      kicker: "Đặt xe đơn giản",
       heading: "Quy Trình Đặt Xe",
       lead: "Đơn giản, nhanh chóng và chuyên nghiệp chỉ với 4 bước rõ ràng.",
       steps: [
@@ -113,7 +83,6 @@ export const translations: Record<string, any> = {
     },
 
     pricing: {
-      kicker: "Chi phí minh bạch",
       heading: "Bảng Giá Tham Khảo Nhanh",
       lead: "Giá cước có thể thay đổi tùy theo thời điểm và yêu cầu cụ thể. Vui lòng liên hệ để có báo giá chính xác nhất.",
       table: {
@@ -130,7 +99,6 @@ export const translations: Record<string, any> = {
     },
 
     sales: {
-      kicker: "Đội ngũ sales tư vấn",
       heading: "Liên hệ Sales",
       lead: "Đội ngũ sales tư vấn sẵn sàng hỗ trợ đặt xe, báo giá và phục vụ theo yêu cầu qua hotline và Zalo.",
       hotlineLabel: "Hotline",
@@ -149,7 +117,6 @@ export const translations: Record<string, any> = {
     },
 
     testimonials: {
-      kicker: "Cảm nhận khách hàng",
       heading: "Khách Hàng Nói Gì",
       lead: "Những phản hồi thực tế sau các chuyến công tác, du lịch gia đình và hợp đồng đưa đón dài hạn.",
       scoreLabel: "Trải nghiệm được đánh giá xuất sắc",
@@ -190,7 +157,6 @@ export const translations: Record<string, any> = {
     },
 
     faq: {
-      kicker: "Giải đáp nhanh",
       heading: "Câu Hỏi Thường Gặp",
       lead: "Giải đáp những thắc mắc phổ biến của khách hàng khi thuê xe.",
       items: [
@@ -213,7 +179,6 @@ export const translations: Record<string, any> = {
     },
 
     contactCta: {
-      kicker: "Sẵn sàng khởi hành",
       heading: "Bạn Cần Thuê Xe Cho Chuyến Đi Sắp Tới?",
       lead: "Hãy liên hệ ngay với chúng tôi để nhận được tư vấn tận tình và báo giá tốt nhất.",
       call: "Gọi Hotline: 0962992555",
@@ -266,7 +231,6 @@ export const translations: Record<string, any> = {
     },
 
     hero: {
-      kicker: "Khánh Linh Trans",
       title: "Trusted Vehicle Rental & Self-Drive Services",
       description:
         "Enjoy a complete journey with a modern fleet, professional drivers and a reliable coordination process for corporate, family and group trips.",
@@ -285,7 +249,6 @@ export const translations: Record<string, any> = {
     },
 
     fleet: {
-      kicker: "Flexible fleet",
       heading: "Featured Vehicles",
       intro: "Explore a variety of vehicle lines that adapt to every travel need.",
       empty: "No suitable vehicles",
@@ -299,21 +262,10 @@ export const translations: Record<string, any> = {
         { id: "45", label: "45 seats" }
       ],
       filtersAriaLabel: "Fleet categories",
-      items: [
-        { categoryId: "4-7", category: "4-7 seats", name: "7-seater", badge: "7 seats", description: "Family-friendly, comfortable, suitable for small groups.", price: "From 800k/day", image: "/images/7.png", specs: [{ label: "7 seats", icon: "seat" }, { label: "A/C", icon: "comfort" }, { label: "Medium luggage", icon: "storage" }] },
-        { categoryId: "4-7", category: "4-7 seats", name: "4-seater", badge: "4 seats", description: "Premium 4-seater, comfortable for families and partners.", price: "From 900k/day", image: "/images/4.png", specs: [{ label: "4 seats", icon: "seat" }, { label: "A/C", icon: "comfort" }, { label: "Spacious cabin", icon: "storage" }] },
-        { categoryId: "4-7", category: "4-7 seats", name: "7-seater (sample)", badge: "7 seats", description: "Sample 7-seater model (image attached).", price: "From 850k/day", image: "/images/7.webp", specs: [{ label: "7 seats", icon: "seat" }, { label: "A/C", icon: "comfort" }, { label: "Medium luggage", icon: "storage" }] },
-        { categoryId: "16", category: "16 seats", name: "Ford Transit", badge: "16 seats", description: "Balanced choice for families, small businesses and short trips with smooth handling and good A/C.", price: "1.200k/day", image: "/images/16.png", specs: [{ label: "16 seats", icon: "seat" }, { label: "2 AC units", icon: "comfort" }, { label: "Medium luggage", icon: "storage" }] },
-        { categoryId: "16", category: "16 seats", name: "Mercedes Sprinter", badge: "16 seats", description: "Leather seats, suitable for long trips and corporate customers.", price: "From 1.500k/day", image: "/images/16-2.png", specs: [{ label: "16 seats", icon: "seat" }, { label: "A/C", icon: "comfort" }, { label: "High comfort", icon: "storage" }] },
-        { categoryId: "29", category: "29 seats", name: "Hyundai County", badge: "29 seats", description: "Mid-size coach, suitable for medium and small groups.", price: "From 2.500k/day", image: "/images/29.png", specs: [{ label: "29 seats", icon: "seat" }, { label: "A/C", icon: "comfort" }, { label: "Large luggage", icon: "storage" }] },
-        { categoryId: "29", category: "29 seats", name: "Thaco Town", badge: "29 seats", description: "Economical and stable coach for medium groups.", price: "From 2.300k/day", image: "/images/29-2.png", specs: [{ label: "29 seats", icon: "seat" }, { label: "A/C", icon: "comfort" }, { label: "Medium luggage", icon: "storage" }] },
-        { categoryId: "45", category: "45 seats", name: "Hyundai Universe", badge: "45 seats", description: "Premium large coach with spacious interior, reclining seats and ideal for tours or large groups.", price: "Contact us", image: "/images/45.png", specs: [{ label: "45 reclining seats", icon: "seat" }, { label: "A/C", icon: "comfort" }, { label: "Large luggage", icon: "storage" }] },
-        { categoryId: "45", category: "45 seats", name: "45-seater", badge: "45 seats", description: "Large coach suitable for big groups and long-distance safety.", price: "Contact us", image: "/images/45-2.png", specs: [{ label: "45 seats", icon: "seat" }, { label: "A/C", icon: "comfort" }, { label: "Spacious luggage", icon: "storage" }] }
-      ]
+      items: [], // Dữ liệu xe đã chuyển sang db.json — load qua GET /api/vehicles?lang=vi
     },
 
     reasons: {
-      kicker: "Why customers come back",
       heading: "Why Choose Khánh Linh Trans?",
       lead:
         "We are committed to providing safe, comfortable and professional travel experiences for business trips, tours and airport transfers.",
@@ -346,7 +298,6 @@ export const translations: Record<string, any> = {
     },
 
     booking: {
-      kicker: "Simple booking",
       heading: "Booking Process",
       lead: "Simple, fast and professional in 4 clear steps.",
       steps: [
@@ -358,7 +309,6 @@ export const translations: Record<string, any> = {
     },
 
     pricing: {
-      kicker: "Transparent costs",
       heading: "Indicative Price List",
       lead: "Prices may vary depending on timing and requirements. Please contact us for an accurate quote.",
       table: {
@@ -375,7 +325,6 @@ export const translations: Record<string, any> = {
     },
 
     sales: {
-      kicker: "Sales team",
       heading: "Contact Sales",
       lead: "Our sales team is ready to assist bookings, quotes and tailor services via hotline and Zalo.",
       hotlineLabel: "Hotline",
@@ -394,7 +343,6 @@ export const translations: Record<string, any> = {
     },
 
     testimonials: {
-      kicker: "Customer feedback",
       heading: "What Customers Say",
       lead: "Real feedback from business trips, family tours and long-term transfer contracts.",
       scoreLabel: "Experience rated excellent",
@@ -435,7 +383,6 @@ export const translations: Record<string, any> = {
     },
 
     faq: {
-      kicker: "Quick answers",
       heading: "Frequently Asked Questions",
       lead: "Answers to common questions when renting a vehicle.",
       items: [
@@ -458,7 +405,6 @@ export const translations: Record<string, any> = {
     },
 
     contactCta: {
-      kicker: "Ready to depart",
       heading: "Need a Vehicle for Your Upcoming Trip?",
       lead: "Contact us now for attentive consultation and the best quote.",
       call: "Call Hotline: 0962992555",

@@ -6,20 +6,7 @@
   "identicalDuplicates": [],
   "conflictingDuplicatesCount": 2,
   "duplicateSelectorList": [
-    {
-      "selector": ".section-kicker",
-      "count": 2,
-      "occurrences": [
-        {
-          "content": "font-size: 0.86rem;\r\n  font-weight: 600;\r\n  letter-spacing: 0.06em;",
-          "line": 41
-        },
-        {
-          "content": "display: inline-flex;\r\n  align-items: center;\r\n  gap: 10px;\r\n  color: var(--brand);\r\n  font-size: 0.92rem;\r\n  font-weight: 700;\r\n  letter-spacing: 0.08em;\r\n  text-transform: uppercase;",
-          "line": 153
-        }
-      ]
-    },
+    
     {
       "selector": ".hero-section__copy h1",
       "count": 3,

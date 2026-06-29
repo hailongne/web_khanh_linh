@@ -138,47 +138,29 @@ export default function HomePage() {
             </div>
           </section>
 
-          {/* Fleet section moved up: place directly under hero kicker as requested */}
           <FleetSection lang={lang} />
 
           {/* Lý do khách hàng quay lại */}
           <section className="reasons-section" id="reasons">
             <div className="section-shell">
-              <div className="reasons-section__header">
-                <span className="section-kicker">{t.reasons.kicker}</span>
+              <div className="reasons-section__header title-luxury">
                 <h2>{t.reasons.heading}</h2>
                 <p className="reasons-section__lead">{t.reasons.lead}</p>
               </div>
 
-              <div className="reasons-section__inner">
-                <div className="reasons-section__visual">
-                  <div className="visual-card">
-                    <div className="visual-card__image">
-                      <Image
-                        src="/images/logo3D.png"
-                        alt={t.hero.imageAlt}
-                        fill
-                        priority
-                        sizes="(max-width: 900px) 100vw, 48vw"
-                      />
-                    </div>
-                  </div>
-                </div> 
-            
-                <div className="reasons-section__copy">
-                  <div className="reasons-list">
-                    {t.reasons.items.map((reason: any) => (
-                      <article className="reason-card" key={reason.title}>
-                        <div className="reason-card__icon">
-                          <FontAwesomeIcon type={reason.icon} />
-                        </div>
-                        <div className="reason-card__body">
-                          <h3>{reason.title}</h3>
-                          <p>{reason.description}</p>
-                        </div>
-                      </article>
-                    ))}
-                  </div>
+              <div className="reasons-section__copy">
+                <div className="reasons-list">
+                  {t.reasons.items.map((reason: any) => (
+                    <article className="reason-card" key={reason.title}>
+                      <div className="reason-card__icon">
+                        <FontAwesomeIcon type={reason.icon} />
+                      </div>
+                      <div className="reason-card__body">
+                        <h3>{reason.title}</h3>
+                        <p>{reason.description}</p>
+                      </div>
+                    </article>
+                  ))}
                 </div>
               </div>
             </div>
@@ -187,8 +169,7 @@ export default function HomePage() {
           {/* Quy trình đặt xe */}
           <section className="process-section">
             <div className="section-shell">
-              <div className="process-section__heading">
-                <span className="section-kicker">{t.booking.kicker}</span>
+              <div className="process-section__heading title-luxury">
                 <h2>{t.booking.heading}</h2>
                 <p>{t.booking.lead}</p>
               </div>
@@ -209,8 +190,7 @@ export default function HomePage() {
           {/* Bảng giá */}
           <section className="pricing-section" id="pricing">
             <div className="section-shell">
-              <div className="pricing-section__heading">
-                <span className="section-kicker">{t.pricing.kicker}</span>
+              <div className="pricing-section__heading title-luxury">
                 <h2>{t.pricing.heading}</h2>
                 <p>{t.pricing.lead}</p>
               </div>
@@ -287,8 +267,7 @@ export default function HomePage() {
           {/* Sales / Liên hệ */}
           <section className="addons-section" id="sales">
             <div className="section-shell">
-              <div className="addons-section__heading">
-                <span className="section-kicker">{t.sales.kicker}</span>
+              <div className="addons-section__heading title-luxury">
                 <h2>{t.sales.heading}</h2>
                 <p>{t.sales.lead}</p>
               </div>
@@ -348,8 +327,7 @@ export default function HomePage() {
           {/* Đánh giá */}
           <section className="testimonials-section" aria-labelledby="testimonials-heading">
             <div className="section-shell testimonials-section__inner">
-              <div className="testimonials-section__heading">
-                <span className="section-kicker">{t.testimonials.kicker}</span>
+              <div className="testimonials-section__heading title-luxury">
                 <h2 id="testimonials-heading">{t.testimonials.heading}</h2>
                 <p>{t.testimonials.lead}</p>
               </div>
@@ -409,8 +387,7 @@ export default function HomePage() {
           {/* FAQ */}
           <section className="faq-section" aria-labelledby="faq-heading">
             <div className="section-shell faq-section__inner">
-              <div className="faq-section__heading">
-                <span className="section-kicker">{t.faq.kicker}</span>
+              <div className="faq-section__heading title-luxury">
                 <h2 id="faq-heading">{t.faq.heading}</h2>
                 <p>{t.faq.lead}</p>
               </div>
@@ -435,7 +412,6 @@ export default function HomePage() {
           {/* CTA liên hệ */}
           <section className="contact-cta-section" aria-labelledby="contact-cta-heading">
             <div className="section-shell contact-cta-section__inner">
-              <span className="section-kicker section-kicker--light">{t.contactCta.kicker}</span>
               <h2 id="contact-cta-heading">{t.contactCta.heading}</h2>
               <p>{t.contactCta.lead}</p>
               <div className="contact-cta-section__actions">

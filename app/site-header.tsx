@@ -1,3 +1,4 @@
+"use client";
 import Image from "next/image";
 import { createPortal } from "react-dom";
 import { useEffect, useLayoutEffect, useState, type SVGProps } from "react";
@@ -138,6 +139,11 @@ export function SiteHeader({ links, lang = "vi", onToggleLang }: SiteHeaderProps
   };
 
   const t = (translations as any)[lang] ?? translations.vi;
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   return (
     <header className="site-header">
@@ -200,7 +206,7 @@ export function SiteHeader({ links, lang = "vi", onToggleLang }: SiteHeaderProps
         </div>
       </div>
 
-      {typeof document !== "undefined" && createPortal(
+      {mounted && createPortal(
         <>
           <button
             type="button"

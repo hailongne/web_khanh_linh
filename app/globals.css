@@ -448,21 +448,34 @@ h3 {
   font-size: clamp(1.15rem, 2.2vw, 1.4rem);
 }
 
-.section-kicker {
-  font-size: 0.86rem;
-  font-weight: 600;
-  letter-spacing: 0.06em;
-}
 
-.reasons-section__header h2,
-.fleet-section__intro h2,
-.pricing-section__heading h2,
-.addons-section__heading h2,
-.process-section__heading h2,
-.testimonials-section__heading h2,
-.faq-section__heading h2,
-.contact-cta-section__inner h2 {
+/* Section-specific h2 weight removed — use unified `title-luxury` class instead */
+
+/* Unified title class */
+.title-luxury h2 {
+  font-family: 'Cormorant Garamond', serif;
   font-weight: 600;
+  font-size: clamp(1.6rem, 3.8vw, 2.8rem);
+  line-height: 1.05;
+  text-align: center;
+  margin: 0 0 6px 0;
+  color: var(--ink);
+}
+.title-luxury h2::after {
+  content: "";
+  display: block;
+  width: 64px;
+  height: 3px;
+  margin: 10px auto 0;
+  background: rgba(16,33,43,0.12);
+  border-radius: 999px;
+}
+.title-luxury p {
+  font-family: 'DM Sans', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+  color: var(--muted);
+  text-align: center;
+  margin: 0 auto;
+  max-width: 760px;
 }
 
 [id] {
@@ -535,28 +548,7 @@ img {
   margin: 20px auto;
 }
 
-.section-kicker {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  color: var(--brand);
-  font-size: 0.92rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
 
-.section-kicker::before {
-  content: "";
-  width: 34px;
-  height: 2px;
-  border-radius: 999px;
-  background: currentColor;
-}
-
-.section-kicker--light {
-  color: #fff;
-}
 
 .button {
   display: inline-flex;
@@ -604,14 +596,6 @@ img {
 
 .reasons-section {
   position: relative;
-  padding: 104px 0 120px;
-}
-
-.reasons-section__inner {
-  display: grid;
-  grid-template-columns: minmax(0, 0.98fr) minmax(320px, 0.92fr);
-  align-items: center;
-  gap: 52px;
 }
 
 .reasons-section__header {
@@ -620,19 +604,8 @@ img {
   margin: 0 auto 36px;
 }
 
-.reasons-section__header>.section-kicker {
-  display: inline-flex;
-  width: fit-content;
-  margin: 0 auto 12px;
-}
 
-.reasons-section__header h2 {
-  margin: 8px 0 14px;
-  font-size: clamp(2.3rem, 4.2vw, 4rem);
-  line-height: 1.02;
-  letter-spacing: -0.05em;
-  font-weight: 800;
-}
+/* reasons section heading moved to unified .title-luxury */
 
 .reasons-section__copy h2 {
   margin: 20px 0 20px;
@@ -769,6 +742,22 @@ img {
   grid-column: 2;
 }
 
+@media (min-width: 1200px) {
+
+  .reasons-section__visual {
+    display: none;
+  }
+
+  .reasons-section__copy {
+    grid-column: auto;
+  }
+
+  .reasons-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 30px;
+  }
+}
+
 .visual-badge {
   position: absolute;
   background: rgba(255, 255, 255, 0.97);
@@ -828,37 +817,21 @@ img {
 
 .fleet-section__header {
   display: flex;
-  align-items: flex-end;
-  justify-content: flex-start;
-  gap: 32px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
   margin-bottom: 34px;
 }
 
 .fleet-section__intro {
   margin-left: 0;
-  text-align: left;
-  align-self: flex-start;
+  text-align: center;
+  align-self: center;
+  width: min(100%, 760px);
 }
 
-.fleet-section__intro h2,
-.pricing-section__heading h2,
-.addons-section__heading h2,
-.process-section__heading h2 {
-  margin: 6px 0 8px;
-  font-size: clamp(1.6rem, 2.8vw, 2.6rem);
-  line-height: 1.02;
-  letter-spacing: -0.05em;
-}
-
-.fleet-section__intro p,
-.pricing-section__heading p,
-.addons-section__heading p,
-.process-section__heading p {
-  margin: 0;
-  color: var(--muted);
-  font-size: 1rem;
-  line-height: 1.5;
-}
+/* Removed per-section heading font overrides — use `.title-luxury` for titles */
 
 .fleet-section__filters {
   display: flex;
@@ -934,34 +907,62 @@ img {
 
 .fleet-scroll .fleet-card {
   flex: 0 0 260px;
+  max-width: 260px;
 }
 
 .fleet-card {
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  border-radius: 34px;
+  background: #fff;
   border: 1px solid rgba(16, 33, 43, 0.08);
-  border-radius: 26px;
-  background: rgba(255, 255, 255, 0.94);
-  box-shadow: none;
+  box-shadow: 0 24px 60px rgba(16, 33, 43, 0.08);
+  min-height: 420px;
 }
 
 .fleet-card__media {
   position: relative;
-  aspect-ratio: 16 / 3;
-  background: linear-gradient(180deg, #f6fbff 0%, #e9f3f9 100%);
+  min-height: 220px;
+  background: linear-gradient(180deg, #f8fbff 0%, #eef5fb 100%);
   overflow: hidden;
 }
 
+.fleet-card__media::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at top center, rgba(255, 255, 255, 0.72), transparent 55%);
+  pointer-events: none;
+}
+
 .fleet-card__media img {
-  padding: 12px 0 0;
   object-fit: contain;
+  object-position: center center;
+}
+
+.fleet-card__favorite {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 38px;
+  height: 38px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: 1px solid rgba(16, 33, 43, 0.08);
+  background: rgba(255, 255, 255, 0.96);
+  color: #10212b;
+  box-shadow: 0 14px 32px rgba(16, 33, 43, 0.08);
+  z-index: 1;
 }
 
 .fleet-card__content {
-  padding: 14px 16px;
+  padding: 22px 18px 22px;
   display: flex;
   flex-direction: column;
+  gap: 14px;
   flex: 1 1 auto;
 }
 
@@ -969,55 +970,30 @@ img {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
+  gap: 12px;
 }
 
 .fleet-card__headline h3 {
   margin: 0;
-  /* nhỏ hơn cho thẻ đã thu nhỏ */
-  font-size: 1rem;
-  line-height: 1.06;
+  font-size: 1.25rem;
+  line-height: 1.08;
   letter-spacing: -0.02em;
+  color: #10212b;
+  max-width: 190px;
 }
 
-.fleet-card__headline span {
+.fleet-card__subtitle {
+  margin: 0;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: 38px;
-  padding: 0 16px;
+  padding: 8px 14px;
   border-radius: 999px;
-  background: var(--brand-soft);
-  color: var(--brand);
-  font-size: 0.98rem;
+  background: rgba(0, 116, 213, 0.08);
+  color: #0f5fa5;
+  font-size: 0.93rem;
   font-weight: 700;
   white-space: nowrap;
-}
-
-.fleet-card__specs {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  font-size: 13px;
-  font-weight: 500;
-  color: #4d5c67;
-  margin-top: 10px;
-  padding: 8px 0;
-  border-top: 1px solid rgba(16, 33, 43, 0.08);
-}
-
-.fleet-card__spec {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  color: #4f606c;
-  font-size: 0.98rem;
-  font-weight: 600;
-}
-
-.fleet-card__spec .fa-icon {
-  flex: 0 0 auto;
-  font-size: 20px;
-  color: #4f606c;
 }
 
 .fleet-card__footer {
@@ -1028,50 +1004,34 @@ img {
   margin-top: auto;
 }
 
-.fleet-card__price small {
-  display: block;
-  margin-bottom: 8px;
-  color: #61727d;
-  font-size: 0.98rem;
-  font-weight: 600;
+.fleet-card__price {
+  display: flex;
+  flex-direction: column;
 }
 
 .fleet-card__price strong {
-  color: var(--brand);
-  font-size: clamp(1.05rem, 1.6vw, 1.4rem);
-  line-height: 1.05;
-  letter-spacing: -0.02em;
-}
-
-.fleet-card__price {
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
+  color: #10212b;
+  font-size: 1.8rem;
+  line-height: 1.03;
+  letter-spacing: -0.04em;
 }
 
 .fleet-card__cta {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 96px;
-  min-height: 36px;
-  padding: 0 12px;
-  border: 2px solid rgba(25, 138, 198, 0.72);
-  border-radius: 10px;
-  color: var(--brand);
-  font-size: 0.95rem;
-  font-weight: 700;
-  transition:
-    transform 0.16s ease,
-    background 0.16s ease,
-    color 0.16s ease;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 1px solid rgba(16, 33, 43, 0.08);
+  background: #fff;
+  color: #10212b;
+  transition: transform 0.18s ease, background 0.18s ease, color 0.18s ease;
 }
 
 .fleet-card__cta:hover {
-  transform: translateY(-1px);
-  background: var(--brand);
+  transform: translateY(-2px);
+  background: #10212b;
   color: #fff;
 }
 
@@ -1469,6 +1429,7 @@ img {
 }
 
 .testimonials-section__heading {
+  padding-top: 10px;
   max-width: 720px;
   margin: 0 auto;
   text-align: center;
@@ -1848,11 +1809,6 @@ img {
   z-index: 1;
   text-align: center;
 }
-
-.contact-cta-section__inner .section-kicker {
-  justify-content: center;
-}
-
 .contact-cta-section__inner h2 {
   margin: 22px auto 18px;
   max-width: 1120px;
@@ -2128,27 +2084,12 @@ img {
     aspect-ratio: auto;
     height: 130px;
   }
-
-  .reasons-section__inner {
-    align-items: center;
-    gap: 40px;
-  }
+  
   .reasons-section__copy {
     width: min(100%, 860px);
     margin: 0 auto;
   }
 
-  .reasons-section__copy>.section-kicker {
-    display: flex;
-    width: fit-content;
-    margin: 0 auto 12px;
-  }
-
-  .reasons-section__header>.section-kicker {
-    display: flex;
-    width: fit-content;
-    margin: 0 auto 12px;
-  }
 
   .reasons-section__header h2,
   .reasons-section__copy h2,
@@ -2455,10 +2396,6 @@ img {
     flex-direction: column;
   }
 
-  .fleet-card__cta {
-    width: 100%;
-  }
-
   .process-section {
     padding: 0 0 96px;
   }
@@ -2604,15 +2541,6 @@ img {
     scroll-padding-top: 80px;
   }
 
-  .section-kicker {
-    gap: 8px;
-    font-size: 0.78rem;
-    letter-spacing: 0.07em;
-  }
-
-  .section-kicker::before {
-    width: 24px;
-  }
 
   .fleet-grid,
   .addons-grid,
@@ -2753,13 +2681,6 @@ img {
     min-height: 42px;
     padding: 0 16px;
     font-size: 0.9rem;
-  }
-
-  .reasons-section__inner {
-    display: flex;
-    flex-direction: column;
-    gap: 24px;
-    align-items: center;
   }
 
   .reasons-section__visual {
@@ -3274,12 +3195,6 @@ img {
 html, body, #__next, main, .page-shell {
   background-color: var(--surface);
   background: var(--surface);
-}
-
-/* 1) Kicker màu trắng (scoped cho CTA để không ảnh hưởng chỗ khác) */
-.contact-cta-section .section-kicker,
-.contact-cta-section .section-kicker--light {
-  color: #fff;
 }
 
 /* 2) Make section backgrounds full-bleed while keeping .section-shell centered */

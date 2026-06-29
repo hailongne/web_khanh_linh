@@ -43,7 +43,8 @@ export default function RootLayout({
     <html lang="vi">
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="stylesheet" href="/icon/font-awesome/css/all.css" />
+        <link rel="stylesheet" href="/icon/font-awesome/css/all.css" precedence="default" />
+        <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=DM+Sans:wght@300;400&display=swap" rel="stylesheet" precedence="default" />
       </head>
       <body>{children}</body>
     </html>

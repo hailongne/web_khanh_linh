@@ -1,0 +1,208 @@
+{
+  "vehicles": {
+    "vi": [
+      {
+        "id": "1",
+        "name": "KIA CARNIVAL",
+        "badge": "7 chỗ",
+        "price": "1.200k/ngày",
+        "image": "/images/KIA_CARNIVAL_7.png",
+        "specs": [
+          { "label": "7 ghế", "icon": "seat" }
+        ]
+      },
+      {
+        "id": "2",
+        "name": "TOYOTA PRADO",
+        "badge": "7 chỗ",
+        "price": "2.000k/ngày",
+        "image": "/images/TOYOTA_PRADO_7.webp",
+        "specs": [
+          { "label": "7 ghế", "icon": "seat" }
+        ]
+      },
+      {
+        "id": "3",
+        "name": "FORD TRANSIT LIMOSINE",
+        "badge": "11 chỗ",
+        "price": "1.500k/ngày",
+        "image": "/images/FORD_TRANSIT_LIMOSINE_11.png",
+        "specs": [
+          { "label": "11 ghế", "icon": "seat" }
+        ]
+      },
+      {
+        "id": "4",
+        "name": "HYUNDAI SOLATI",
+        "badge": "16 chỗ",
+        "price": "1.800k/ngày",
+        "image": "/images/HYUNDAI_SOLATI_16_1.png",
+        "specs": [
+          { "label": "16 ghế", "icon": "seat" }
+        ]
+      },
+      {
+        "id": "5",
+        "name": "HYUNDAI SOLATI",
+        "badge": "16 chỗ",
+        "price": "1.800k/ngày",
+        "image": "/images/HYUNDAI_SOLATI_16_2.png",
+        "specs": [
+          { "label": "16 ghế", "icon": "seat" }
+        ]
+      },
+      {
+        "id": "6",
+        "name": "THACO GARDEN",
+        "badge": "29 chỗ",
+        "price": "2.500k/ngày",
+        "image": "/images/THACO_GARDEN_29.png",
+        "specs": [
+          { "label": "29 ghế", "icon": "seat" }
+        ]
+      },
+      {
+        "id": "7",
+        "name": "THACO MEADOW",
+        "badge": "29 chỗ",
+        "price": "2.500k/ngày",
+        "image": "/images/THACO_MEADOW_29.png",
+        "specs": [
+          { "label": "29 ghế", "icon": "seat" }
+        ]
+      },
+      {
+        "id": "8",
+        "name": "TRACOMECO GLOBAL",
+        "badge": "34 chỗ",
+        "price": "3.200k/ngày",
+        "image": "/images/TRACOMECO_GLOBAL_34.png",
+        "specs": [
+          { "label": "34 ghế", "icon": "seat" }
+        ]
+      },
+      {
+        "id": "9",
+        "name": "THACO BLUESKY TB120",
+        "badge": "47 chỗ",
+        "price": "4.500k/ngày",
+        "image": "/images/THACO_BLUESKY_TB120_47.png",
+        "specs": [
+          { "label": "47 ghế", "icon": "seat" }
+        ]
+      },
+      {
+        "id": "10",
+        "name": "HAECO GRANBIRD",
+        "badge": "47 chỗ",
+        "price": "4.500k/ngày",
+        "image": "/images/HAECO_GRANBIRD_47.png",
+        "specs": [
+          { "label": "47 ghế", "icon": "seat" }
+        ]
+      }
+    ],
+    "en": [
+      {
+        "id": "1",
+        "name": "KIA CARNIVAL",
+        "badge": "7 seats",
+        "price": "From 1.200k/day",
+        "image": "/images/KIA_CARNIVAL_7.png",
+        "specs": [
+          { "label": "7 seats", "icon": "seat" }
+        ]
+      },
+      {
+        "id": "2",
+        "name": "TOYOTA PRADO",
+        "badge": "7 seats",
+        "price": "From 2.000k/day",
+        "image": "/images/TOYOTA_PRADO_7.webp",
+        "specs": [
+          { "label": "7 seats", "icon": "seat" }
+        ]
+      },
+      {
+        "id": "3",
+        "name": "FORD TRANSIT LIMOSINE",
+        "badge": "11 seats",
+        "price": "From 1.500k/day",
+        "image": "/images/FORD_TRANSIT_LIMOSINE_11.png",
+        "specs": [
+          { "label": "11 seats", "icon": "seat" }
+        ]
+      },
+      {
+        "id": "4",
+        "name": "HYUNDAI SOLATI",
+        "badge": "16 seats",
+        "price": "From 1.800k/day",
+        "image": "/images/HYUNDAI_SOLATI_16_1.png",
+        "specs": [
+          { "label": "16 seats", "icon": "seat" }
+        ]
+      },
+      {
+        "id": "5",
+        "name": "HYUNDAI SOLATI",
+        "badge": "16 seats",
+        "price": "From 1.800k/day",
+        "image": "/images/HYUNDAI_SOLATI_16_2.png",
+        "specs": [
+          { "label": "16 seats", "icon": "seat" }
+        ]
+      },
+      {
+        "id": "6",
+        "name": "THACO GARDEN",
+        "badge": "29 seats",
+        "price": "From 2.500k/day",
+        "image": "/images/THACO_GARDEN_29.png",
+        "specs": [
+          { "label": "29 seats", "icon": "seat" }
+        ]
+      },
+      {
+        "id": "7",
+        "name": "THACO MEADOW",
+        "badge": "29 seats",
+        "price": "From 2.500k/day",
+        "image": "/images/THACO_MEADOW_29.png",
+        "specs": [
+          { "label": "29 seats", "icon": "seat" }
+        ]
+      },
+      {
+        "id": "8",
+        "name": "TRACOMECO GLOBAL",
+        "badge": "34 seats",
+        "price": "From 3.200k/day",
+        "image": "/images/TRACOMECO_GLOBAL_34.png",
+        "specs": [
+          { "label": "34 seats", "icon": "seat" }
+        ]
+      },
+      {
+        "id": "9",
+        "name": "THACO BLUESKY TB120",
+        "badge": "47 seats",
+        "price": "From 4.500k/day",
+        "image": "/images/THACO_BLUESKY_TB120_47.png",
+        "specs": [
+          { "label": "47 seats", "icon": "seat" }
+        ]
+      },
+      {
+        "id": "10",
+        "name": "HAECO GRANBIRD",
+        "badge": "47 seats",
+        "price": "From 4.500k/day",
+        "image": "/images/HAECO_GRANBIRD_47.png",
+        "specs": [
+          { "label": "47 seats", "icon": "seat" }
+        ]
+      }
+    ]
+  }
+}

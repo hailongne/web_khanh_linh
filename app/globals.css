@@ -2852,23 +2852,24 @@ img {
   }
 
   .faq-item__summary {
-    padding: 20px 16px;
-    gap: 16px;
-    align-items: start;
+    padding: 14px 16px;
+    gap: 14px;
+    align-items: center;
   }
 
   .faq-item__summary span:first-child {
-    font-size: 1rem;
+    font-size: 0.98rem;
+    line-height: 1.25;
   }
 
   .faq-item__icon {
-    width: 44px;
-    height: 44px;
+    width: 40px;
+    height: 40px;
     border-radius: 12px;
   }
 
   .faq-item__answer {
-    padding: 0 16px 20px;
+    padding: 0 16px 18px;
   }
 
   .faq-item__answer p {
@@ -2902,6 +2903,20 @@ img {
 
   .site-footer__brand-block {
     max-width: none;
+  }
+
+  .site-footer__logo-top {
+    align-items: center;
+    padding-top: 16px;
+    margin-bottom: 22px;
+  }
+
+  .site-footer__brand-logo {
+    width: clamp(180px, 28vw, 260px);
+  }
+
+  .site-footer__inner {
+    padding-top: 24px;
   }
 
   .site-footer__bottom {

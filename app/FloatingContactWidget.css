@@ -38,8 +38,8 @@
 
 .floating-contact-widget__button img {
   display: block;
-  width: 50px;
-  height: 50px;
+  width: 44px;
+  height: 44px;
 }
 
 .floating-contact-widget__button:hover,
@@ -217,6 +217,48 @@
   height: 100%;
   border-radius: 50%;
   object-fit: cover;
+}
+
+@media (max-width: 640px) {
+  .floating-contact-widget {
+    left: 12px;
+    right: 12px;
+    bottom: 16px;
+    min-width: auto;
+  }
+
+  .floating-contact-widget__inner {
+    align-items: flex-end;
+    gap: 10px;
+  }
+
+  .floating-contact-widget__button {
+    width: 52px;
+    height: 52px;
+  }
+
+  .floating-contact-widget__button img {
+    width: 30px;
+    height: 30px;
+    max-width: 150%;
+  }
+
+  .floating-contact-widget__panel {
+    width: min(100%, calc(100vw - 28px));
+    min-width: auto;
+    right: auto;
+    left: 0;
+    bottom: calc(52px * 2 + 16px);
+  }
+
+  .floating-contact-widget__panel-list {
+    max-height: 340px;
+  }
+
+  .floating-contact-widget__item {
+    padding: 12px 14px;
+    gap: 10px;
+  }
 }
 
 

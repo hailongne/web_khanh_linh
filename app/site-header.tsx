@@ -2,6 +2,7 @@
 import Image from "next/image";
 import { createPortal } from "react-dom";
 import { useEffect, useLayoutEffect, useState, type SVGProps } from "react";
+import db from "../db.json";
 import { translations } from "./translations";
 import { VNFlag, USFlag } from "./flag-icons";
 
@@ -138,6 +139,14 @@ export function SiteHeader({ links, lang = "vi", onToggleLang }: SiteHeaderProps
     setTouchMoved(false);
   };
 
+  type ContactInfo = {
+    phone: string;
+    zalo: string;
+    email: string;
+    address: string;
+  };
+
+  const contacts = (db as any).contacts as ContactInfo;
   const t = (translations as any)[lang] ?? translations.vi;
   const [mounted, setMounted] = useState(false);
 
@@ -255,8 +264,8 @@ export function SiteHeader({ links, lang = "vi", onToggleLang }: SiteHeaderProps
             </nav>
 
             <div className="site-header__drawer-actions">
-              <a className="site-header__phone" href={`tel:${t.header.phone.replace(/\s+/g, "")}`}>
-                {t.header.phone}
+              <a className="site-header__phone" href={`tel:${contacts.phone.replace(/\s+/g, "")}`}>
+                {contacts.phone}
               </a>
               <a className="site-header__cta" href="#contact-cta-heading">
                 {t.header.cta}

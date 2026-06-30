@@ -1,12 +1,30 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
+import db from "../db.json";
 import { SiteHeader } from "./site-header";
 import FleetSection from "./fleet-section";
 import FloatingContactWidget from "./FloatingContactWidget";
 import { translations } from "./translations";
 
 type FontAwesomePrefix = "fas" | "fab";
+
+type SalesPerson = {
+  name: string;
+  phone: string;
+  zalo: string;
+  avatar: string;
+};
+
+type ContactInfo = {
+  phone: string;
+  zalo: string;
+  email: string;
+  address: string;
+};
+
+const salesContacts = (db as any).sales as SalesPerson[];
+const siteContacts = (db as any).contacts as ContactInfo;
 
 const fontAwesomeIcons: Record<string, { prefix: FontAwesomePrefix; icon: string }> = {
   fleet: { prefix: "fas", icon: "fa-bus" },
@@ -84,6 +102,8 @@ export default function HomePage() {
   const isMobile = useMediaQuery("(max-width: 768px)");
 
   const [showScrollTop, setShowScrollTop] = useState(false);
+  const [previewAvatar, setPreviewAvatar] = useState<string | null>(null);
+
   useEffect(() => {
     if (typeof window === "undefined") return;
 
@@ -92,6 +112,15 @@ export default function HomePage() {
     handleScroll();
 
     return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setPreviewAvatar(null);
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
   }, []);
 
   const scrollToTop = () => {
@@ -272,51 +301,62 @@ export default function HomePage() {
                 <p>{t.sales.lead}</p>
               </div>
 
-              <div className="addons-grid addons-grid--two">
-                <article className="addon-card">
-                  <div className="addon-card__icon">
-                    <FontAwesomeIcon type="phone" />
-                  </div>
-                  <span className="addon-card__label">{t.sales.hotlineLabel}</span>
-                  <h3>{t.sales.hotlineTitle}</h3>
-                  <div className="contact-list"></div>
-                    {t.sales.hotlines?.length > 0 && (
-                      <div className="addon-card__sale-phones" aria-label="Hotlines">
-                        {t.sales.hotlines.map((h: any) => (
-                          <div className="addon-card__sale-phone" key={h.number} aria-label={`Hotline ${h.name}`}>
-                            <a href={`tel:${h.number.replace(/\s+/g, "")}`}>
-                              <span className="addon-card__sale-phone-icon"><FontAwesomeIcon type="phone" /></span>
-                              <span className="addon-card__sale-phone-info">
-                                <span className="addon-card__sale-phone-name">{h.name}</span>
-                                <span className="addon-card__sale-phone-number">{h.number}</span>
-                              </span>
-                            </a>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                </article>
+              <div className="addons-grid addons-grid--one">
+                <article className="addon-card addon-card--sales">
+                  {salesContacts.length > 0 && (
+                    <div className="addon-card__sales-list" aria-label="Danh sách Sales">
+                      {salesContacts.map((staff) => {
+                        const normalizedPhone = staff.phone.replace(/\s+/g, "");
+                        const zaloLink = staff.zalo?.startsWith("http")
+                          ? staff.zalo
+                          : `https://zalo.me/${staff.zalo.replace(/\s+/g, "")}`;
 
-                <article className="addon-card">
-                  <div className="addon-card__icon">
-                    <FontAwesomeIcon type="chat" />
-                  </div>
-                  <span className="addon-card__label">{t.sales.zaloLabel}</span>
-                  <h3>{t.sales.zaloTitle}</h3>
-                  <div className="contact-list"></div>
-                  {t.sales.zaloContacts?.length > 0 && (
-                    <div className="addon-card__zalo-phones" aria-label="Zalo contacts">
-                      {t.sales.zaloContacts.map((z: any) => (
-                        <div className="addon-card__zalo" key={z.id} aria-label={`Zalo ${z.name}`}>
-                          <a href={`https://zalo.me/${z.id}`} target="_blank" rel="noreferrer">
-                            <span className="addon-card__zalo-icon"><FontAwesomeIcon type="chat" /></span>
-                            <span className="addon-card__zalo-info">
-                              <span className="addon-card__zalo-name">{z.name}</span>
-                              <span className="addon-card__zalo-action">{t.sales.zaloAction}</span>
-                            </span>
-                          </a>
-                        </div>
-                      ))}
+                        return (
+                          <div className="addon-card__sales-item" key={`${staff.name}-${staff.phone}`}>
+                            <div className="addon-card__sales-meta">
+                              <button
+                                type="button"
+                                className="addon-card__sale-avatar-wrap addon-card__sale-avatar-button"
+                                onClick={() => setPreviewAvatar(staff.avatar || "/images/avatar/no-avt.png")}
+                                aria-label={`Xem ảnh đại diện ${staff.name}`}
+                              >
+                                <Image
+                                  src={staff.avatar || "/images/avatar/no-avt.png"}
+                                  width={64}
+                                  height={64}
+                                  alt={`${staff.name} avatar`}
+                                  className="addon-card__sale-avatar"
+                                />
+                              </button>
+                              <div className="addon-card__sales-copy">
+                                <span className="addon-card__sale-phone-name">{staff.name}</span>
+                                <span className="addon-card__sale-phone-number">{staff.phone}</span>
+                              </div>
+                            </div>
+
+                            <div className="addon-card__sales-actions">
+                              <a
+                                className="addon-card__sales-action addon-card__sales-action--call"
+                                href={`tel:${normalizedPhone}`}
+                                aria-label={`Gọi ${staff.name}`}
+                              >
+                                <FontAwesomeIcon type="phone" />
+                                <span>Gọi</span>
+                              </a>
+                              <a
+                                className="addon-card__sales-action addon-card__sales-action--zalo"
+                                href={zaloLink}
+                                target="_blank"
+                                rel="noreferrer"
+                                aria-label={`Chat Zalo với ${staff.name}`}
+                              >
+                                <FontAwesomeIcon type="chat" />
+                                <span>{t.sales.zaloAction}</span>
+                              </a>
+                            </div>
+                          </div>
+                        );
+                      })}
                     </div>
                   )}
                 </article>
@@ -325,6 +365,30 @@ export default function HomePage() {
           </section>
 
           {/* Đánh giá */}
+          {previewAvatar && (
+            <div className="avatar-preview-overlay" role="dialog" aria-modal="true" aria-label="Xem ảnh đại diện">
+              <button
+                type="button"
+                className="avatar-preview-overlay__close"
+                onClick={() => setPreviewAvatar(null)}
+                aria-label="Đóng" 
+              >
+                <FontAwesomeIcon type="close" />
+              </button>
+              <div className="avatar-preview-overlay__backdrop" onClick={() => setPreviewAvatar(null)} />
+              <div className="avatar-preview-overlay__panel">
+                <Image
+                  src={previewAvatar}
+                  alt="Ảnh đại diện đầy đủ"
+                  width={640}
+                  height={640}
+                  className="avatar-preview-overlay__image"
+                  priority
+                />
+              </div>
+            </div>
+          )}
+
           <section className="testimonials-section" aria-labelledby="testimonials-heading">
             <div className="section-shell testimonials-section__inner">
               <div className="testimonials-section__heading title-luxury">
@@ -415,11 +479,11 @@ export default function HomePage() {
               <h2 id="contact-cta-heading">{t.contactCta.heading}</h2>
               <p>{t.contactCta.lead}</p>
               <div className="contact-cta-section__actions">
-                <a className="contact-cta-button contact-cta-button--solid" href="tel:0962992555">
+                <a className="contact-cta-button contact-cta-button--solid" href={`tel:${siteContacts.phone.replace(/\s+/g, "")}`}>
                   <FontAwesomeIcon type="phone" />
                   <span>{t.contactCta.call}</span>
                 </a>
-                <a className="contact-cta-button contact-cta-button--outline" href="https://zalo.me/0962992555">
+                <a className="contact-cta-button contact-cta-button--outline" href={siteContacts.zalo} target="_blank" rel="noreferrer">
                   <FontAwesomeIcon type="chat" />
                   <span>{t.contactCta.chat}</span>
                 </a>
@@ -473,15 +537,15 @@ export default function HomePage() {
                   <div className="site-footer__contact-list">
                     <div className="site-footer__contact-item">
                       <span className="site-footer__contact-icon"><FontAwesomeIcon type="location" /></span>
-                      <span>{t.footer.contactList.address}</span>
+                      <span>{siteContacts.address}</span>
                     </div>
                     <div className="site-footer__contact-item">
                       <span className="site-footer__contact-icon"><FontAwesomeIcon type="phone" /></span>
-                      <a href={`tel:${t.footer.contactList.phone.replace(/\s+/g, "")}`}>{t.footer.contactList.phone}</a>
+                      <a href={`tel:${siteContacts.phone.replace(/\s+/g, "")}`}>{siteContacts.phone}</a>
                     </div>
                     <div className="site-footer__contact-item">
                       <span className="site-footer__contact-icon"><FontAwesomeIcon type="mail" /></span>
-                      <a href={`mailto:${t.footer.contactList.email}`}>{t.footer.contactList.email}</a>
+                      <a href={`mailto:${siteContacts.email}`}>{siteContacts.email}</a>
                     </div>
                   </div>
                 </div>

@@ -1,18 +1,16 @@
 "use client";
 import React, { useEffect, useRef, useState } from "react";
 
+import db from "../db.json";
+
 type SalesContact = {
-  id: number;
   name: string;
   phone: string;
   zalo: string;
+  avatar: string;
 };
 
-const salesContacts: SalesContact[] = [
-  { id: 1, name: "Sale Hà", phone: "090xxxxxxx", zalo: "090xxxxxxx" },
-  { id: 2, name: "Sale Linh", phone: "091xxxxxxx", zalo: "091xxxxxxx" },
-  { id: 3, name: "Sale Hùng", phone: "092xxxxxxx", zalo: "092xxxxxxx" }
-];
+const salesContacts = (db as any).sales as SalesContact[];
 
 type PanelType = "call" | "zalo" | null;
 
@@ -99,13 +97,22 @@ export default function FloatingContactWidget() {
         <div className="floating-contact-widget__panel-list">
           {salesContacts.map((contact) => (
             <a
-              key={contact.id}
+              key={contact.phone}
               className="floating-contact-widget__item"
               href={`tel:${contact.phone.replace(/\s+/g, "")}`}
               aria-label={`Gọi ${contact.name} ${contact.phone}`}
             >
+              <span className="floating-contact-widget__avatar-wrap">
+                <img
+                  src={contact.avatar || "/images/avatar/no-avt.png"}
+                  alt={`${contact.name} avatar`}
+                  className="floating-contact-widget__avatar"
+                />
+              </span>
               <span className="floating-contact-widget__item-title">{contact.name}</span>
-              <span className="floating-contact-widget__item-meta">{contact.phone}</span>
+              <span className="floating-contact-widget__item-meta floating-contact-widget__item-meta--icon" aria-hidden="true">
+                <img src="/images/phone.png" alt="" width="20" height="20" />
+              </span>
             </a>
           ))}
         </div>
@@ -124,19 +131,34 @@ export default function FloatingContactWidget() {
           <span>Chat ngay trên Zalo</span>
         </div>
         <div className="floating-contact-widget__panel-list">
-          {salesContacts.map((contact) => (
-            <a
-              key={contact.id}
-              className="floating-contact-widget__item"
-              href={`https://zalo.me/${contact.zalo.replace(/\s+/g, "")}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label={`Mở Zalo chat với ${contact.name}`}
-            >
-              <span className="floating-contact-widget__item-title">{contact.name}</span>
-              <span className="floating-contact-widget__item-meta">Chat Zalo</span>
-            </a>
-          ))}
+          {salesContacts.map((contact) => {
+            const zaloLink = contact.zalo?.startsWith("http")
+              ? contact.zalo
+              : `https://zalo.me/${contact.zalo.replace(/\s+/g, "")}`;
+
+            return (
+              <a
+                key={contact.phone}
+                className="floating-contact-widget__item"
+                href={zaloLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={`Mở Zalo chat với ${contact.name}`}
+              >
+                <span className="floating-contact-widget__avatar-wrap">
+                  <img
+                    src={contact.avatar || "/images/avatar/no-avt.png"}
+                    alt={`${contact.name} avatar`}
+                    className="floating-contact-widget__avatar"
+                  />
+                </span>
+                <span className="floating-contact-widget__item-title">{contact.name}</span>
+                <span className="floating-contact-widget__item-meta floating-contact-widget__item-meta--icon" aria-hidden="true">
+                  <img src="/images/zalo.png" alt="" width="20" height="20" />
+                </span>
+              </a>
+            );
+          })}
         </div>
       </div>
     </div>

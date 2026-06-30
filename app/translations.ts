@@ -1,9 +1,3 @@
-// Centralized translations object for the site.
-// - `translations.vi` is the source (Vietnamese).
-// - `translations.en` contains the English equivalents created from the Vietnamese source.
-// Import this file and use `translations[lang]` to read labels, headings, alt text, placeholders, etc.
-// Example: `import { translations } from './translations'; const t = translations[lang];`
-
 export const translations: Record<string, any> = {
   vi: {
     header: {
@@ -15,7 +9,6 @@ export const translations: Record<string, any> = {
         { label: "Liên hệ", href: "#sales" },
         { label: "Vé máy bay", href: "https://klfly.com" }
       ],
-      phone: "0962992555",
       cta: "Đặt xe ngay",
       menuOpenLabel: "Mở menu điều hướng",
       menuCloseLabel: "Đóng menu điều hướng"
@@ -34,7 +27,6 @@ export const translations: Record<string, any> = {
       title: "Tư Vấn Miễn Phí",
       role: "Mr. Dũng - Giám đốc điều hành",
       hotlineLabel: "Hotline:",
-      hotline: "0962992555",
       chatZalo: "Chat Zalo Ngay",
       note: "Hỗ trợ 24/7. Phản hồi trong vòng 5 phút."
     },
@@ -99,21 +91,13 @@ export const translations: Record<string, any> = {
     },
 
     sales: {
-      heading: "Liên hệ Sales",
-      lead: "Đội ngũ sales tư vấn sẵn sàng hỗ trợ đặt xe, báo giá và phục vụ theo yêu cầu qua hotline và Zalo.",
+      heading: "Đội Ngũ Chuyên Viên Hỗ Trợ",
+      lead: "Đội ngũ nhân sự tận tâm luôn túc trực 24/7 để hỗ trợ đặt xe nhanh chóng, báo giá chính xác và đáp ứng mọi yêu cầu đặc biệt.",
       hotlineLabel: "Hotline",
       hotlineTitle: "Liên hệ qua số điện thoại",
       zaloLabel: "Chat Zalo",
       zaloTitle: "Liên hệ Zalo nhanh",
-      zaloAction: "Liên hệ qua Zalo",
-      hotlines: [
-        { name: "Phạm Dũng", number: "0962992555" },
-        { name: "Khánh Linh Hạnh", number: "0969083555" }
-      ],
-      zaloContacts: [
-        { id: "0962992555", name: "Phạm Dũng" },
-        { id: "0969083555", name: "Khánh Linh Hạnh" }
-      ]
+      zaloAction: "Liên hệ qua Zalo"
     },
 
     testimonials: {
@@ -181,7 +165,7 @@ export const translations: Record<string, any> = {
     contactCta: {
       heading: "Bạn Cần Thuê Xe Cho Chuyến Đi Sắp Tới?",
       lead: "Hãy liên hệ ngay với chúng tôi để nhận được tư vấn tận tình và báo giá tốt nhất.",
-      call: "Gọi Hotline: 0962992555",
+      call: "Gọi Hotline",
       chat: "Chat Zalo"
     },
 
@@ -205,11 +189,6 @@ export const translations: Record<string, any> = {
         { label: "Tripadvisor", href: "https://www.tripadvisor.com", icon: "tripadvisor" },
         { label: "YouTube", href: "https://www.youtube.com", icon: "youtube" }
       ],
-      contactList: {
-        address: "Hà Nội, Việt Nam",
-        phone: "0962992555",
-        email: "info@khanhlinhtrans.com"
-      },
       copyright: "© 2024 Khánh Linh Trans. Premium Tourist Transportation Services."
     }
   },
@@ -224,7 +203,6 @@ export const translations: Record<string, any> = {
         { label: "Contact", href: "#sales" },
         { label: "Flight Tickets", href: "https://klfly.com" }
       ],
-      phone: "0962992555",
       cta: "Book Now",
       menuOpenLabel: "Open navigation menu",
       menuCloseLabel: "Close navigation menu"
@@ -243,7 +221,6 @@ export const translations: Record<string, any> = {
       title: "Free Consultation",
       role: "Mr. Dung - Chief Operating Officer",
       hotlineLabel: "Hotline:",
-      hotline: "0962992555",
       chatZalo: "Chat on Zalo",
       note: "Support 24/7. Typical response within 5 minutes."
     },
@@ -331,15 +308,7 @@ export const translations: Record<string, any> = {
       hotlineTitle: "Contact by phone",
       zaloLabel: "Zalo Chat",
       zaloTitle: "Quick Zalo contact",
-      zaloAction: "Contact via Zalo",
-      hotlines: [
-        { name: "Pham Dung", number: "0962992555" },
-        { name: "Khanh Linh Hanh", number: "0969083555" }
-      ],
-      zaloContacts: [
-        { id: "0962992555", name: "Pham Dung" },
-        { id: "0969083555", name: "Khanh Linh Hanh" }
-      ]
+      zaloAction: "Contact via Zalo"
     },
 
     testimonials: {
@@ -407,7 +376,7 @@ export const translations: Record<string, any> = {
     contactCta: {
       heading: "Need a Vehicle for Your Upcoming Trip?",
       lead: "Contact us now for attentive consultation and the best quote.",
-      call: "Call Hotline: 0962992555",
+      call: "Call Hotline",
       chat: "Chat on Zalo"
     },
 
@@ -430,11 +399,6 @@ export const translations: Record<string, any> = {
         { label: "Tripadvisor", href: "https://www.tripadvisor.com", icon: "tripadvisor" },
         { label: "YouTube", href: "https://www.youtube.com", icon: "youtube" }
       ],
-      contactList: {
-        address: "Hanoi, Vietnam",
-        phone: "0962992555",
-        email: "contact@khanhlinhtrans.com"
-      },
       copyright: "© 2024 Khánh Linh Trans. Premium Tourist Transportation Services."
     }
   }

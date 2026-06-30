@@ -204,5 +204,73 @@
         ]
       }
     ]
+  },
+  "sales": [
+    {
+      "name": "Phạm Dũng",
+      "phone": "0962992555",
+      "zalo": "https://zalo.me/0962992555",
+      "avatar": "/images/avatar/avt.jpg"
+    },
+    {
+      "name": "Khánh Linh Hạnh",
+      "phone": "0969083555",
+      "zalo": "https://zalo.me/0969083555",
+      "avatar": ""
+    },
+    {
+      "name": "Nguyễn An",
+      "phone": "0963123456",
+      "zalo": "https://zalo.me/0963123456",
+      "avatar": "/images/avatar/avt2.jpg"
+    },
+    {
+      "name": "Lê Bảo",
+      "phone": "0963234567",
+      "zalo": "https://zalo.me/0963234567",
+      "avatar": ""
+    },
+    {
+      "name": "Trần Quỳnh",
+      "phone": "0963345678",
+      "zalo": "https://zalo.me/0963345678",
+      "avatar": "/images/avatar/avt3.jpg"
+    },
+    {
+      "name": "Hoàng Minh",
+      "phone": "0963456789",
+      "zalo": "https://zalo.me/0963456789",
+      "avatar": ""
+    },
+    {
+      "name": "Phan Tuấn",
+      "phone": "0963567890",
+      "zalo": "https://zalo.me/0963567890",
+      "avatar": "/images/avatar/avt4.jpg"
+    },
+    {
+      "name": "Dương Hạnh",
+      "phone": "0963678901",
+      "zalo": "https://zalo.me/0963678901",
+      "avatar": ""
+    },
+    {
+      "name": "Vũ Khánh",
+      "phone": "0963789012",
+      "zalo": "https://zalo.me/0963789012",
+      "avatar": "/images/avatar/avt1.jpg"
+    },
+    {
+      "name": "Bùi Lan",
+      "phone": "0963890123",
+      "zalo": "https://zalo.me/0963890123",
+      "avatar": ""
+    }
+  ],
+  "contacts": {
+    "phone": "0962992555",
+    "zalo": "https://zalo.me/0962992555",
+    "email": "info@khanhlinhtrans.com",
+    "address": "Hà Nội, Việt Nam"
   }
 }

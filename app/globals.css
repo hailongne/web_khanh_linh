@@ -626,14 +626,14 @@ img {
 
 .reasons-list {
   display: grid;
-  gap: 22px;
+  gap: 20px;
 }
 
 .reason-card {
   display: grid;
   grid-template-columns: 72px minmax(0, 1fr);
   align-items: start;
-  gap: 20px;
+  gap: 18px;
   padding: 0;
 }
 
@@ -675,26 +675,48 @@ img {
 
 /* Remove white background and center reason cards (user request) */
 .reasons-section .reason-card {
-  background: transparent !important;
-  background-color: transparent !important;
-  border: none !important;
-  box-shadow: none !important;
-  padding: 0 !important;
-  border-radius: 0 !important;
-  grid-template-columns: 1fr !important;
-  align-items: center !important;
-  text-align: center !important;
+  background: rgba(255, 255, 255, 0.6) !important;
+  background-color: rgba(255, 255, 255, 0.6) !important;
+  border: 1px solid rgba(25, 138, 198, 0.08) !important;
+  box-shadow: 0 2px 8px rgba(13, 44, 64, 0.04) !important;
+  padding: 12px 12px !important;
+  border-radius: 12px !important;
+  grid-template-columns: 48px 1fr !important;
+  align-items: flex-start !important;
+  text-align: left !important;
+  gap: 12px !important;
+  transition: all 0.2s ease;
+}
+
+.reasons-section .reason-card:hover {
+  background: rgba(255, 255, 255, 0.8) !important;
+  box-shadow: 0 4px 12px rgba(13, 44, 64, 0.08) !important;
 }
 
 .reasons-section .reason-card__icon {
-  margin: 0 auto !important;
-  width: 60px !important;
-  height: 60px !important;
+  margin: 0 !important;
+  width: 48px !important;
+  height: 48px !important;
+  border-radius: 11px !important;
+  flex-shrink: 0;
 }
 
 .reasons-section .reason-card__body h3,
 .reasons-section .reason-card__body p {
-  text-align: center !important;
+  text-align: left !important;
+}
+
+.reasons-section .reason-card__body h3 {
+  margin: 1px 0 3px !important;
+  font-size: 0.95rem !important;
+  font-weight: 600 !important;
+  line-height: 1.2 !important;
+}
+
+.reasons-section .reason-card__body p {
+  margin: 0 !important;
+  font-size: 0.85rem !important;
+  line-height: 1.45 !important;
 }
 
 
@@ -756,6 +778,46 @@ img {
   .reasons-list {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 30px;
+  }
+
+  /* Desktop: restore centered card layout */
+  .reasons-section .reason-card {
+    background: transparent !important;
+    background-color: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    border-radius: 0 !important;
+    grid-template-columns: 1fr !important;
+    align-items: center !important;
+    text-align: center !important;
+    gap: 0 !important;
+  }
+
+  .reasons-section .reason-card__icon {
+    margin: 0 auto !important;
+    width: 60px !important;
+    height: 60px !important;
+    border-radius: 18px !important;
+  }
+
+  .reasons-section .reason-card__body h3,
+  .reasons-section .reason-card__body p {
+    text-align: center !important;
+  }
+
+  .reasons-section .reason-card__body h3 {
+    margin: 2px 0 10px !important;
+    font-size: 1.95rem !important;
+    font-weight: 400 !important;
+    line-height: 1.05 !important;
+    letter-spacing: -0.04em !important;
+  }
+
+  .reasons-section .reason-card__body p {
+    margin: 0 !important;
+    font-size: 1.1rem !important;
+    line-height: 1.75 !important;
   }
 }
 
@@ -895,12 +957,12 @@ img {
 .fleet-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 28px;
+  gap: 24px;
 }
 
 .fleet-scroll {
   display: flex;
-  gap: 28px;
+  gap: 24px;
   overflow-x: auto;
   padding-bottom: 8px;
   -webkit-overflow-scrolling: touch;
@@ -2095,12 +2157,12 @@ img {
 
   .reasons-list {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 20px 28px;
+    gap: 18px 24px;
   }
 
   .reason-card {
     grid-template-columns: 60px minmax(0, 1fr);
-    gap: 16px;
+    gap: 14px;
   }
 
   .reason-card__icon {
@@ -2647,38 +2709,48 @@ img {
 
   .reason-card {
     display: grid;
-    grid-template-columns: 52px 1fr;
+    grid-template-columns: 48px 1fr;
     gap: 14px;
-    align-items: center;
-    padding: 14px;
-    background: #fff;
-    border-radius: 14px;
-    box-shadow: 0 8px 24px rgba(13, 44, 64, 0.06);
-    border: 1px solid rgba(16, 33, 43, 0.05);
+    align-items: flex-start;
+    padding: 12px 12px;
+    background: rgba(255, 255, 255, 0.6);
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(13, 44, 64, 0.04);
+    border: 1px solid rgba(25, 138, 198, 0.08);
+    transition: all 0.2s ease;
+  }
+
+  .reason-card:hover {
+    background: rgba(255, 255, 255, 0.8);
+    box-shadow: 0 4px 12px rgba(13, 44, 64, 0.08);
   }
 
   .reason-card__icon {
-    width: 44px;
-    height: 44px;
-    border-radius: 12px;
+    width: 48px;
+    height: 48px;
+    border-radius: 11px;
     background: var(--brand-soft);
+    flex-shrink: 0;
   }
 
   .reason-card__icon .fa-icon {
-    font-size: 18px;
+    font-size: 20px;
   }
 
   .reason-card__body h3 {
-    margin: 0 0 4px;
-    font-size: 1rem;
+    margin: 1px 0 3px;
+    font-size: 0.95rem;
+    font-weight: 600;
     text-align: left;
+    line-height: 1.2;
   }
 
   .reason-card__body p {
     margin: 0;
-    font-size: 0.9rem;
-    line-height: 1.5;
+    font-size: 0.85rem;
+    line-height: 1.45;
     text-align: left;
+    color: var(--muted);
   }
 
   .pricing-table-wrap {

@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import db from "../db.json";
 import { SiteHeader } from "./site-header";
@@ -103,6 +103,7 @@ export default function HomePage() {
 
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [previewAvatar, setPreviewAvatar] = useState<string | null>(null);
+  const processGridRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -141,6 +142,38 @@ export default function HomePage() {
     }, 5000);
     return () => window.clearInterval(interval);
   }, []);
+
+  // Auto-scroll process grid on mobile
+  useEffect(() => {
+    const el = processGridRef.current;
+    if (!el || !isMobile) return;
+
+    let paused = false;
+    const cardWidth = 280; // process-card width on mobile
+    const gap = 16; // process-grid gap on mobile
+    const cardAndGap = cardWidth + gap;
+
+    const interval = window.setInterval(() => {
+      if (paused) return;
+      const maxScrollLeft = el.scrollWidth - el.clientWidth;
+      if (el.scrollLeft >= maxScrollLeft - 1) {
+        el.scrollTo({ left: 0, behavior: "smooth" });
+      } else {
+        el.scrollBy({ left: cardAndGap, behavior: "smooth" });
+      }
+    }, 2500);
+
+    const onEnter = () => (paused = true);
+    const onLeave = () => (paused = false);
+    el.addEventListener("mouseenter", onEnter);
+    el.addEventListener("mouseleave", onLeave);
+
+    return () => {
+      window.clearInterval(interval);
+      el.removeEventListener("mouseenter", onEnter);
+      el.removeEventListener("mouseleave", onLeave);
+    };
+  }, [isMobile]);
 
   return (
     <main className="page-shell" id="top">
@@ -202,7 +235,7 @@ export default function HomePage() {
                 <h2>{t.booking.heading}</h2>
                 <p>{t.booking.lead}</p>
               </div>
-              <div className="process-grid">
+              <div className="process-grid" ref={processGridRef}>
                 {t.booking.steps.map((step: any) => (
                   <article className="process-card" key={step.title}>
                     <div className="process-card__icon">

@@ -74,13 +74,17 @@ export default function FleetSection({ lang = "vi" }: { lang?: string }) {
     if (!el || items.length === 0) return;
 
     let paused = false;
+    const cardWidth = 260; // fleet card width
+    const gap = 28; // fleet scroll gap
+    const cardAndGap = cardWidth + gap;
+
     const interval = window.setInterval(() => {
       if (paused) return;
       const maxScrollLeft = el.scrollWidth - el.clientWidth;
       if (el.scrollLeft >= maxScrollLeft - 1) {
         el.scrollTo({ left: 0, behavior: "smooth" });
       } else {
-        el.scrollBy({ left: el.clientWidth, behavior: "smooth" });
+        el.scrollBy({ left: cardAndGap, behavior: "smooth" });
       }
     }, 2000);
 

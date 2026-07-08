@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useMemo, useState } from "react";
+import "./admin.css";
 import ToastContainer from "../components/toast/ToastContainer";
 import { showToast } from "../components/toast/toastService";
 
@@ -428,8 +429,9 @@ export default function AdminPage() {
           ))}
         </nav>
         <div className="admin-sidebar__footer">
-          <button className="admin-button admin-button--ghost admin-button--block" type="button" onClick={handleLogout}>
-            Đăng xuất
+          <button className="admin-button admin-button--ghost admin-sidebar__logout" type="button" onClick={handleLogout}>
+            <i className="fas fa-right-from-bracket" aria-hidden="true" />
+            <span>Đăng xuất</span>
           </button>
         </div>
       </aside>
@@ -719,45 +721,40 @@ function AccountPanel({
 
   return (
     <section className="admin-section">
-      <h2>Tài khoản quản trị</h2>
-      <div className="admin-language-grid">
-        <div className="admin-language-card">
-          <h3>Thông tin tài khoản</h3>
-          <div className="admin-form">
-            <label>
-              Username
-              <input type="text" value={info.username} readOnly />
-            </label>
-            <label>
-              Ngày tạo
-              <input type="text" value={formatDate(info.createdAt)} readOnly />
-            </label>
-            <label>
-              Ngày cập nhật gần nhất
-              <input type="text" value={formatDate(info.updatedAt)} readOnly />
-            </label>
+      <div className="admin-language-card admin-language-card--account-info">
+        <div className="admin-form">
+          <div>
+            <strong>Tên đăng nhập:</strong> {info.username}
+          </div>
+          <div>
+            <strong>Ngày tạo:</strong> {formatDate(info.createdAt)}
+          </div>
+          <div>
+            <strong>Ngày cập nhật gần nhất:</strong> {formatDate(info.updatedAt)}
           </div>
         </div>
+      </div>
+      <div className="admin-language-grid">
 
         <div className="admin-language-card">
-          <h3>Đổi Username</h3>
+          <h3>Đổi Tên Đăng Nhập</h3>
           <form className="admin-form" onSubmit={submitUsername}>
             <label>
-              Username hiện tại
+              Tên đăng nhập hiện tại
               <input type="text" value={info.username} readOnly />
             </label>
             <label>
-              Username mới
+              Tên đăng nhập mới
               <input
                 type="text"
                 value={newUsername}
                 onChange={(event) => setNewUsername(event.target.value)}
-                placeholder="Nhập username mới"
+                placeholder="Nhập tên đăng nhập mới"
               />
             </label>
             <div className="admin-form__actions">
               <button className="admin-button" type="submit">
-                Cập nhật Username
+                Cập nhật Tên Đăng Nhập
               </button>
             </div>
           </form>

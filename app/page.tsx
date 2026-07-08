@@ -1,6 +1,7 @@
 ﻿"use client";
 import React, { useEffect, useRef, useState } from "react";
 import Image from "next/image";
+import "./user.css";
 import db from "../db.json";
 import { SiteHeader } from "./site-header";
 import FleetSection from "./fleet-section";

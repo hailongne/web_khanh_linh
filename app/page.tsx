@@ -199,8 +199,8 @@ export default function HomePage() {
   const isTablet = useMediaQuery("(max-width: 1200px)");
 
   const heroBannerSlides = [
-    { desktopSrc: "/images/banner.png", mobileSrc: "/images/banner.png", alt: "Banner dá»‹ch vá»¥ 1" },
-    { desktopSrc: "/images/banner+.png", mobileSrc: "/images/banner+.png", alt: "Banner dá»‹ch vá»¥ 2" },
+    { desktopSrc: "/images/banner.png", mobileSrc: "/images/banner.png", alt: "" },
+    { desktopSrc: "/images/banner+.png", mobileSrc: "/images/banner+.png", alt: "" },
   ];
 
   const [bannerIndex, setBannerIndex] = useState(0);

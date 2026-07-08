@@ -9,10 +9,11 @@ const MENU_ITEMS: { key: MenuKey; label: string; icon: string }[] = [
   { key: "pricing", label: "Bảng giá", icon: "fas fa-money-bill-wave" },
   { key: "sales", label: "Chuyên viên", icon: "fas fa-user-tie" },
   { key: "testimonials", label: "Đánh giá", icon: "fas fa-star" },
-  { key: "faq", label: "Câu hỏi", icon: "fas fa-question-circle" }
+  { key: "faq", label: "Câu hỏi", icon: "fas fa-question-circle" },
+  { key: "account", label: "Tài khoản", icon: "fas fa-user-shield" }
 ];
 
-type MenuKey = "vehicles" | "pricing" | "sales" | "testimonials" | "faq";
+type MenuKey = "vehicles" | "pricing" | "sales" | "testimonials" | "faq" | "account";
 
 type Vehicle = {
   id: string;
@@ -77,6 +78,12 @@ type FaqData = {
   heading: string;
   lead: string;
   items: FaqItem[];
+};
+
+type AccountInfo = {
+  username: string;
+  createdAt: string | null;
+  updatedAt: string | null;
 };
 
 function buildHeaders(currentUsername: string, currentPassword: string) {
@@ -177,6 +184,7 @@ function ConfirmDialog({
 export default function AdminPage() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [authorized, setAuthorized] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -232,7 +240,13 @@ export default function AdminPage() {
       const response = await fetch(`/api/admin/data?type=vehicles&lang=vi`, {
         headers: buildHeaders(username, password)
       });
-      const result = await response.json();
+      const raw = await response.text();
+      let result: any = null;
+      try {
+        result = raw ? JSON.parse(raw) : null;
+      } catch {
+        result = null;
+      }
       if (!response.ok) {
         throw new Error(result?.error || "Đăng nhập thất bại");
       }
@@ -242,7 +256,11 @@ export default function AdminPage() {
     } catch (err) {
       setAuthorized(false);
       if (err instanceof Error) {
-        setError(err.message);
+        if (err.message === "Unauthorized") {
+          setError("Sai tài khoản hoặc mật khẩu. Vui lòng thử lại.");
+        } else {
+          setError(err.message);
+        }
       } else {
         setError("Lỗi đăng nhập.");
       }
@@ -298,6 +316,15 @@ export default function AdminPage() {
     setError(null);
   }
 
+  function handleCredentialsChange(nextUsername: string, nextPassword: string) {
+    setUsername(nextUsername);
+    setPassword(nextPassword);
+    if (typeof window !== "undefined") {
+      sessionStorage.setItem("admin-username", nextUsername);
+      sessionStorage.setItem("admin-password", nextPassword);
+    }
+  }
+
   if (!authorized) {
     return (
       <main className="admin-shell">
@@ -313,29 +340,50 @@ export default function AdminPage() {
           <form className="admin-form" onSubmit={handleLogin}>
             <label>
               Tên đăng nhập
-              <input
-                type="text"
-                value={username}
-                onChange={(event) => setUsername(event.target.value)}
-                placeholder="Nhập tên đăng nhập admin"
-              />
+              <div className="admin-input-wrap">
+                <span className="admin-input-icon" aria-hidden="true">
+                  <i className="fas fa-user" />
+                </span>
+                <input
+                  type="text"
+                  value={username}
+                  onChange={(event) => setUsername(event.target.value)}
+                  placeholder="Nhập tên đăng nhập"
+                />
+              </div>
             </label>
             <label>
               Mật khẩu
-              <input
-                type="password"
-                value={password}
-                onChange={(event) => setPassword(event.target.value)}
-                placeholder="Nhập mật khẩu admin"
-              />
+              <div className="admin-input-wrap">
+                <span className="admin-input-icon" aria-hidden="true">
+                  <i className="fas fa-lock" />
+                </span>
+                <input
+                  type={showPassword ? "text" : "password"}
+                  value={password}
+                  onChange={(event) => setPassword(event.target.value)}
+                  placeholder="Nhập mật khẩu"
+                />
+                <button
+                  className="admin-password-toggle"
+                  type="button"
+                  onClick={() => setShowPassword((value) => !value)}
+                  aria-label={showPassword ? "Ẩn mật khẩu" : "Hiện mật khẩu"}
+                  title={showPassword ? "Ẩn mật khẩu" : "Hiện mật khẩu"}
+                >
+                  <i className={`fas ${showPassword ? "fa-eye-slash" : "fa-eye"}`} />
+                </button>
+              </div>
             </label>
             <button className="admin-button" type="submit" disabled={loading || !username.trim() || !password.trim()}>
               Đăng nhập
             </button>
-            <p className="admin-note">Tài khoản mặc định: <code>adminKhanhLinhTrans</code></p>
-            <p className="admin-note">Mật khẩu mặc định: <code>KhanhLinh2026!</code></p>
-            <p className="admin-note">Nếu muốn an toàn hơn, hãy đặt biến môi trường <code>ADMIN_USERNAME</code> và <code>ADMIN_PASSWORD</code>.</p>
-            {error && <div className="admin-alert admin-alert--error">{error}</div>}
+            {error && (
+              <div className="admin-alert admin-alert--error admin-login-error">
+                <i className="fas fa-circle-exclamation" aria-hidden="true" />
+                <span>{error}</span>
+              </div>
+            )}
           </form>
         </div>
       </main>
@@ -450,6 +498,16 @@ export default function AdminPage() {
               openConfirm={openConfirm}
             />
           )}
+          {menu === "account" && (
+            <AccountPanel
+              username={username}
+              password={password}
+              onError={showError}
+              onSuccess={showSuccess}
+              setLoading={setLoading}
+              onCredentialsChange={handleCredentialsChange}
+            />
+          )}
         </main>
       </div>
 
@@ -500,6 +558,292 @@ function useAdminFetch(username: string, password: string) {
       }
     }),
     [username, password]
+  );
+}
+
+function AccountPanel({
+  username,
+  password,
+  onError,
+  onSuccess,
+  setLoading,
+  onCredentialsChange
+}: {
+  username: string;
+  password: string;
+  onError: (message: string) => void;
+  onSuccess: (message: string) => void;
+  setLoading: (value: boolean) => void;
+  onCredentialsChange: (nextUsername: string, nextPassword: string) => void;
+}) {
+  const [info, setInfo] = useState<AccountInfo>({
+    username,
+    createdAt: null,
+    updatedAt: null
+  });
+  const [newUsername, setNewUsername] = useState(username);
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [showCurrentPassword, setShowCurrentPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  useEffect(() => {
+    setNewUsername(username);
+  }, [username]);
+
+  useEffect(() => {
+    loadAccountInfo();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [username, password]);
+
+  function formatDate(value: string | null) {
+    if (!value) return "Chưa có";
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return "Chưa có";
+    return new Intl.DateTimeFormat("vi-VN", {
+      dateStyle: "medium",
+      timeStyle: "short"
+    }).format(date);
+  }
+
+  async function loadAccountInfo() {
+    setLoading(true);
+    try {
+      const response = await fetch("/api/admin/account", {
+        headers: buildHeaders(username, password)
+      });
+      const result = await response.json();
+      if (!response.ok) {
+        throw new Error(result?.error || "Lỗi tải thông tin tài khoản");
+      }
+      const data = result?.data as AccountInfo;
+      setInfo(data);
+      setNewUsername(data.username);
+    } catch (err) {
+      onError(err instanceof Error ? err.message : "Lỗi tải thông tin tài khoản");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function submitUsername(event: React.FormEvent) {
+    event.preventDefault();
+    const normalizedNewUsername = newUsername.trim();
+    if (!normalizedNewUsername) {
+      onError("Username mới không được để trống.");
+      return;
+    }
+    if (normalizedNewUsername === info.username) {
+      onError("Username mới không được trùng username hiện tại.");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const response = await fetch("/api/admin/account", {
+        method: "PUT",
+        headers: buildHeaders(username, password),
+        body: JSON.stringify({
+          action: "username",
+          currentUsername: info.username,
+          newUsername: normalizedNewUsername
+        })
+      });
+      const result = await response.json();
+      if (!response.ok) {
+        throw new Error(result?.error || "Không thể đổi username");
+      }
+
+      const updated = result?.data as AccountInfo;
+      setInfo(updated);
+      setNewUsername(updated.username);
+      onCredentialsChange(updated.username, password);
+      onSuccess("Đổi username thành công.");
+    } catch (err) {
+      onError(err instanceof Error ? err.message : "Không thể đổi username");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function submitPassword(event: React.FormEvent) {
+    event.preventDefault();
+
+    if (!currentPassword || !newPassword || !confirmPassword) {
+      onError("Vui lòng nhập đầy đủ các trường mật khẩu.");
+      return;
+    }
+
+    if (newPassword !== confirmPassword) {
+      onError("Mật khẩu mới và xác nhận mật khẩu không khớp.");
+      return;
+    }
+
+    if (newPassword.length < 8) {
+      onError("Mật khẩu mới phải có ít nhất 8 ký tự.");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const response = await fetch("/api/admin/account", {
+        method: "PUT",
+        headers: buildHeaders(username, password),
+        body: JSON.stringify({
+          action: "password",
+          currentPassword,
+          newPassword,
+          confirmPassword
+        })
+      });
+      const result = await response.json();
+      if (!response.ok) {
+        throw new Error(result?.error || "Không thể đổi mật khẩu");
+      }
+
+      const updated = result?.data as AccountInfo;
+      setInfo(updated);
+      onCredentialsChange(updated.username, newPassword);
+      setCurrentPassword("");
+      setNewPassword("");
+      setConfirmPassword("");
+      onSuccess("Đổi mật khẩu thành công.");
+    } catch (err) {
+      onError(err instanceof Error ? err.message : "Không thể đổi mật khẩu");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return (
+    <section className="admin-section">
+      <h2>Tài khoản quản trị</h2>
+      <div className="admin-language-grid">
+        <div className="admin-language-card">
+          <h3>Thông tin tài khoản</h3>
+          <div className="admin-form">
+            <label>
+              Username
+              <input type="text" value={info.username} readOnly />
+            </label>
+            <label>
+              Ngày tạo
+              <input type="text" value={formatDate(info.createdAt)} readOnly />
+            </label>
+            <label>
+              Ngày cập nhật gần nhất
+              <input type="text" value={formatDate(info.updatedAt)} readOnly />
+            </label>
+          </div>
+        </div>
+
+        <div className="admin-language-card">
+          <h3>Đổi Username</h3>
+          <form className="admin-form" onSubmit={submitUsername}>
+            <label>
+              Username hiện tại
+              <input type="text" value={info.username} readOnly />
+            </label>
+            <label>
+              Username mới
+              <input
+                type="text"
+                value={newUsername}
+                onChange={(event) => setNewUsername(event.target.value)}
+                placeholder="Nhập username mới"
+              />
+            </label>
+            <div className="admin-form__actions">
+              <button className="admin-button" type="submit">
+                Cập nhật Username
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <div className="admin-language-card">
+          <h3>Đổi Password</h3>
+          <form className="admin-form admin-form--password" onSubmit={submitPassword}>
+            <label>
+              Mật khẩu hiện tại
+              <div className="admin-input-wrap">
+                <span className="admin-input-icon" aria-hidden="true">
+                  <i className="fas fa-lock" />
+                </span>
+                <input
+                  type={showCurrentPassword ? "text" : "password"}
+                  value={currentPassword}
+                  onChange={(event) => setCurrentPassword(event.target.value)}
+                  placeholder="Nhập mật khẩu hiện tại"
+                />
+                <button
+                  className="admin-password-toggle"
+                  type="button"
+                  onClick={() => setShowCurrentPassword((value) => !value)}
+                  aria-label={showCurrentPassword ? "Ẩn mật khẩu hiện tại" : "Hiện mật khẩu hiện tại"}
+                  title={showCurrentPassword ? "Ẩn mật khẩu hiện tại" : "Hiện mật khẩu hiện tại"}
+                >
+                  <i className={`fas ${showCurrentPassword ? "fa-eye-slash" : "fa-eye"}`} />
+                </button>
+              </div>
+            </label>
+            <label>
+              Mật khẩu mới
+              <div className="admin-input-wrap">
+                <span className="admin-input-icon" aria-hidden="true">
+                  <i className="fas fa-lock" />
+                </span>
+                <input
+                  type={showNewPassword ? "text" : "password"}
+                  value={newPassword}
+                  onChange={(event) => setNewPassword(event.target.value)}
+                  placeholder="Nhập mật khẩu mới"
+                />
+                <button
+                  className="admin-password-toggle"
+                  type="button"
+                  onClick={() => setShowNewPassword((value) => !value)}
+                  aria-label={showNewPassword ? "Ẩn mật khẩu mới" : "Hiện mật khẩu mới"}
+                  title={showNewPassword ? "Ẩn mật khẩu mới" : "Hiện mật khẩu mới"}
+                >
+                  <i className={`fas ${showNewPassword ? "fa-eye-slash" : "fa-eye"}`} />
+                </button>
+              </div>
+            </label>
+            <label>
+              Xác nhận mật khẩu mới
+              <div className="admin-input-wrap">
+                <span className="admin-input-icon" aria-hidden="true">
+                  <i className="fas fa-lock" />
+                </span>
+                <input
+                  type={showConfirmPassword ? "text" : "password"}
+                  value={confirmPassword}
+                  onChange={(event) => setConfirmPassword(event.target.value)}
+                  placeholder="Nhập lại mật khẩu mới"
+                />
+                <button
+                  className="admin-password-toggle"
+                  type="button"
+                  onClick={() => setShowConfirmPassword((value) => !value)}
+                  aria-label={showConfirmPassword ? "Ẩn xác nhận mật khẩu" : "Hiện xác nhận mật khẩu"}
+                  title={showConfirmPassword ? "Ẩn xác nhận mật khẩu" : "Hiện xác nhận mật khẩu"}
+                >
+                  <i className={`fas ${showConfirmPassword ? "fa-eye-slash" : "fa-eye"}`} />
+                </button>
+              </div>
+            </label>
+            <div className="admin-form__actions">
+              <button className="admin-button" type="submit">
+                Cập nhật Password
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </section>
   );
 }
 

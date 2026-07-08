@@ -500,10 +500,11 @@ html {
 
 .admin-shell {
   min-height: 100vh;
-  padding: 48px 20px;
-  background:
-    radial-gradient(circle at top left, rgba(25, 138, 198, 0.18), transparent 28%),
-    linear-gradient(180deg, #f4fbff 0%, #eef4f7 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 36px 20px;
+  background: linear-gradient(180deg, #8fb0de 0%, #dcb2cc 100%);
 }
 
 .admin-card {
@@ -515,6 +516,187 @@ html {
   border-radius: 28px;
   box-shadow: 0 28px 80px rgba(13, 44, 64, 0.14);
   backdrop-filter: blur(10px);
+}
+
+.admin-card.admin-card--login {
+  position: relative;
+  width: min(560px, 100%);
+  padding: clamp(28px, 4.5vw, 50px) clamp(22px, 4.2vw, 56px);
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  backdrop-filter: none;
+}
+
+.admin-card--login .admin-header {
+  margin-bottom: 24px;
+  justify-content: center;
+  text-align: center;
+}
+
+.admin-card--login h1 {
+  font-size: clamp(2rem, 5vw, 3rem);
+  margin: 0;
+  font-weight: 400;
+  letter-spacing: 0.14em;
+  color: #0f1f4f;
+}
+
+.admin-card--login .admin-form {
+  gap: 18px;
+}
+
+.admin-card--login .admin-form label {
+  gap: 8px;
+  font-weight: 600;
+  font-size: 0.92rem;
+  color: #27386a;
+}
+
+.admin-card--login .admin-input-wrap {
+  position: relative;
+  border-bottom: 1.6px solid rgba(15, 31, 79, 0.75);
+}
+
+.admin-card--login .admin-input-wrap input {
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  padding: 8px 34px 8px 34px;
+  box-shadow: none;
+}
+
+.admin-card--login .admin-input-icon {
+  position: absolute;
+  left: 2px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #0f2d5f;
+  font-size: 0.9rem;
+  pointer-events: none;
+}
+
+.admin-card--login .admin-password-toggle {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  border: 0;
+  background: transparent;
+  color: #0f2d5f;
+  width: 30px;
+  height: 30px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 140ms ease, color 140ms ease;
+}
+
+.admin-card--login .admin-password-toggle:hover {
+  background: rgba(15, 45, 95, 0.12);
+  color: #092449;
+}
+
+.admin-card--login .admin-password-toggle:focus-visible {
+  outline: 2px solid rgba(15, 45, 95, 0.35);
+  outline-offset: 2px;
+}
+
+.admin-card--login .admin-input-wrap:has(.admin-password-toggle) input {
+  padding-right: 34px;
+}
+
+.admin-card--login .admin-form input::placeholder {
+  color: rgba(39, 56, 106, 0.62);
+  font-weight: 400;
+}
+
+.admin-card--login .admin-form input:focus {
+  border-color: transparent;
+  box-shadow: none;
+}
+
+.admin-card--login .admin-button {
+  margin-top: 12px;
+  border-radius: 0;
+  align-self: center;
+  min-width: min(300px, 100%);
+  padding: 14px 18px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  background: #082a56;
+  box-shadow: none;
+}
+
+.admin-card--login .admin-button:hover {
+  transform: translateY(-1px);
+  background: #062246;
+}
+
+.admin-card--login .admin-alert {
+  margin: 8px 0 0;
+  border-radius: 10px;
+}
+
+.admin-card--login .admin-login-error {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.admin-card--login .admin-login-error i {
+  margin-top: 2px;
+}
+
+.admin-card--login::before,
+.admin-card--login::after {
+  content: "";
+  display: block;
+  width: 100%;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.68);
+}
+
+.admin-card--login::before {
+  margin-bottom: clamp(26px, 4vw, 40px);
+}
+
+.admin-card--login::after {
+  margin-top: clamp(26px, 4vw, 40px);
+}
+
+.admin-card--login .admin-tag {
+  margin-bottom: 10px;
+  color: rgba(15, 45, 95, 0.8);
+}
+
+.admin-card--login .admin-header p {
+  margin-top: 10px;
+  color: rgba(15, 45, 95, 0.82);
+}
+
+@media (max-width: 760px) {
+  .admin-shell {
+    padding: 18px 12px;
+  }
+
+  .admin-card.admin-card--login {
+    width: min(94vw, 560px);
+    padding: 24px 16px;
+  }
+
+  .admin-card--login h1 {
+    font-size: clamp(1.6rem, 9vw, 2.1rem);
+    letter-spacing: 0.08em;
+  }
+
+  .admin-card--login .admin-button {
+    min-width: min(280px, 100%);
+  }
 }
 
 /* Admin app layout: sidebar left, content right */
@@ -799,6 +981,53 @@ html {
   outline: none;
   border-color: rgba(25, 138, 198, 0.45);
   box-shadow: 0 0 0 4px rgba(25, 138, 198, 0.08);
+}
+
+.admin-form--password .admin-input-wrap {
+  position: relative;
+}
+
+.admin-form--password .admin-input-wrap input {
+  padding-left: 40px;
+  padding-right: 40px;
+}
+
+.admin-form--password .admin-input-icon {
+  position: absolute;
+  left: 13px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #5f6f7c;
+  font-size: 0.9rem;
+  pointer-events: none;
+}
+
+.admin-form--password .admin-password-toggle {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  border: 0;
+  background: transparent;
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  color: #4f5f6d;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 140ms ease, color 140ms ease;
+}
+
+.admin-form--password .admin-password-toggle:hover {
+  background: rgba(25, 138, 198, 0.1);
+  color: #1578aa;
+}
+
+.admin-form--password .admin-password-toggle:focus-visible {
+  outline: 2px solid rgba(25, 138, 198, 0.35);
+  outline-offset: 1px;
 }
 
 .admin-form--grid {

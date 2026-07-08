@@ -1,10 +1,9 @@
 import fs from "node:fs";
 import path from "node:path";
 import { NextResponse } from "next/server";
+import { isAuthorized } from "../_lib/adminAuth";
 
 const DB_PATH = path.join(process.cwd(), "db.json");
-const DEFAULT_ADMIN_USERNAME = "adminKhanhLinhTrans";
-const DEFAULT_ADMIN_PASSWORD = "KhanhLinh2026!";
 
 type Spec = {
   label: string;
@@ -35,14 +34,6 @@ function writeDb(data: DbShape): void {
 
 function getLang(url: URL): string {
   return url.searchParams.get("lang")?.trim() || "vi";
-}
-
-function isAuthorized(req: Request): boolean {
-  const username = req.headers.get("x-admin-username")?.trim();
-  const password = req.headers.get("x-admin-password")?.trim();
-  const expectedUsername = process.env.ADMIN_USERNAME?.trim() || DEFAULT_ADMIN_USERNAME;
-  const expectedPassword = process.env.ADMIN_PASSWORD?.trim() || DEFAULT_ADMIN_PASSWORD;
-  return Boolean(username) && username === expectedUsername && Boolean(password) && password === expectedPassword;
 }
 
 function generateId(items: Vehicle[]): string {
@@ -111,7 +102,7 @@ function unauthorizedResponse() {
 }
 
 export async function GET(req: Request) {
-  if (!isAuthorized(req)) {
+  if (!(await isAuthorized(req))) {
     return unauthorizedResponse();
   }
 
@@ -124,7 +115,7 @@ export async function GET(req: Request) {
 }
 
 export async function POST(req: Request) {
-  if (!isAuthorized(req)) {
+  if (!(await isAuthorized(req))) {
     return unauthorizedResponse();
   }
 
@@ -154,7 +145,7 @@ export async function POST(req: Request) {
 }
 
 export async function PUT(req: Request) {
-  if (!isAuthorized(req)) {
+  if (!(await isAuthorized(req))) {
     return unauthorizedResponse();
   }
 
@@ -196,7 +187,7 @@ export async function PUT(req: Request) {
 }
 
 export async function DELETE(req: Request) {
-  if (!isAuthorized(req)) {
+  if (!(await isAuthorized(req))) {
     return unauthorizedResponse();
   }
 

@@ -570,5 +570,11 @@
         }
       ]
     }
+  },
+  "admin": {
+    "username": "admin",
+    "passwordHash": "$2b$10$hSJIRLtfsa7s/jHFmDpJ3ukQbFJkALu3KVQ94vZzT.b2Wn9iKVI52",
+    "createdAt": "2026-07-08T09:20:10.847Z",
+    "updatedAt": "2026-07-08T09:20:24.130Z"
   }
 }

@@ -1,17 +1,7 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 import { NextResponse } from "next/server";
-
-const DEFAULT_ADMIN_USERNAME = "adminKhanhLinhTrans";
-const DEFAULT_ADMIN_PASSWORD = "KhanhLinh2026!";
-
-function isAuthorized(req: Request): boolean {
-  const username = req.headers.get("x-admin-username")?.trim();
-  const password = req.headers.get("x-admin-password")?.trim();
-  const expectedUsername = process.env.ADMIN_USERNAME?.trim() || DEFAULT_ADMIN_USERNAME;
-  const expectedPassword = process.env.ADMIN_PASSWORD?.trim() || DEFAULT_ADMIN_PASSWORD;
-  return Boolean(username) && username === expectedUsername && Boolean(password) && password === expectedPassword;
-}
+import { isAuthorized } from "../_lib/adminAuth";
 
 function unauthorizedResponse() {
   return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
@@ -30,7 +20,7 @@ async function ensureDirectoryExists(dirPath: string) {
 }
 
 export async function POST(req: Request) {
-  if (!isAuthorized(req)) {
+  if (!(await isAuthorized(req))) {
     return unauthorizedResponse();
   }
 

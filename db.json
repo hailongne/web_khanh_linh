@@ -4,11 +4,14 @@
       {
         "id": "1",
         "name": "KIA CARNIVAL",
-        "badge": "7 chỗ",
-        "price": "1.200k/ngày",
+        "badge": "7 Chỗ",
+        "price": "1.100k/ngày",
         "image": "/images/KIA_CARNIVAL_7.png",
         "specs": [
-          { "label": "7 ghế", "icon": "seat" }
+          {
+            "label": "7 ghế",
+            "icon": "seat"
+          }
         ]
       },
       {
@@ -18,7 +21,10 @@
         "price": "2.000k/ngày",
         "image": "/images/TOYOTA_PRADO_7.webp",
         "specs": [
-          { "label": "7 ghế", "icon": "seat" }
+          {
+            "label": "7 ghế",
+            "icon": "seat"
+          }
         ]
       },
       {
@@ -28,7 +34,10 @@
         "price": "1.500k/ngày",
         "image": "/images/FORD_TRANSIT_LIMOSINE_11.png",
         "specs": [
-          { "label": "11 ghế", "icon": "seat" }
+          {
+            "label": "11 ghế",
+            "icon": "seat"
+          }
         ]
       },
       {
@@ -38,7 +47,10 @@
         "price": "1.800k/ngày",
         "image": "/images/HYUNDAI_SOLATI_16_1.png",
         "specs": [
-          { "label": "16 ghế", "icon": "seat" }
+          {
+            "label": "16 ghế",
+            "icon": "seat"
+          }
         ]
       },
       {
@@ -48,7 +60,10 @@
         "price": "1.800k/ngày",
         "image": "/images/HYUNDAI_SOLATI_16_2.png",
         "specs": [
-          { "label": "16 ghế", "icon": "seat" }
+          {
+            "label": "16 ghế",
+            "icon": "seat"
+          }
         ]
       },
       {
@@ -58,7 +73,10 @@
         "price": "2.500k/ngày",
         "image": "/images/THACO_GARDEN_29.png",
         "specs": [
-          { "label": "29 ghế", "icon": "seat" }
+          {
+            "label": "29 ghế",
+            "icon": "seat"
+          }
         ]
       },
       {
@@ -68,7 +86,10 @@
         "price": "2.500k/ngày",
         "image": "/images/THACO_MEADOW_29.png",
         "specs": [
-          { "label": "29 ghế", "icon": "seat" }
+          {
+            "label": "29 ghế",
+            "icon": "seat"
+          }
         ]
       },
       {
@@ -78,7 +99,10 @@
         "price": "3.200k/ngày",
         "image": "/images/TRACOMECO_GLOBAL_34.png",
         "specs": [
-          { "label": "34 ghế", "icon": "seat" }
+          {
+            "label": "34 ghế",
+            "icon": "seat"
+          }
         ]
       },
       {
@@ -88,18 +112,24 @@
         "price": "4.500k/ngày",
         "image": "/images/THACO_BLUESKY_TB120_47.png",
         "specs": [
-          { "label": "47 ghế", "icon": "seat" }
+          {
+            "label": "47 ghế",
+            "icon": "seat"
+          }
         ]
       },
       {
-        "id": "10",
         "name": "HAECO GRANBIRD",
         "badge": "47 chỗ",
-        "price": "4.500k/ngày",
+        "price": "4.000k/ngày",
         "image": "/images/HAECO_GRANBIRD_47.png",
         "specs": [
-          { "label": "47 ghế", "icon": "seat" }
-        ]
+          {
+            "label": "47 ghế",
+            "icon": "seat"
+          }
+        ],
+        "id": "10"
       }
     ],
     "en": [
@@ -110,7 +140,10 @@
         "price": "From 1.200k/day",
         "image": "/images/KIA_CARNIVAL_7.png",
         "specs": [
-          { "label": "7 seats", "icon": "seat" }
+          {
+            "label": "7 seats",
+            "icon": "seat"
+          }
         ]
       },
       {
@@ -120,7 +153,10 @@
         "price": "From 2.000k/day",
         "image": "/images/TOYOTA_PRADO_7.webp",
         "specs": [
-          { "label": "7 seats", "icon": "seat" }
+          {
+            "label": "7 seats",
+            "icon": "seat"
+          }
         ]
       },
       {
@@ -130,7 +166,10 @@
         "price": "From 1.500k/day",
         "image": "/images/FORD_TRANSIT_LIMOSINE_11.png",
         "specs": [
-          { "label": "11 seats", "icon": "seat" }
+          {
+            "label": "11 seats",
+            "icon": "seat"
+          }
         ]
       },
       {
@@ -140,7 +179,10 @@
         "price": "From 1.800k/day",
         "image": "/images/HYUNDAI_SOLATI_16_1.png",
         "specs": [
-          { "label": "16 seats", "icon": "seat" }
+          {
+            "label": "16 seats",
+            "icon": "seat"
+          }
         ]
       },
       {
@@ -150,7 +192,10 @@
         "price": "From 1.800k/day",
         "image": "/images/HYUNDAI_SOLATI_16_2.png",
         "specs": [
-          { "label": "16 seats", "icon": "seat" }
+          {
+            "label": "16 seats",
+            "icon": "seat"
+          }
         ]
       },
       {
@@ -160,7 +205,10 @@
         "price": "From 2.500k/day",
         "image": "/images/THACO_GARDEN_29.png",
         "specs": [
-          { "label": "29 seats", "icon": "seat" }
+          {
+            "label": "29 seats",
+            "icon": "seat"
+          }
         ]
       },
       {
@@ -170,7 +218,10 @@
         "price": "From 2.500k/day",
         "image": "/images/THACO_MEADOW_29.png",
         "specs": [
-          { "label": "29 seats", "icon": "seat" }
+          {
+            "label": "29 seats",
+            "icon": "seat"
+          }
         ]
       },
       {
@@ -180,7 +231,10 @@
         "price": "From 3.200k/day",
         "image": "/images/TRACOMECO_GLOBAL_34.png",
         "specs": [
-          { "label": "34 seats", "icon": "seat" }
+          {
+            "label": "34 seats",
+            "icon": "seat"
+          }
         ]
       },
       {
@@ -190,18 +244,24 @@
         "price": "From 4.500k/day",
         "image": "/images/THACO_BLUESKY_TB120_47.png",
         "specs": [
-          { "label": "47 seats", "icon": "seat" }
+          {
+            "label": "47 seats",
+            "icon": "seat"
+          }
         ]
       },
       {
-        "id": "10",
         "name": "HAECO GRANBIRD",
         "badge": "47 seats",
-        "price": "From 4.500k/day",
+        "price": "From 4.000k/day",
         "image": "/images/HAECO_GRANBIRD_47.png",
         "specs": [
-          { "label": "47 seats", "icon": "seat" }
-        ]
+          {
+            "label": "47 seats",
+            "icon": "seat"
+          }
+        ],
+        "id": "10"
       }
     ]
   },
@@ -272,5 +332,243 @@
     "zalo": "https://zalo.me/0962992555",
     "email": "info@khanhlinhtrans.com",
     "address": "Hà Nội, Việt Nam"
+  },
+  "pricing": {
+    "vi": {
+      "heading": "Bảng Giá Tham Khảo Nhanh",
+      "lead": "Giá cước có thể thay đổi tùy theo thời điểm và yêu cầu cụ thể. Vui lòng liên hệ để có báo giá chính xác nhất.",
+      "note": "* Bảng giá chỉ mang tính chất tham khảo. Đã bao gồm lương lái xe, chi phí cầu đường, xăng xe.",
+      "cols": [
+        "Loại xe",
+        "City Tour (1 ngày)",
+        "Đi tỉnh (từ 100km)",
+        "Sân bay (1 chiều)"
+      ],
+      "rows": [
+        {
+          "vehicle": "Xe 4 Chỗ",
+          "cityTour": "Từ 1.500.000đ",
+          "provinceTrip": "Liên hệ",
+          "airport": "250.000đ"
+        },
+        {
+          "vehicle": "Xe 7 Chỗ",
+          "cityTour": "Từ 2.500.000đ",
+          "provinceTrip": "Liên hệ",
+          "airport": "350.000đ"
+        },
+        {
+          "vehicle": "Xe 16 Chỗ",
+          "cityTour": "Từ 3.500.000đ",
+          "provinceTrip": "Liên hệ",
+          "airport": "500.000đ"
+        },
+        {
+          "vehicle": "Xe 29 Chỗ",
+          "cityTour": "Từ 4.500.000đ",
+          "provinceTrip": "Liên hệ",
+          "airport": "800.000đ"
+        },
+        {
+          "vehicle": "Xe 45 Chỗ",
+          "cityTour": "Từ 6.000.000đ",
+          "provinceTrip": "Liên hệ",
+          "airport": "1.500.000đ"
+        },
+        {
+          "vehicle": "Xe 47 Chỗ",
+          "cityTour": "Từ 6.500.000đ",
+          "provinceTrip": "Liên hệ",
+          "airport": "2.000.000đ"
+        }
+      ]
+    },
+    "en": {
+      "heading": "Indicative Price List",
+      "lead": "Prices may vary depending on timing and requirements. Please contact us for an accurate quote.",
+      "note": "* Prices are indicative. Includes driver salary, tolls and fuel.",
+      "cols": [
+        "Vehicle",
+        "City Tour (1 day)",
+        "Out-of-town (from 100km)",
+        "Airport (one-way)"
+      ],
+      "rows": [
+        {
+          "vehicle": "4-Seater",
+          "cityTour": "From 1.500.000 VND",
+          "provinceTrip": "Contact us",
+          "airport": "250.000 VND"
+        },
+        {
+          "vehicle": "7-Seater",
+          "cityTour": "From 2.500.000 VND",
+          "provinceTrip": "Contact us",
+          "airport": "350.000 VND"
+        },
+        {
+          "vehicle": "16-Seater",
+          "cityTour": "From 3.500.000 VND",
+          "provinceTrip": "Contact us",
+          "airport": "500.000 VND"
+        },
+        {
+          "vehicle": "29-Seater",
+          "cityTour": "From 4.500.000 VND",
+          "provinceTrip": "Contact us",
+          "airport": "800.000 VND"
+        },
+        {
+          "vehicle": "45-Seater",
+          "cityTour": "From 6.000.000 VND",
+          "provinceTrip": "Contact us",
+          "airport": "1.500.000 VND"
+        },
+        {
+          "vehicle": "47-Seater",
+          "cityTour": "From 6.500.000đ",
+          "provinceTrip": "Contact us",
+          "airport": "2.000.000VND"
+        }
+      ]
+    }
+  },
+  "testimonials": {
+    "vi": {
+      "heading": "Khách Hàng Nói Gì",
+      "lead": "Những phản hồi thực tế sau các chuyến công tác, du lịch gia đình và hợp đồng đưa đón dài hạn.",
+      "scoreLabel": "Trải nghiệm được đánh giá xuất sắc",
+      "items": [
+        {
+          "quote": "Dịch vụ rất chuyên nghiệp, xe mới và sạch sẽ. Bác tài vui tính, hỗ trợ đoàn trong suốt chuyến đi Sapa. Lịch trình thay đổi vẫn được điều phối rất nhanh.",
+          "name": "Anh Tuấn",
+          "role": "Giám đốc Công ty TNHH ABC",
+          "badge": "Chuyến Sapa 3N2Đ",
+          "tag": "Doanh nghiệp",
+          "initials": "T"
+        },
+        {
+          "quote": "Nhà mình đặt xe 16 chỗ đi sân bay và Hạ Long. Tài xế đến đúng giờ, xe thơm sạch, hỗ trợ người lớn tuổi rất chu đáo nên cả nhà yên tâm.",
+          "name": "Chị Minh Hà",
+          "role": "Khách gia đình",
+          "badge": "Đưa đón gia đình",
+          "tag": "16 chỗ",
+          "initials": "H"
+        },
+        {
+          "quote": "Khâu báo giá rõ ràng, hợp đồng nhanh gọn và đội điều phối phản hồi gần như ngay lập tức. Đây là bên hiếm hoi giữ chất lượng ổn định qua nhiều lần đặt.",
+          "name": "Anh Hoàng Nam",
+          "role": "Điều hành tour nội địa",
+          "badge": "Đối tác tour",
+          "tag": "29 chỗ",
+          "initials": "N"
+        }
+      ],
+      "stats": [
+        {
+          "value": "4.9/5",
+          "label": "điểm hài lòng trung bình từ khách đoàn và khách lẻ"
+        },
+        {
+          "value": "200+",
+          "label": "hợp đồng doanh nghiệp đã phục vụ trong năm"
+        },
+        {
+          "value": "24/7",
+          "label": "điều phối hỗ trợ thay đổi lịch trình khẩn"
+        }
+      ]
+    },
+    "en": {
+      "heading": "What Customers Say",
+      "lead": "Real feedback from business trips, family tours and long-term transfer contracts.",
+      "scoreLabel": "Experience rated excellent",
+      "items": [
+        {
+          "quote": "Very professional service, new and clean vehicles. The driver was friendly and supported the group throughout the Sapa trip. Schedule changes were coordinated very quickly.",
+          "name": "Mr. Tuan",
+          "role": "CEO, ABC Co., Ltd.",
+          "badge": "Sapa Trip 3D2N",
+          "tag": "Corporate",
+          "initials": "T"
+        },
+        {
+          "quote": "We booked a 16-seater for airport transfer and Ha Long. The driver arrived on time, the vehicle was clean and assisted elderly passengers very carefully, so the whole family felt at ease.",
+          "name": "Ms. Minh Ha",
+          "role": "Family customer",
+          "badge": "Family transfer",
+          "tag": "16-seater",
+          "initials": "H"
+        },
+        {
+          "quote": "Clear quoting process, quick contracts and the operations team responded almost immediately. This is one of the few providers that consistently maintains quality over multiple bookings.",
+          "name": "Mr. Hoang Nam",
+          "role": "Domestic tour operator",
+          "badge": "Tour partner",
+          "tag": "29-seater",
+          "initials": "N"
+        }
+      ],
+      "stats": [
+        {
+          "value": "4.9/5",
+          "label": "average satisfaction score from group and individual customers"
+        },
+        {
+          "value": "200+",
+          "label": "corporate contracts served this year"
+        },
+        {
+          "value": "24/7",
+          "label": "operations support for urgent itinerary changes"
+        }
+      ]
+    }
+  },
+  "faq": {
+    "vi": {
+      "heading": "Câu Hỏi Thường Gặp ",
+      "lead": "Giải đáp những thắc mắc phổ biến của khách hàng khi thuê xe.",
+      "items": [
+        {
+          "question": "Giá thuê xe đã bao gồm các chi phí nào?",
+          "answer": "Chi phí cơ bản thường đã bao gồm xe, tài xế, xăng dầu và phí cầu đường theo lịch trình đã chốt. Các khoản phát sinh như lưu đêm, bến bãi hoặc thay đổi tuyến sẽ được báo lại rõ trước khi xác nhận."
+        },
+        {
+          "question": "Chính sách hủy xe và hoàn tiền như thế nào?",
+          "answer": "Lịch hủy và mức hoàn tiền phụ thuộc vào thời điểm thông báo và loại xe đã giữ chỗ. Đội ngũ tư vấn sẽ ghi rõ điều khoản trong báo giá hoặc hợp đồng để khách hàng chủ động trước khi đặt cọc."
+        },
+        {
+          "question": "Công ty có xuất hóa đơn VAT không?",
+          "answer": "Có. Khánh Linh Trans hỗ trợ xuất hóa đơn VAT cho khách doanh nghiệp và khách đoàn. Bạn chỉ cần gửi thông tin xuất hóa đơn khi xác nhận booking để bộ phận kế toán xử lý cùng hồ sơ thanh toán."
+        },
+        {
+          "question": "Nếu mai sau này nhớ đến nhau thì sao?",
+          "answer": "Nếu mai sau này nhớ đến nhau, đừng hát về anh, coi anh như câu ca buồn trong giấc mơ thôi"
+        }
+      ]
+    },
+    "en": {
+      "heading": "Frequently Asked Questions",
+      "lead": "Answers to common questions when renting a vehicle.",
+      "items": [
+        {
+          "question": "What costs are included in the rental price?",
+          "answer": "Basic costs usually include the vehicle, driver, fuel and toll fees per the agreed itinerary. Additional charges such as overnight stays, parking fees or route changes will be communicated clearly before confirmation."
+        },
+        {
+          "question": "What is the cancellation and refund policy?",
+          "answer": "Cancellation timing and refund amounts depend on notice and vehicle type. Our advisors will specify terms in the quote or contract so customers can decide before placing a deposit."
+        },
+        {
+          "question": "Do you issue VAT invoices?",
+          "answer": "Yes. Khánh Linh Trans issues VAT invoices for corporate and group customers. Provide invoice details when confirming a booking so accounting can process the payment documents."
+        },
+        {
+          "question": "What if we think of each other in the future?",
+          "answer": "If, in the future, you find yourself thinking of me, do not sing about me; simply regard me as a sad melody in a dream."
+        }
+      ]
+    }
   }
 }

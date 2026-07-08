@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import React, { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import db from "../db.json";
@@ -23,8 +23,59 @@ type ContactInfo = {
   address: string;
 };
 
+type PricingRow = {
+  vehicle: string;
+  cityTour: string;
+  provinceTrip: string;
+  airport: string;
+};
+
+type PricingData = {
+  heading: string;
+  lead: string;
+  note: string;
+  cols: string[];
+  rows: PricingRow[];
+};
+
+type TestimonialsItem = {
+  quote: string;
+  name: string;
+  role: string;
+  badge: string;
+  tag: string;
+  initials: string;
+};
+
+type TestimonialsStat = {
+  value: string;
+  label: string;
+};
+
+type TestimonialsData = {
+  heading: string;
+  lead: string;
+  scoreLabel: string;
+  items: TestimonialsItem[];
+  stats: TestimonialsStat[];
+};
+
+type FaqItem = {
+  question: string;
+  answer: string;
+};
+
+type FaqData = {
+  heading: string;
+  lead: string;
+  items: FaqItem[];
+};
+
 const salesContacts = (db as any).sales as SalesPerson[];
 const siteContacts = (db as any).contacts as ContactInfo;
+const dbPricing = (db as any).pricing as Record<string, PricingData>;
+const dbTestimonials = (db as any).testimonials as Record<string, TestimonialsData>;
+const dbFaq = (db as any).faq as Record<string, FaqData>;
 
 const fontAwesomeIcons: Record<string, { prefix: FontAwesomePrefix; icon: string }> = {
   fleet: { prefix: "fas", icon: "fa-bus" },
@@ -83,10 +134,20 @@ function useMediaQuery(query: string) {
 }
 
 export default function HomePage() {
-  const [lang, setLang] = useState<"vi" | "en">(() => {
-    if (typeof window === "undefined") return "vi";
-    return (localStorage.getItem("site_lang") as "vi" | "en") ?? "vi";
-  });
+  const [lang, setLang] = useState<"vi" | "en">("vi");
+
+  useEffect(() => {
+    try {
+      // Read from localStorage after hydration
+      const savedLang = (localStorage.getItem("site_lang") as "vi" | "en") ?? "vi";
+      if (savedLang !== lang) {
+        setLang(savedLang);
+      }
+      document.documentElement.lang = savedLang;
+    } catch (e) {
+      // noop
+    }
+  }, []);
 
   useEffect(() => {
     try {
@@ -98,6 +159,13 @@ export default function HomePage() {
   }, [lang]);
 
   const t = (translations as any)[lang] ?? translations.vi;
+  const defaultPricing: PricingData = dbPricing?.vi ?? { heading: "", lead: "", note: "", cols: [], rows: [] };
+  const defaultTestimonialsData: TestimonialsData = dbTestimonials?.vi ?? { heading: "", lead: "", scoreLabel: "", items: [], stats: [] };
+  const defaultFaqData: FaqData = dbFaq?.vi ?? { heading: "", lead: "", items: [] };
+
+  const pricing: PricingData = dbPricing?.[lang] ?? defaultPricing;
+  const testimonialsData: TestimonialsData = dbTestimonials?.[lang] ?? defaultTestimonialsData;
+  const faqData: FaqData = dbFaq?.[lang] ?? defaultFaqData;
   const toggleLang = () => setLang((l) => (l === "vi" ? "en" : "vi"));
   const isMobile = useMediaQuery("(max-width: 768px)");
 
@@ -131,8 +199,8 @@ export default function HomePage() {
   const isTablet = useMediaQuery("(max-width: 1200px)");
 
   const heroBannerSlides = [
-    { desktopSrc: "/images/banner.png", mobileSrc: "/images/banner.png", alt: "Banner dịch vụ 1" },
-    { desktopSrc: "/images/banner+.png", mobileSrc: "/images/banner+.png", alt: "Banner dịch vụ 2" },
+    { desktopSrc: "/images/banner.png", mobileSrc: "/images/banner.png", alt: "Banner dá»‹ch vá»¥ 1" },
+    { desktopSrc: "/images/banner+.png", mobileSrc: "/images/banner+.png", alt: "Banner dá»‹ch vá»¥ 2" },
   ];
 
   const [bannerIndex, setBannerIndex] = useState(0);
@@ -202,7 +270,6 @@ export default function HomePage() {
 
           <FleetSection lang={lang} />
 
-          {/* Lý do khách hàng quay lại */}
           <section className="reasons-section" id="reasons">
             <div className="section-shell">
               <div className="reasons-section__header title-luxury">
@@ -253,21 +320,21 @@ export default function HomePage() {
           <section className="pricing-section" id="pricing">
             <div className="section-shell">
               <div className="pricing-section__heading title-luxury">
-                <h2>{t.pricing.heading}</h2>
-                <p>{t.pricing.lead}</p>
+                <h2>{pricing.heading}</h2>
+                <p>{pricing.lead}</p>
               </div>
               <div className="pricing-table-wrap">
                 {!isMobile ? (
                   <table className="pricing-table">
                     <thead>
                       <tr>
-                        {t.pricing.table.cols.map((c: string, idx: number) => (
+                        {pricing.cols.map((c: string, idx: number) => (
                           <th scope="col" key={idx}>{c}</th>
                         ))}
                       </tr>
                     </thead>
                     <tbody>
-                      {t.pricing.rows.map((row: any) => {
+                      {pricing.rows.map((row: any) => {
                         const seatsMatch = String(row.vehicle).match(/(\d+)/);
                         const seats = seatsMatch ? Number(seatsMatch[1]) : 0;
                         const iconType = seats > 7 ? "fleet" : "car";
@@ -282,9 +349,9 @@ export default function HomePage() {
                                 </span>
                               </div>
                             </th>
-                            <td data-label={t.pricing.table.cols[1]}>{row.cityTour}</td>
-                            <td data-label={t.pricing.table.cols[2]}>{row.provinceTrip}</td>
-                            <td data-label={t.pricing.table.cols[3]}>{row.airport}</td>
+                            <td data-label={pricing.cols[1]}>{row.cityTour}</td>
+                            <td data-label={pricing.cols[2]}>{row.provinceTrip}</td>
+                            <td data-label={pricing.cols[3]}>{row.airport}</td>
                           </tr>
                         );
                       })}
@@ -292,7 +359,7 @@ export default function HomePage() {
                   </table>
                 ) : (
                   <div className="pricing-cards" role="list">
-                    {t.pricing.rows.map((row: any) => {
+                    {pricing.rows.map((row: any) => {
                       const seatsMatch = String(row.vehicle).match(/(\d+)/);
                       const seats = seatsMatch ? Number(seatsMatch[1]) : 0;
                       const iconType = seats > 7 ? "fleet" : "car";
@@ -309,11 +376,11 @@ export default function HomePage() {
                             <div className="airport-price">{row.airport}</div>
                           </div>
                           <div className="price-row">
-                            <div className="label">{t.pricing.table.cols[1]}</div>
+                            <div className="label">{pricing.cols[1]}</div>
                             <div className="value">{row.cityTour}</div>
                           </div>
                           <div className="price-row">
-                            <div className="label">{t.pricing.table.cols[2]}</div>
+                            <div className="label">{pricing.cols[2]}</div>
                             <div className="value">{row.provinceTrip}</div>
                           </div>
                         </article>
@@ -322,7 +389,7 @@ export default function HomePage() {
                   </div>
                 )}
               </div>
-              <p className="pricing-section__note">{t.pricing.note}</p>
+              <p className="pricing-section__note">{pricing.note}</p>
             </div>
           </section>
 
@@ -351,7 +418,7 @@ export default function HomePage() {
                                 type="button"
                                 className="addon-card__sale-avatar-wrap addon-card__sale-avatar-button"
                                 onClick={() => setPreviewAvatar(staff.avatar || "/images/avatar/no-avt.png")}
-                                aria-label={`Xem ảnh đại diện ${staff.name}`}
+                                aria-label={`Xem áº£nh Ä‘áº¡i diá»‡n ${staff.name}`}
                               >
                                 <Image
                                   src={staff.avatar || "/images/avatar/no-avt.png"}
@@ -371,17 +438,17 @@ export default function HomePage() {
                               <a
                                 className="addon-card__sales-action addon-card__sales-action--call"
                                 href={`tel:${normalizedPhone}`}
-                                aria-label={`Gọi ${staff.name}`}
+                                aria-label={`Liên hệ ${staff.name}`}
                               >
                                 <FontAwesomeIcon type="phone" />
-                                <span>Gọi</span>
+                                <span>{t.sales.hotlineTitle}</span>
                               </a>
                               <a
                                 className="addon-card__sales-action addon-card__sales-action--zalo"
                                 href={zaloLink}
                                 target="_blank"
                                 rel="noreferrer"
-                                aria-label={`Chat Zalo với ${staff.name}`}
+                                aria-label={`Chat Zalo vá»›i ${staff.name}`}
                               >
                                 <FontAwesomeIcon type="chat" />
                                 <span>{t.sales.zaloAction}</span>
@@ -397,14 +464,13 @@ export default function HomePage() {
             </div>
           </section>
 
-          {/* Đánh giá */}
           {previewAvatar && (
-            <div className="avatar-preview-overlay" role="dialog" aria-modal="true" aria-label="Xem ảnh đại diện">
+            <div className="avatar-preview-overlay" role="dialog" aria-modal="true" aria-label="Xem áº£nh Ä‘áº¡i diá»‡n">
               <button
                 type="button"
                 className="avatar-preview-overlay__close"
                 onClick={() => setPreviewAvatar(null)}
-                aria-label="Đóng" 
+                aria-label="ÄÃ³ng" 
               >
                 <FontAwesomeIcon type="close" />
               </button>
@@ -412,7 +478,7 @@ export default function HomePage() {
               <div className="avatar-preview-overlay__panel">
                 <Image
                   src={previewAvatar}
-                  alt="Ảnh đại diện đầy đủ"
+                  alt="áº¢nh Ä‘áº¡i diá»‡n Ä‘áº§y Ä‘á»§"
                   width={640}
                   height={640}
                   className="avatar-preview-overlay__image"
@@ -425,46 +491,46 @@ export default function HomePage() {
           <section className="testimonials-section" aria-labelledby="testimonials-heading">
             <div className="section-shell testimonials-section__inner">
               <div className="testimonials-section__heading title-luxury">
-                <h2 id="testimonials-heading">{t.testimonials.heading}</h2>
-                <p>{t.testimonials.lead}</p>
+                <h2 id="testimonials-heading">{testimonialsData.heading}</h2>
+                <p>{testimonialsData.lead}</p>
               </div>
 
               <div className="testimonials-layout">
                 <article className="testimonial-spotlight">
                   <div className="testimonial-spotlight__glow" aria-hidden="true" />
                   <div className="testimonial-spotlight__topline">
-                    <span>{t.testimonials.items[0].badge}</span>
-                    <span>{t.testimonials.items[0].tag}</span>
+                    <span>{testimonialsData.items[0].badge}</span>
+                    <span>{testimonialsData.items[0].tag}</span>
                   </div>
-                  <blockquote>{t.testimonials.items[0].quote}</blockquote>
+                  <blockquote>{testimonialsData.items[0].quote}</blockquote>
                   <div className="testimonial-spotlight__footer">
                     <div className="testimonial-person">
                       <div className="testimonial-person__avatar" aria-hidden="true">
                         <span>{testimonials[0].initials}</span>
                       </div>
                       <div className="testimonial-person__copy">
-                        <strong>{t.testimonials.items[0].name}</strong>
-                        <p>{t.testimonials.items[0].role}</p>
+                        <strong>{testimonialsData.items[0].name}</strong>
+                        <p>{testimonialsData.items[0].role}</p>
                       </div>
                     </div>
                     <div className="testimonial-spotlight__score">
                       <strong>5.0</strong>
-                      <span>{t.testimonials.scoreLabel}</span>
+                      <span>{testimonialsData.scoreLabel}</span>
                     </div>
                   </div>
                 </article>
 
                 <div className="testimonials-side">
                   <div className="testimonial-stats">
-                    {t.testimonials.stats.map((item: any) => (
+                    {testimonialsData.stats.map((item: any) => (
                       <article className="testimonial-stat" key={item.value}>
                         <strong>{item.value}</strong>
                         <p>{item.label}</p>
                       </article>
                     ))}
                   </div>
-                  <div className="testimonial-list" aria-label="Phản hồi khác từ khách hàng">
-                    {t.testimonials.items.slice(1).map((item: any, idx: number) => (
+                  <div className="testimonial-list" aria-label="Pháº£n há»“i khÃ¡c tá»« khÃ¡ch hÃ ng">
+                    {testimonialsData.items.slice(1).map((item: any, idx: number) => (
                       <article className="testimonial-mini" key={item.name}>
                         <div className="testimonial-mini__meta">
                           <span>{item.badge}</span>
@@ -485,11 +551,11 @@ export default function HomePage() {
           <section className="faq-section" aria-labelledby="faq-heading">
             <div className="section-shell faq-section__inner">
               <div className="faq-section__heading title-luxury">
-                <h2 id="faq-heading">{t.faq.heading}</h2>
-                <p>{t.faq.lead}</p>
+                <h2 id="faq-heading">{faqData.heading}</h2>
+                <p>{faqData.lead}</p>
               </div>
               <div className="faq-list">
-                {t.faq.items.map((item: any) => (
+                {faqData.items.map((item: any) => (
                   <details className="faq-item" key={item.question}>
                     <summary className="faq-item__summary">
                       <span>{item.question}</span>
@@ -549,7 +615,7 @@ export default function HomePage() {
 
                 <div className="site-footer__column">
                   <h2 className="site-footer__heading">{t.footer.servicesHeading}</h2>
-                  <nav className="site-footer__nav" aria-label="Dịch vụ footer">
+                  <nav className="site-footer__nav" aria-label="Dá»‹ch vá»¥ footer">
                     {t.footer.services.map((item: any) => (
                       <a key={item.label} href={item.href}>{item.label}</a>
                     ))}
@@ -558,7 +624,7 @@ export default function HomePage() {
 
                 <div className="site-footer__column">
                   <h2 className="site-footer__heading">{t.footer.supportHeading}</h2>
-                  <nav className="site-footer__nav" aria-label="Hỗ trợ footer">
+                  <nav className="site-footer__nav" aria-label="Há»— trá»£ footer">
                     {t.footer.supportLinks.map((item: any) => (
                       <a key={item.label} href={item.href}>{item.label}</a>
                     ))}
@@ -602,3 +668,4 @@ export default function HomePage() {
             
   );
 }
+

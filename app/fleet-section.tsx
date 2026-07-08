@@ -105,14 +105,14 @@ export default function FleetSection({ lang = "vi" }: { lang?: string }) {
       <div className="section-shell">
         <div className="fleet-section__header">
           <div className="fleet-section__intro title-luxury">
-            <h2>DÒNG XE ĐA DẠNG</h2>
-            <p>Đáp ứng linh hoạt cho mọi nhu cầu di chuyển</p>
+            <h2>{t.fleet?.heading}</h2>
+            <p>{t.fleet?.intro}</p>
           </div>
         </div>
 
         <div className="fleet-scroll" aria-live="polite" ref={scrollRef}>
           {loading ? (
-            <div className="fleet-empty">Đang tải...</div>
+            <div className="fleet-empty">{t.fleet?.loading}</div>
           ) : items.length === 0 ? (
             <div className="fleet-empty">{t.fleet?.empty}</div>
           ) : (
@@ -134,8 +134,8 @@ export default function FleetSection({ lang = "vi" }: { lang?: string }) {
                   <div className="fleet-card__price">
                     {item.price}
                   </div>
-                  <a className="fleet-card__cta" href="#contact-cta-heading" aria-label={`Đặt ${item.name}`}>
-                    Đặt Ngay
+                  <a className="fleet-card__cta" href="#contact-cta-heading" aria-label={`${t.fleet?.bookCta} ${item.name}`}>
+                    {t.fleet?.bookCta}
                   </a>
                 </div>
               </article>

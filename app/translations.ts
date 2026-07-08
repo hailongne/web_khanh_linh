@@ -30,7 +30,25 @@ export const translations: Record<string, any> = {
       chatZalo: "Chat Zalo Ngay",
       note: "Hỗ trợ 24/7. Phản hồi trong vòng 5 phút."
     },
-    
+
+    fleet: {
+      heading: "DÒNG XE ĐA DẠNG",
+      intro: "Đáp ứng linh hoạt cho mọi nhu cầu di chuyển",
+      loading: "Đang tải...",
+      empty: "Không có xe phù hợp",
+      priceFromLabel: "Giá từ",
+      bookCta: "Đặt Ngay",
+      categories: [
+        { id: "all", label: "Tất cả" },
+        { id: "4-7", label: "4-7 chỗ" },
+        { id: "16", label: "16 chỗ" },
+        { id: "29", label: "29 chỗ" },
+        { id: "45", label: "45 chỗ" }
+      ],
+      filtersAriaLabel: "Danh mục xe",
+      items: []
+    },
+
     reasons: {
       heading: "Tại Sao Nên Chọn Khánh Linh Trans?",
       lead:
@@ -94,7 +112,7 @@ export const translations: Record<string, any> = {
       heading: "Đội Ngũ Chuyên Viên Hỗ Trợ",
       lead: "Đội ngũ nhân sự tận tâm luôn túc trực 24/7 để hỗ trợ đặt xe nhanh chóng, báo giá chính xác và đáp ứng mọi yêu cầu đặc biệt.",
       hotlineLabel: "Hotline",
-      hotlineTitle: "Liên hệ qua số điện thoại",
+      hotlineTitle: "Liên hệ",
       zaloLabel: "Chat Zalo",
       zaloTitle: "Liên hệ Zalo nhanh",
       zaloAction: "Liên hệ qua Zalo"
@@ -228,9 +246,10 @@ export const translations: Record<string, any> = {
     fleet: {
       heading: "Featured Vehicles",
       intro: "Explore a variety of vehicle lines that adapt to every travel need.",
+      loading: "Loading...",
       empty: "No suitable vehicles",
       priceFromLabel: "Price from",
-      bookCta: "Book Vehicle",
+      bookCta: "Book Now",
       categories: [
         { id: "all", label: "All" },
         { id: "4-7", label: "4-7 seats" },
@@ -239,7 +258,7 @@ export const translations: Record<string, any> = {
         { id: "45", label: "45 seats" }
       ],
       filtersAriaLabel: "Fleet categories",
-      items: [], // Dữ liệu xe đã chuyển sang db.json — load qua GET /api/vehicles?lang=vi
+      items: [], // Vehicle data has been moved to db.json — load via GET /api/vehicles?lang=en
     },
 
     reasons: {
@@ -305,7 +324,7 @@ export const translations: Record<string, any> = {
       heading: "Contact Sales",
       lead: "Our sales team is ready to assist bookings, quotes and tailor services via hotline and Zalo.",
       hotlineLabel: "Hotline",
-      hotlineTitle: "Contact by phone",
+      hotlineTitle: "Contact us",
       zaloLabel: "Zalo Chat",
       zaloTitle: "Quick Zalo contact",
       zaloAction: "Contact via Zalo"

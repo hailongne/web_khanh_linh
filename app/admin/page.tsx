@@ -329,6 +329,7 @@ export default function AdminPage() {
   if (!authorized) {
     return (
       <main className="admin-shell">
+        <ToastContainer />
         <div className="admin-card admin-card--login">
           <div className="admin-header admin-header--center">
             <div>

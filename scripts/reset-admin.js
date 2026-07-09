@@ -1,4 +1,4 @@
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
 const fs = require("node:fs");
 const path = require("node:path");
 const readline = require("node:readline/promises");

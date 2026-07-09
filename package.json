@@ -10,7 +10,8 @@
     "reset-admin": "node scripts/reset-admin.js"
   },
   "dependencies": {
-    "bcrypt": "^6.0.0",
+    "@types/bcryptjs": "^2.4.6",
+    "bcryptjs": "^3.0.3",
     "next": "15.5.18",
     "react": "19.1.1",
     "react-dom": "19.1.1"

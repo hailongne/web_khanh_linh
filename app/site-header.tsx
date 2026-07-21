@@ -6,6 +6,20 @@ import db from "../db.json";
 import { translations } from "./translations";
 import { VNFlag, USFlag } from "./flag-icons";
 
+const GlobeIcon = (props: SVGProps<SVGSVGElement>) => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false" {...props}>
+    <circle cx="12" cy="12" r="10"/>
+    <line x1="2" y1="12" x2="22" y2="12"/>
+    <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+  </svg>
+);
+
+const ChevronDownIcon = (props: SVGProps<SVGSVGElement>) => (
+  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false" {...props}>
+    <polyline points="6 9 12 15 18 9"/>
+  </svg>
+);
+
 const MenuIcon = (props: SVGProps<SVGSVGElement>) => (
   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false" {...props}>
     <path d="M3 6h18" />
@@ -191,14 +205,28 @@ export function SiteHeader({ links, lang = "vi", onToggleLang }: SiteHeaderProps
             <a className="site-header__cta" href="#contact-cta-heading">
               {t.header.cta}
             </a>
-            {/* Language toggle button: shows target flag (🇬🇧 when current is 'vi', 🇻🇳 when current is 'en') */}
+            {/* Language toggle button */}
             <button
               type="button"
               className="site-header__lang-toggle"
               aria-label={lang === "vi" ? "Chuyển sang Tiếng Anh" : "Switch to Vietnamese"}
               onClick={() => onToggleLang?.()}
             >
-              {lang === "vi" ? <USFlag width={85} height={55} /> : <VNFlag width={85} height={55} />}
+              {lang === "vi" ? (
+                <>
+                  <span className="site-header__lang-icon site-header__lang-icon--flag">
+                    <VNFlag width={24} height={24} />
+                  </span>
+                  <span className="site-header__lang-label"> Tiếng Việt</span>
+                </>
+              ) : (
+                <>
+                  <span className="site-header__lang-icon">
+                    <GlobeIcon />
+                  </span>
+                  <span className="site-header__lang-label"> English</span>
+                </>
+              )}
             </button>
           </div>
 
@@ -276,7 +304,21 @@ export function SiteHeader({ links, lang = "vi", onToggleLang }: SiteHeaderProps
                 aria-label={lang === "vi" ? "Chuyển sang Tiếng Anh" : "Switch to Vietnamese"}
                 onClick={() => onToggleLang?.()}
               >
-                {lang === "vi" ? <USFlag width={41} height={29} /> : <VNFlag width={41} height={29} />}
+                {lang === "vi" ? (
+                  <>
+                    <span className="site-header__lang-icon site-header__lang-icon--flag">
+                      <VNFlag width={24} height={24} />
+                    </span>
+                    <span className="site-header__lang-label"> Tiếng Việt</span>
+                  </>
+                ) : (
+                  <>
+                    <span className="site-header__lang-icon">
+                      <GlobeIcon />
+                    </span>
+                    <span className="site-header__lang-label"> English</span>
+                  </>
+                )}
               </button>
             </div>
           </aside>

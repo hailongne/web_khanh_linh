@@ -239,7 +239,7 @@ export const translations: Record<string, any> = {
       title: "Free Consultation",
       role: "Mr. Dung - Chief Operating Officer",
       hotlineLabel: "Hotline:",
-      chatZalo: "Chat on Zalo",
+      chatZalo: "Chat Zalo",
       note: "Support 24/7. Typical response within 5 minutes."
     },
 
@@ -396,7 +396,7 @@ export const translations: Record<string, any> = {
       heading: "Need a Vehicle for Your Upcoming Trip?",
       lead: "Contact us now for attentive consultation and the best quote.",
       call: "Call Hotline",
-      chat: "Chat on Zalo"
+      chat: "Chat Zalo"
     },
 
     footer: {

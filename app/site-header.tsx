@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 import { createPortal } from "react-dom";
-import { useEffect, useLayoutEffect, useState, type SVGProps } from "react";
+import { useEffect, useLayoutEffect, useRef, useState, type SVGProps } from "react";
 import db from "../db.json";
 import { translations } from "./translations";
 import { VNFlag, USFlag } from "./flag-icons";
@@ -54,6 +54,137 @@ export function SiteHeader({ links, lang = "vi", onToggleLang }: SiteHeaderProps
   const [touchStartX, setTouchStartX] = useState<number | null>(null);
   const [touchStartY, setTouchStartY] = useState<number | null>(null);
   const [touchMoved, setTouchMoved] = useState(false);
+
+  const [activeHref, setActiveHref] = useState<string>(
+    () => links.find((l) => l.active)?.href || links[0]?.href || "#top"
+  );
+  const isClickingRef = useRef(false);
+  const clickTimerRef = useRef<NodeJS.Timeout | null>(null);
+
+  useEffect(() => {
+    const matched = links.find((l) => l.href === activeHref);
+    if (!matched && links.length > 0) {
+      setActiveHref(links[0]?.href || "#top");
+    }
+  }, [links]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const hashLinks = links.filter((l) => l.href.startsWith("#"));
+    const sectionElements: HTMLElement[] = [];
+
+    hashLinks.forEach((link) => {
+      const id = link.href.replace("#", "");
+      const el = document.getElementById(id);
+      if (el) sectionElements.push(el);
+    });
+
+    if (sectionElements.length === 0) return;
+
+    const headerEl = document.querySelector(".site-header");
+    const headerHeight = headerEl ? headerEl.getBoundingClientRect().height : 85;
+
+    const intersectingMap = new Map<string, number>();
+
+    const observerCallback: IntersectionObserverCallback = (entries) => {
+      if (isClickingRef.current) return;
+
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          intersectingMap.set(entry.target.id, entry.intersectionRatio);
+        } else {
+          intersectingMap.delete(entry.target.id);
+        }
+      });
+
+      if (intersectingMap.size > 0) {
+        let topSectionId: string | null = null;
+        let minTop = Infinity;
+
+        intersectingMap.forEach((_, id) => {
+          const el = document.getElementById(id);
+          if (el) {
+            const rect = el.getBoundingClientRect();
+            const dist = Math.abs(rect.top - headerHeight);
+            if (dist < minTop) {
+              minTop = dist;
+              topSectionId = id;
+            }
+          }
+        });
+
+        if (topSectionId) {
+          setActiveHref(`#${topSectionId}`);
+        }
+      }
+    };
+
+    const observer = new IntersectionObserver(observerCallback, {
+      root: null,
+      rootMargin: `-${headerHeight}px 0px -50% 0px`,
+      threshold: [0, 0.1, 0.25, 0.5, 0.75, 1.0],
+    });
+
+    sectionElements.forEach((el) => observer.observe(el));
+
+    const handleScroll = () => {
+      if (isClickingRef.current) return;
+
+      const scrollY = window.scrollY;
+      const windowHeight = window.innerHeight;
+      const docHeight = document.documentElement.scrollHeight;
+
+      if (scrollY < 50) {
+        setActiveHref("#top");
+      } else if (scrollY + windowHeight >= docHeight - 30) {
+        const lastLink = hashLinks[hashLinks.length - 1];
+        if (lastLink) {
+          setActiveHref(lastLink.href);
+        }
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+
+    return () => {
+      observer.disconnect();
+      window.removeEventListener("scroll", handleScroll);
+      if (clickTimerRef.current) clearTimeout(clickTimerRef.current);
+    };
+  }, [links]);
+
+  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    if (href.startsWith("#")) {
+      e.preventDefault();
+      setActiveHref(href);
+      handleCloseMenu();
+
+      isClickingRef.current = true;
+      if (clickTimerRef.current) clearTimeout(clickTimerRef.current);
+
+      requestAnimationFrame(() => {
+        const targetId = href.replace("#", "");
+        const targetEl = document.getElementById(targetId);
+
+        if (href === "#top" || !targetEl) {
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        } else {
+          const headerEl = document.querySelector(".site-header");
+          const headerHeight = headerEl ? headerEl.getBoundingClientRect().height : 50;
+          const elementTop = targetEl.getBoundingClientRect().top + window.scrollY;
+          const offsetPosition = Math.max(0, elementTop - headerHeight);
+          window.scrollTo({ top: offsetPosition, behavior: "smooth" });
+        }
+
+        clickTimerRef.current = setTimeout(() => {
+          isClickingRef.current = false;
+        }, 800);
+      });
+    } else {
+      handleCloseMenu();
+    }
+  };
 
   useEffect(() => {
     const handleResize = () => {
@@ -171,7 +302,7 @@ export function SiteHeader({ links, lang = "vi", onToggleLang }: SiteHeaderProps
   return (
     <header className="site-header">
       <div className="site-header__inner">
-        <a className="site-header__brand" href="#top" aria-label={t.header.brand} onClick={handleCloseMenu}>
+        <a className="site-header__brand" href="#top" aria-label={t.header.brand} onClick={(e) => handleNavClick(e, "#top")}>
           <Image
             className="site-header__logo"
             src="/images/logoKhanhLinhFull.png"
@@ -185,14 +316,16 @@ export function SiteHeader({ links, lang = "vi", onToggleLang }: SiteHeaderProps
         <nav className="site-header__nav" aria-label="Main navigation">
           {links.map((item) => {
             const isExternal = item.href.startsWith("http");
+            const isActive = activeHref === item.href;
             return (
               <a
                 key={item.label}
                 href={item.href}
-                className={item.active ? "is-active" : undefined}
-                aria-current={item.active ? "page" : undefined}
+                className={isActive ? "is-active" : undefined}
+                aria-current={isActive ? "page" : undefined}
                 target={isExternal ? "_blank" : undefined}
                 rel={isExternal ? "noopener noreferrer" : undefined}
+                onClick={(e) => handleNavClick(e, item.href)}
               >
                 {item.label}
               </a>
@@ -202,7 +335,7 @@ export function SiteHeader({ links, lang = "vi", onToggleLang }: SiteHeaderProps
 
         <div className="site-header__right">
           <div className="site-header__actions">
-            <a className="site-header__cta" href="#contact-cta-heading">
+            <a className="site-header__cta" href="#contact-cta-heading" onClick={(e) => handleNavClick(e, "#contact-cta-heading")}>
               {t.header.cta}
             </a>
             {/* Language toggle button */}
@@ -276,14 +409,16 @@ export function SiteHeader({ links, lang = "vi", onToggleLang }: SiteHeaderProps
             <nav className="site-header__drawer-nav" aria-label="Mobile navigation">
               {links.map((item) => {
                 const isExternal = item.href.startsWith("http");
+                const isActive = activeHref === item.href;
                 return (
                   <a
                     key={`mobile-${item.label}`}
                     href={item.href}
-                    className={item.active ? "is-active" : undefined}
-                    aria-current={item.active ? "page" : undefined}
+                    className={isActive ? "is-active" : undefined}
+                    aria-current={isActive ? "page" : undefined}
                     target={isExternal ? "_blank" : undefined}
                     rel={isExternal ? "noopener noreferrer" : undefined}
+                    onClick={(e) => handleNavClick(e, item.href)}
                   >
                     {item.label}
                   </a>
@@ -295,7 +430,7 @@ export function SiteHeader({ links, lang = "vi", onToggleLang }: SiteHeaderProps
               <a className="site-header__phone" href={`tel:${contacts.phone.replace(/\s+/g, "")}`}>
                 {contacts.phone}
               </a>
-              <a className="site-header__cta" href="#contact-cta-heading">
+              <a className="site-header__cta" href="#contact-cta-heading" onClick={(e) => handleNavClick(e, "#contact-cta-heading")}>
                 {t.header.cta}
               </a>
               <button

@@ -1,4 +1,4 @@
-﻿/* Header wrapper: transparent so pill floats */
+/* Header wrapper: transparent so pill floats */
 .site-header {
   position: fixed;
   top: 0;
@@ -357,13 +357,6 @@
   position: relative;
   background: transparent;
   border-top: none;
-}
-
-
-
-/* Override global fragment offset for the sales section so its top aligns with viewport */
-#sales {
-  scroll-margin-top: 0;
 }
 
 body {

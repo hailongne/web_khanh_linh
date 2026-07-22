@@ -1,4 +1,4 @@
-﻿/* app/globals.css — typography + floating pill header tweaks */
+/* app/globals.css — typography + floating pill header tweaks */
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap&subset=vietnamese');
 
@@ -136,7 +136,11 @@ h3 {
 }
 
 [id] {
-  scroll-margin-top: 128px;
+  scroll-margin-top: 85px;
+}
+
+#top {
+  scroll-margin-top: 0;
 }
 
 
@@ -149,9 +153,19 @@ h3 {
 html {
   font-size: 15px;
   scroll-behavior: smooth;
-  scroll-padding-top: 128px;
+  scroll-padding-top: 85px;
   width: 100%;
   max-width: 100%;
   overflow-x: hidden;
 }
+
+@media (max-width: 988px) {
+  [id] {
+    scroll-margin-top: 50px;
+  }
+  html {
+    scroll-padding-top: 50px;
+  }
+}
+
 

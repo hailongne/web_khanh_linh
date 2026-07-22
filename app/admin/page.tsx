@@ -1753,8 +1753,8 @@ function SalesPanel({
   }
 
   function fillForm(item: SalesPerson) {
-    setEditingId(item.id);
-    setForm({ ...item });
+    setEditingId(String(item.id));
+    setForm({ ...item, id: String(item.id) });
     setImageFile(null);
     setImagePreview(item.avatar || "");
   }
@@ -1796,6 +1796,33 @@ function SalesPanel({
     return result.path as string;
   }
 
+  async function handleRemoveAvatar() {
+    if (!form.avatar && !imagePreview) return;
+    if (!confirm("Bạn có chắc muốn xóa ảnh đại diện này?")) return;
+
+    setLoading(true);
+    try {
+      const currentAvatarPath = form.avatar;
+      if (currentAvatarPath && currentAvatarPath.startsWith("/images/")) {
+        await api.del(`/api/admin/upload?path=${encodeURIComponent(currentAvatarPath)}`);
+      }
+
+      setForm((prev) => ({ ...prev, avatar: "" }));
+      setImageFile(null);
+      setImagePreview("");
+
+      if (editingId) {
+        await api.put(`/api/admin/data?type=sales&id=${editingId}`, { ...form, avatar: "" });
+        onSuccess("Đã xóa ảnh đại diện thành công.");
+        await loadItems();
+      }
+    } catch (err) {
+      onError(err instanceof Error ? err.message : "Lỗi xóa ảnh đại diện");
+    } finally {
+      setLoading(false);
+    }
+  }
+
   async function saveItem(event: React.FormEvent) {
     event.preventDefault();
     if (!form.name.trim() || !form.phone.trim()) {
@@ -1810,6 +1837,7 @@ function SalesPanel({
 
     const payload = {
       ...form,
+      id: editingId || form.id,
       zalo: form.zalo.trim() || `https://zalo.me/${form.phone.replace(/\s+/g, "")}`,
       avatar: avatarPath
     };
@@ -1821,7 +1849,7 @@ function SalesPanel({
         onSuccess("Cập nhật chuyên viên thành công.");
       } else {
         await api.post("/api/admin/data?type=sales", payload);
-        onSuccess("Thêm chuyên viên thành công.");
+        onSuccess("Thêm mới chuyên viên thành công.");
       }
       await loadItems();
       closeModal();
@@ -1836,6 +1864,7 @@ function SalesPanel({
     if (!confirm("Bạn có chắc muốn xóa chuyên viên này?")) return;
     setLoading(true);
     try {
+      setItems((prev) => prev.filter((item) => String(item.id) !== String(id)));
       await api.del(`/api/admin/data?type=sales&id=${id}`);
       onSuccess("Xóa chuyên viên thành công.");
       await loadItems();
@@ -1861,7 +1890,7 @@ function SalesPanel({
             <div>Zalo</div>
             <div>
               <button className="admin-button" type="button" onClick={openCreate}>
-                Thêm chuyên viên
+                Thêm mới chuyên viên
               </button>
             </div>
           </div>
@@ -1911,7 +1940,7 @@ function SalesPanel({
         <div className="admin-modal-overlay" onClick={closeModal}>
           <div className="admin-modal" onClick={(event) => event.stopPropagation()}>
             <div className="admin-modal__header">
-              <h2>{editingId ? "Chỉnh sửa chuyên viên" : "Thêm chuyên viên"}</h2>
+              <h2>{editingId ? "Chỉnh sửa chuyên viên" : "Thêm mới chuyên viên"}</h2>
               <button className="admin-modal__close" type="button" onClick={closeModal} aria-label="Đóng">
                 ×
               </button>
@@ -1934,6 +1963,15 @@ function SalesPanel({
                 {(imagePreview || form.avatar) && (
                   <div className="admin-image-preview admin-image-preview--sales">
                     <img src={imagePreview || form.avatar} alt="Xem trước ảnh đại diện" />
+                    <button
+                      type="button"
+                      className="admin-button admin-button--danger admin-button--small"
+                      style={{ marginTop: "8px", width: "100%" }}
+                      onClick={handleRemoveAvatar}
+                    >
+                      <i className="fas fa-trash-alt" aria-hidden="true" style={{ marginRight: "6px" }} />
+                      Xóa ảnh đại diện
+                    </button>
                   </div>
                 )}
               </div>
@@ -1966,7 +2004,7 @@ function SalesPanel({
                     Hủy
                   </button>
                   <button className="admin-button" type="submit">
-                    {editingId ? "Lưu thay đổi" : "Thêm chuyên viên"}
+                    {editingId ? "Lưu thay đổi" : "Thêm mới chuyên viên"}
                   </button>
                 </div>
               </div>

@@ -42,7 +42,18 @@ function generateId(items: any[]): string {
 
 function getArraySection(db: DbShape, type: DataType, lang?: string): any[] | null {
   if (type === "sales") {
-    return Array.isArray(db.sales) ? db.sales : null;
+    if (Array.isArray(db.sales)) {
+      let modified = false;
+      db.sales.forEach((item: any) => {
+        if (!item.id) {
+          item.id = crypto.randomUUID();
+          modified = true;
+        }
+      });
+      if (modified) writeDb(db);
+      return db.sales;
+    }
+    return null;
   }
   if (type === "vehicles") {
     return db.vehicles?.[lang || "vi"];
@@ -87,7 +98,8 @@ export async function GET(req: Request) {
   const db = readDb();
 
   if (type === "sales") {
-    return NextResponse.json({ success: true, items: db.sales ?? [] });
+    const items = getArraySection(db, "sales") ?? [];
+    return NextResponse.json({ success: true, items });
   }
 
   if (type === "vehicles") {
@@ -122,7 +134,7 @@ export async function POST(req: Request) {
   if (type === "sales" || type === "vehicles") {
     const lang = type === "vehicles" ? getLang(url) : undefined;
     const items = getArraySection(db, type, lang) ?? [];
-    const newItem = { ...payload, id: payload?.id ?? generateId(items) };
+    const newItem = { ...payload, id: payload?.id ?? (type === "sales" ? crypto.randomUUID() : generateId(items)) };
     setArraySection(db, type, [...items, newItem], lang);
     writeDb(db);
     return NextResponse.json({ success: true, item: newItem }, { status: 201 });
@@ -201,6 +213,23 @@ export async function DELETE(req: Request) {
   const db = readDb();
   const lang = type === "vehicles" ? getLang(url) : undefined;
   const items = getArraySection(db, type, lang) ?? [];
+  const targetItem = items.find((item) => String(item?.id) === id);
+
+  if (targetItem) {
+    const imagePath = targetItem.avatar || targetItem.image;
+    if (typeof imagePath === "string" && imagePath.startsWith("/images/")) {
+      const normalized = imagePath.slice(1);
+      if (normalized.startsWith("images/") && !normalized.includes("..")) {
+        const absolutePath = path.join(process.cwd(), "public", normalized);
+        try {
+          fs.unlinkSync(absolutePath);
+        } catch {
+          // ignore if file does not exist
+        }
+      }
+    }
+  }
+
   const filtered = items.filter((item) => String(item?.id) !== id);
   setArraySection(db, type, filtered, lang);
   writeDb(db);

@@ -69,3 +69,33 @@ export async function POST(req: Request) {
 
   return NextResponse.json({ success: true, path: `/images/${fileName}` });
 }
+
+export async function DELETE(req: Request) {
+  if (!(await isAuthorized(req))) {
+    return unauthorizedResponse();
+  }
+
+  const url = new URL(req.url);
+  const imagePath = url.searchParams.get("path")?.trim() ?? "";
+
+  if (!imagePath) {
+    return NextResponse.json({ success: false, error: "Missing image path" }, { status: 400 });
+  }
+
+  const normalized = imagePath.startsWith("/") ? imagePath.slice(1) : imagePath;
+  if (!normalized.startsWith("images/") || normalized.includes("..")) {
+    return NextResponse.json({ success: false, error: "Invalid image path" }, { status: 400 });
+  }
+
+  const absolutePath = path.join(process.cwd(), "public", normalized);
+
+  try {
+    await fs.unlink(absolutePath);
+  } catch (error: any) {
+    if (error?.code !== "ENOENT") {
+      return NextResponse.json({ success: false, error: "Unable to delete image file" }, { status: 500 });
+    }
+  }
+
+  return NextResponse.json({ success: true });
+}

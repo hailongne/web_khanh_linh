@@ -497,8 +497,8 @@
           "answer": "Có. Khánh Linh Trans hỗ trợ xuất hóa đơn VAT cho khách doanh nghiệp và khách đoàn. Bạn chỉ cần gửi thông tin xuất hóa đơn khi xác nhận booking để bộ phận kế toán xử lý cùng hồ sơ thanh toán."
         },
         {
-          "question": "Nếu mai sau này nhớ đến nhau thì sao?",
-          "answer": "Nếu mai sau này nhớ đến nhau, đừng hát về anh, coi anh như câu ca buồn trong giấc mơ thôi"
+          "question": "123",
+          "answer": "123456"
         }
       ]
     },
@@ -519,8 +519,8 @@
           "answer": "Yes. Khánh Linh Trans issues VAT invoices for corporate and group customers. Provide invoice details when confirming a booking so accounting can process the payment documents."
         },
         {
-          "question": "What if we think of each other in the future?",
-          "answer": "If, in the future, you find yourself thinking of me, do not sing about me; simply regard me as a sad melody in a dream."
+          "question": "123",
+          "answer": "123456"
         }
       ]
     }
@@ -530,5 +530,47 @@
     "passwordHash": "$2b$10$hSJIRLtfsa7s/jHFmDpJ3ukQbFJkALu3KVQ94vZzT.b2Wn9iKVI52",
     "createdAt": "2026-07-08T09:20:10.847Z",
     "updatedAt": "2026-07-08T09:20:24.130Z"
-  }
+  },
+  "reviews": [
+    {
+      "id": "rev-1",
+      "displayName": "Anh Minh Tuấn",
+      "rating": 5,
+      "content": "Xe 16 chỗ rất mới, nội thất sạch sẽ thơm tho. Tài xế đón đúng giờ và lái xe an toàn suốt chặng đường Hà Nội - Sa Pa. Rất hài lòng!",
+      "approved": true,
+      "createdAt": "2026-07-20T08:30:00.000Z"
+    },
+    {
+      "id": "rev-2",
+      "displayName": "Chị Hoàng Lan",
+      "rating": 5,
+      "content": "Thuê xe 29 chỗ cho công ty đi Teambuilding ở Hạ Long. Đội ngũ tư vấn báo giá rất nhanh, hợp đồng rõ ràng và bác tài chu đáo.",
+      "approved": true,
+      "createdAt": "2026-07-18T14:15:00.000Z"
+    },
+    {
+      "id": "rev-3",
+      "displayName": "Anh Quốc Bảo",
+      "rating": 4,
+      "content": "Đưa đón sân bay Nội Bài chuẩn giờ. Giá cả hợp lý so với chất lượng dịch vụ xe Carnival.",
+      "approved": true,
+      "createdAt": "2026-07-15T10:00:00.000Z"
+    },
+    {
+      "id": "rev-4",
+      "displayName": "Chị Phương Thảo",
+      "rating": 5,
+      "content": "Đã đặt xe Khánh Linh Trans 3 lần trong năm nay. Lần nào cũng hài lòng về thái độ phục vụ.",
+      "approved": true,
+      "createdAt": "2026-07-22T09:45:00.000Z"
+    },
+    {
+      "id": "9327695e-709a-4bff-8e50-0fa2d2b04456",
+      "displayName": "xyz",
+      "rating": 5,
+      "content": "hahaha xe đẹp",
+      "approved": true,
+      "createdAt": "2026-07-23T03:34:57.591Z"
+    }
+  ]
 }

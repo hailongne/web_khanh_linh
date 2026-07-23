@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 import React, { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import "./user.css";
@@ -173,6 +173,82 @@ export default function HomePage() {
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [previewAvatar, setPreviewAvatar] = useState<string | null>(null);
   const processGridRef = useRef<HTMLDivElement | null>(null);
+
+  // Reviews System States
+  const [publicReviews, setPublicReviews] = useState<any[]>([]);
+  const [reviewStats, setReviewStats] = useState<{
+    totalReviews: number;
+    averageRating: number;
+    ratingBreakdown: Record<number, number>;
+  }>({
+    totalReviews: 0,
+    averageRating: 5.0,
+    ratingBreakdown: { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 }
+  });
+
+  const [formDisplayName, setFormDisplayName] = useState("");
+  const [formRating, setFormRating] = useState(5);
+  const [formContent, setFormContent] = useState("");
+  const [submitSuccessMsg, setSubmitSuccessMsg] = useState("");
+  const [submitErrorMsg, setSubmitErrorMsg] = useState("");
+  const [isSubmittingReview, setIsSubmittingReview] = useState(false);
+
+  const fetchPublicReviews = async () => {
+    try {
+      const res = await fetch("/api/reviews");
+      const json = await res.json();
+      if (json.success) {
+        setPublicReviews(json.reviews || []);
+        if (json.stats) {
+          setReviewStats(json.stats);
+        }
+      }
+    } catch {
+      // noop
+    }
+  };
+
+  useEffect(() => {
+    fetchPublicReviews();
+  }, []);
+
+  const handleReviewSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setSubmitSuccessMsg("");
+    setSubmitErrorMsg("");
+
+    if (!formDisplayName.trim() || !formContent.trim()) {
+      setSubmitErrorMsg("Vui lòng điền đầy đủ tên và nội dung đánh giá.");
+      return;
+    }
+
+    setIsSubmittingReview(true);
+    try {
+      const res = await fetch("/api/reviews", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          displayName: formDisplayName,
+          rating: formRating,
+          content: formContent
+        })
+      });
+
+      const json = await res.json();
+      if (json.success) {
+        setSubmitSuccessMsg("Cảm ơn bạn. Đánh giá sẽ được kiểm duyệt trước khi hiển thị.");
+        setFormDisplayName("");
+        setFormContent("");
+        setFormRating(5);
+      } else {
+        setSubmitErrorMsg(json.error || "Không thể gửi đánh giá.");
+      }
+    } catch {
+      setSubmitErrorMsg("Có lỗi kết nối. Vui lòng thử lại sau.");
+    } finally {
+      setIsSubmittingReview(false);
+    }
+  };
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -489,62 +565,142 @@ export default function HomePage() {
             </div>
           )}
 
-          <section className="testimonials-section" aria-labelledby="testimonials-heading">
-            <div className="section-shell testimonials-section__inner">
-              <div className="testimonials-section__heading title-luxury">
-                <h2 id="testimonials-heading">{testimonialsData.heading}</h2>
-                <p>{testimonialsData.lead}</p>
+          {/* ĐÁNH GIÁ KHÁCH HÀNG SYSTEM */}
+          <section className="reviews-section" id="reviews" aria-labelledby="reviews-heading">
+            <div className="section-shell">
+              <div className="title-luxury">
+                <h2 id="reviews-heading">{lang === "en" ? "Customer Reviews" : "Đánh Giá Khách Hàng"}</h2>
+                <p>{lang === "en" ? "Real experiences and feedback from our valued customers" : "Phản hồi thực tế từ các chuyến đi của khách hàng cá nhân và doanh nghiệp"}</p>
               </div>
 
-              <div className="testimonials-layout">
-                <article className="testimonial-spotlight">
-                  <div className="testimonial-spotlight__glow" aria-hidden="true" />
-                  <div className="testimonial-spotlight__topline">
-                    <span>{testimonialsData.items[0].badge}</span>
-                    <span>{testimonialsData.items[0].tag}</span>
-                  </div>
-                  <blockquote>{testimonialsData.items[0].quote}</blockquote>
-                  <div className="testimonial-spotlight__footer">
-                    <div className="testimonial-person">
-                      <div className="testimonial-person__avatar" aria-hidden="true">
-                        <span>{testimonials[0].initials}</span>
+              <div className="reviews-grid">
+                {/* 1. Thống kê điểm số & Breakdown */}
+                <div className="reviews-overview-card">
+                  <div className="reviews-score-hero">
+                    <div className="reviews-score-number">
+                      {reviewStats.averageRating > 0 ? reviewStats.averageRating.toFixed(1) : "5.0"}
+                    </div>
+                    <div className="reviews-score-meta">
+                      <div className="reviews-stars-row">
+                        {"★".repeat(Math.round(reviewStats.averageRating || 5))}
+                        {"☆".repeat(5 - Math.round(reviewStats.averageRating || 5))}
                       </div>
-                      <div className="testimonial-person__copy">
-                        <strong>{testimonialsData.items[0].name}</strong>
-                        <p>{testimonialsData.items[0].role}</p>
+                      <div className="reviews-total-text">
+                        {reviewStats.totalReviews} {lang === "en" ? "reviews" : "đánh giá"}
                       </div>
                     </div>
-                    <div className="testimonial-spotlight__score">
-                      <strong>5.0</strong>
-                      <span>{testimonialsData.scoreLabel}</span>
-                    </div>
                   </div>
-                </article>
 
-                <div className="testimonials-side">
-                  <div className="testimonial-stats">
-                    {testimonialsData.stats.map((item: any) => (
-                      <article className="testimonial-stat" key={item.value}>
-                        <strong>{item.value}</strong>
-                        <p>{item.label}</p>
-                      </article>
-                    ))}
-                  </div>
-                  <div className="testimonial-list" aria-label="Pháº£n há»“i khÃ¡c tá»« khÃ¡ch hÃ ng">
-                    {testimonialsData.items.slice(1).map((item: any, idx: number) => (
-                      <article className="testimonial-mini" key={item.name}>
-                        <div className="testimonial-mini__meta">
-                          <span>{item.badge}</span>
-                          <span>{item.tag}</span>
+                  <div className="reviews-breakdown">
+                    {[5, 4, 3, 2, 1].map((star) => {
+                      const count = reviewStats.ratingBreakdown[star] || 0;
+                      const pct = reviewStats.totalReviews > 0 ? (count / reviewStats.totalReviews) * 100 : 0;
+                      return (
+                        <div className="breakdown-row" key={star}>
+                          <span>{star} sao</span>
+                          <div className="breakdown-bar-track">
+                            <div className="breakdown-bar-fill" style={{ width: `${pct}%` }} />
+                          </div>
+                          <span className="breakdown-count">{count}</span>
                         </div>
-                        <p>{item.quote}</p>
-                        <strong>{item.name}</strong>
-                        <small>{item.role}</small>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* 2. Form gửi đánh giá */}
+                <div className="review-form-card">
+                  <h3 className="review-form-title">{lang === "en" ? "Write a Review" : "Gửi Đánh Giá Của Bạn"}</h3>
+                  <form onSubmit={handleReviewSubmit}>
+                    <div className="review-form-group">
+                      <label className="review-form-label">{lang === "en" ? "Your Name" : "Tên hiển thị"}</label>
+                      <input
+                        type="text"
+                        className="review-form-input"
+                        placeholder={lang === "en" ? "e.g. Mr. John / Ms. Lan" : "Ví dụ: Anh Minh / Chị Lan"}
+                        value={formDisplayName}
+                        onChange={(e) => setFormDisplayName(e.target.value)}
+                        required
+                      />
+                    </div>
+
+                    <div className="review-form-group">
+                      <label className="review-form-label">{lang === "en" ? "Rating" : "Số sao đánh giá"}</label>
+                      <div className="review-star-picker" role="radiogroup" aria-label="Chọn số sao">
+                        {[1, 2, 3, 4, 5].map((star) => (
+                          <button
+                            type="button"
+                            key={star}
+                            className={`star-pick-btn ${star <= formRating ? "active" : ""}`}
+                            onClick={() => setFormRating(star)}
+                            aria-label={`${star} sao`}
+                          >
+                            ★
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="review-form-group">
+                      <label className="review-form-label">{lang === "en" ? "Your Feedback" : "Nội dung đánh giá"}</label>
+                      <textarea
+                        className="review-form-textarea"
+                        rows={3}
+                        placeholder={lang === "en" ? "Share your experience with our vehicle & driver..." : "Chia sẻ trải nghiệm của bạn về chất lượng xe, tài xế..."}
+                        value={formContent}
+                        onChange={(e) => setFormContent(e.target.value)}
+                        required
+                      />
+                    </div>
+
+                    {submitErrorMsg && (
+                      <div style={{ color: "#d93025", fontSize: "0.9rem", marginBottom: "12px", fontWeight: 500 }}>
+                        {submitErrorMsg}
+                      </div>
+                    )}
+
+                    <button type="submit" className="review-submit-btn" disabled={isSubmittingReview}>
+                      {isSubmittingReview ? (lang === "en" ? "Sending..." : "Đang gửi...") : (lang === "en" ? "Submit Review" : "Gửi Đánh Giá")}
+                    </button>
+
+                    {submitSuccessMsg && (
+                      <div className="review-success-msg">
+                        {submitSuccessMsg}
+                      </div>
+                    )}
+                  </form>
+                </div>
+              </div>
+
+              {/* 3. Danh sách Đánh giá (approved=true) */}
+              {publicReviews.length > 0 && (
+                <div className="reviews-list-wrapper">
+                  <div className="reviews-list-grid">
+                    {publicReviews.map((rev) => (
+                      <article className="review-item-card" key={rev.id}>
+                        <div className="review-item-header">
+                          <div className="review-author-info">
+                            <div className="review-author-avatar">
+                              {rev.displayName ? rev.displayName.charAt(0).toUpperCase() : "K"}
+                            </div>
+                            <div>
+                              <div className="review-author-name">{rev.displayName}</div>
+                              <div className="review-item-stars">
+                                {"★".repeat(rev.rating)}
+                                {"☆".repeat(5 - rev.rating)}
+                              </div>
+                            </div>
+                          </div>
+                          <span className="review-item-date">
+                            {new Date(rev.createdAt).toLocaleDateString("vi-VN")}
+                          </span>
+                        </div>
+                        <p className="review-item-content">{rev.content}</p>
                       </article>
                     ))}
                   </div>
                 </div>
-              </div>
+              )}
             </div>
           </section>
 

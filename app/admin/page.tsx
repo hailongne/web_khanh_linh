@@ -9,12 +9,12 @@ const MENU_ITEMS: { key: MenuKey; label: string; icon: string }[] = [
   { key: "vehicles", label: "Đội xe", icon: "fas fa-car-side" },
   { key: "pricing", label: "Bảng giá", icon: "fas fa-money-bill-wave" },
   { key: "sales", label: "Chuyên viên", icon: "fas fa-user-tie" },
-  { key: "testimonials", label: "Đánh giá", icon: "fas fa-star" },
+  { key: "reviews", label: "Đánh giá", icon: "fas fa-quote-right" },
   { key: "faq", label: "Câu hỏi", icon: "fas fa-question-circle" },
   { key: "account", label: "Tài khoản", icon: "fas fa-user-shield" }
 ];
 
-type MenuKey = "vehicles" | "pricing" | "sales" | "testimonials" | "faq" | "account";
+type MenuKey = "vehicles" | "pricing" | "sales" | "reviews" | "faq" | "account";
 
 type Vehicle = {
   id: string;
@@ -54,24 +54,7 @@ type SalesPerson = {
   avatar: string;
 };
 
-type TestimonialItem = {
-  quote: string;
-  name: string;
-  role: string;
-  badge: string;
-  tag: string;
-  initials: string;
-};
 
-type TestimonialStat = { value: string; label: string };
-
-type TestimonialsData = {
-  heading: string;
-  lead: string;
-  scoreLabel: string;
-  items: TestimonialItem[];
-  stats: TestimonialStat[];
-};
 
 type FaqItem = { question: string; answer: string };
 
@@ -151,7 +134,26 @@ function ConfirmDialog({
   onConfirm: () => void;
   onCancel: () => void;
 }) {
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        onCancel();
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isOpen, onCancel]);
+
   if (!isOpen) return null;
+
+  const handleConfirm = async () => {
+    try {
+      await onConfirm();
+    } finally {
+      onCancel();
+    }
+  };
 
   return (
     <>
@@ -170,7 +172,7 @@ function ConfirmDialog({
             </button>
             <button
               className="confirm-dialog__button confirm-dialog__button--confirm"
-              onClick={onConfirm}
+              onClick={handleConfirm}
               type="button"
             >
               {confirmText}
@@ -204,7 +206,7 @@ export default function AdminPage() {
     title: "",
     confirmText: "",
     cancelText: "",
-    onConfirm: () => {}
+    onConfirm: () => { }
   });
 
   useEffect(() => {
@@ -231,7 +233,7 @@ export default function AdminPage() {
     }
   }, [successMessage]);
 
-  
+
 
   async function handleLogin(event: React.FormEvent) {
     event.preventDefault();
@@ -288,7 +290,7 @@ export default function AdminPage() {
   }
 
   function closeConfirm() {
-    setConfirm({ ...confirm, isOpen: false });
+    setConfirm((prev) => ({ ...prev, isOpen: false }));
   }
 
   function handleLogout() {
@@ -481,8 +483,8 @@ export default function AdminPage() {
               openConfirm={openConfirm}
             />
           )}
-          {menu === "testimonials" && (
-            <TestimonialsPanel
+          {menu === "reviews" && (
+            <ReviewsPanel
               username={username}
               password={password}
               onError={showError}
@@ -491,6 +493,7 @@ export default function AdminPage() {
               openConfirm={openConfirm}
             />
           )}
+
           {menu === "faq" && (
             <FaqPanel
               username={username}
@@ -885,6 +888,17 @@ function VehiclesPanel({
   }, [warning]);
 
   useEffect(() => {
+    if (!modalOpen) return;
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        closeModal();
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [modalOpen]);
+
+  useEffect(() => {
     if (warning) showToast("warning", warning);
   }, [warning]);
 
@@ -1224,10 +1238,10 @@ function VehiclesPanel({
             )}
             <form className={`admin-form admin-form--grid ${warning ? 'has-alert' : ''}`} onSubmit={saveItem}>
               <div className="admin-form__fullwidth">
-                  <div className="admin-form__fullwidth">
-                    <button className="admin-button_languages">
-                      VI
-                    </button>
+                <div className="admin-form__fullwidth">
+                  <button className="admin-button_languages">
+                    VI
+                  </button>
                   <div className="admin-form admin-form--grid">
                     <label>
                       Tên xe
@@ -1502,185 +1516,185 @@ function PricingPanel({
 
   return (
     <section className="admin-section">
-        <h2>Nội dung bảng giá</h2>
-        {warning && <AdminWarningToast message={warning} onClose={() => setWarning(null)} />}
-        <form className="admin-form admin-form--grid" onSubmit={saveData}>
-          <div className="admin-form__fullwidth admin-language-grid">
-            <div className="admin-language-card">
-              <div className="admin-language-card__header">
-                <div>
-                  <h3>Tiếng Việt</h3>
-                  <p className="admin-language-card__subtitle">Chỉnh sửa nội dung tiếng Việt. Thay đổi sẽ tạo cảnh báo đồng nhất.</p>
-                </div>
-              </div>
-              <div className="admin-language-card__fields">
-                <label>
-                  Tiêu đề
-                  <input type="text" value={viData.heading} onChange={(event) => updateField("vi", "heading", event.target.value)} />
-                </label>
-                <label>
-                  Mô tả
-                  <input type="text" value={viData.lead} onChange={(event) => updateField("vi", "lead", event.target.value)} />
-                </label>
-                <label>
-                  Ghi chú
-                  <input type="text" value={viData.note} onChange={(event) => updateField("vi", "note", event.target.value)} />
-                </label>
-              </div>
-              <div className="admin-pricing-table-wrap">
-                <table className="admin-pricing-table">
-                  <thead>
-                    <tr>
-                      <th>{viData.cols[0] || "Loại xe"}</th>
-                      <th>{viData.cols[1] || "City Tour (1 ngày)"}</th>
-                      <th>{viData.cols[2] || "Đi tỉnh (từ 100km)"}</th>
-                      <th>{viData.cols[3] || "Sân bay (1 chiều)"}</th>
-                      <th className="admin-pricing-table__actions-col">Hành động</th>
-                    </tr>
-                    <tr className="admin-pricing-table__edit-row">
-                      {viData.cols.map((col, idx) => (
-                        <th key={idx}>
-                          <input
-                            aria-label={`Tiêu đề cột ${idx + 1}`}
-                            className="admin-pricing-cell-input"
-                            type="text"
-                            value={col}
-                            onChange={(event) => updateCol("vi", idx, event.target.value)}
-                          />
-                        </th>
-                      ))}
-                      <th />
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {viData.rows.length === 0 ? (
-                      <tr>
-                        <td colSpan={5} className="admin-pricing-table__empty">
-                          Chưa có dòng nào. Nhấn + Thêm hàng mới để thêm dữ liệu.
-                        </td>
-                      </tr>
-                    ) : (
-                      viData.rows.map((row, idx) => (
-                        <tr key={idx} className="admin-pricing-table__row">
-                          <td>
-                            <input type="text" value={row.vehicle} onChange={(event) => updateRow("vi", idx, "vehicle", event.target.value)} />
-                          </td>
-                          <td>
-                            <input type="text" value={row.cityTour} onChange={(event) => updateRow("vi", idx, "cityTour", event.target.value)} />
-                          </td>
-                          <td>
-                            <input type="text" value={row.provinceTrip} onChange={(event) => updateRow("vi", idx, "provinceTrip", event.target.value)} />
-                          </td>
-                          <td>
-                            <input type="text" value={row.airport} onChange={(event) => updateRow("vi", idx, "airport", event.target.value)} />
-                          </td>
-                          <td>
-                            <button className="admin-button admin-button--danger admin-button--small" type="button" onClick={() => confirmRemoveRow("vi", idx)}>
-                              Xóa
-                            </button>
-                          </td>
-                        </tr>
-                      ))
-                    )}
-                  </tbody>
-                </table>
-              </div>
-              <div className="admin-language-card__footer">
-                <button className="admin-button admin-button--ghost" type="button" onClick={() => addRow("vi")}>+ Thêm hàng mới</button>
+      <h2>Nội dung bảng giá</h2>
+      {warning && <AdminWarningToast message={warning} onClose={() => setWarning(null)} />}
+      <form className="admin-form admin-form--grid" onSubmit={saveData}>
+        <div className="admin-form__fullwidth admin-language-grid">
+          <div className="admin-language-card">
+            <div className="admin-language-card__header">
+              <div>
+                <h3>Tiếng Việt</h3>
+                <p className="admin-language-card__subtitle">Chỉnh sửa nội dung tiếng Việt. Thay đổi sẽ tạo cảnh báo đồng nhất.</p>
               </div>
             </div>
-            <div className="admin-language-card admin-language-card--second">
-              <div className="admin-language-card__header">
-                <div>
-                  <h3>Tiếng Anh</h3>
-                  <p className="admin-language-card__subtitle">Chỉnh sửa nội dung tiếng Anh.</p>
-                </div>
-              </div>
-              <div className="admin-language-card__fields">
-                <label>
-                  Tiêu đề
-                  <input type="text" value={enData.heading} onChange={(event) => updateField("en", "heading", event.target.value)} />
-                </label>
-                <label>
-                  Mô tả
-                  <input type="text" value={enData.lead} onChange={(event) => updateField("en", "lead", event.target.value)} />
-                </label>
-                <label>
-                  Ghi chú
-                  <input type="text" value={enData.note} onChange={(event) => updateField("en", "note", event.target.value)} />
-                </label>
-              </div>
-              <div className="admin-pricing-table-wrap">
-                <table className="admin-pricing-table">
-                  <thead>
+            <div className="admin-language-card__fields">
+              <label>
+                Tiêu đề
+                <input type="text" value={viData.heading} onChange={(event) => updateField("vi", "heading", event.target.value)} />
+              </label>
+              <label>
+                Mô tả
+                <input type="text" value={viData.lead} onChange={(event) => updateField("vi", "lead", event.target.value)} />
+              </label>
+              <label>
+                Ghi chú
+                <input type="text" value={viData.note} onChange={(event) => updateField("vi", "note", event.target.value)} />
+              </label>
+            </div>
+            <div className="admin-pricing-table-wrap">
+              <table className="admin-pricing-table">
+                <thead>
+                  <tr>
+                    <th>{viData.cols[0] || "Loại xe"}</th>
+                    <th>{viData.cols[1] || "City Tour (1 ngày)"}</th>
+                    <th>{viData.cols[2] || "Đi tỉnh (từ 100km)"}</th>
+                    <th>{viData.cols[3] || "Sân bay (1 chiều)"}</th>
+                    <th className="admin-pricing-table__actions-col">Hành động</th>
+                  </tr>
+                  <tr className="admin-pricing-table__edit-row">
+                    {viData.cols.map((col, idx) => (
+                      <th key={idx}>
+                        <input
+                          aria-label={`Tiêu đề cột ${idx + 1}`}
+                          className="admin-pricing-cell-input"
+                          type="text"
+                          value={col}
+                          onChange={(event) => updateCol("vi", idx, event.target.value)}
+                        />
+                      </th>
+                    ))}
+                    <th />
+                  </tr>
+                </thead>
+                <tbody>
+                  {viData.rows.length === 0 ? (
                     <tr>
-                      <th>{enData.cols[0] || "Vehicle"}</th>
-                      <th>{enData.cols[1] || "City Tour (1 day)"}</th>
-                      <th>{enData.cols[2] || "Out-of-town (from 100km)"}</th>
-                      <th>{enData.cols[3] || "Airport (one-way)"}</th>
-                      <th className="admin-pricing-table__actions-col">Hành động</th>
+                      <td colSpan={5} className="admin-pricing-table__empty">
+                        Chưa có dòng nào. Nhấn + Thêm hàng mới để thêm dữ liệu.
+                      </td>
                     </tr>
-                    <tr className="admin-pricing-table__edit-row">
-                      {enData.cols.map((col, idx) => (
-                        <th key={idx}>
-                          <input
-                            aria-label={`Column title ${idx + 1}`}
-                            className="admin-pricing-cell-input"
-                            type="text"
-                            value={col}
-                            onChange={(event) => updateCol("en", idx, event.target.value)}
-                          />
-                        </th>
-                      ))}
-                      <th />
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {enData.rows.length === 0 ? (
-                      <tr>
-                        <td colSpan={5} className="admin-pricing-table__empty">
-                          Chưa có dòng nào. Nhấn + Thêm hàng mới để thêm dữ liệu.
+                  ) : (
+                    viData.rows.map((row, idx) => (
+                      <tr key={idx} className="admin-pricing-table__row">
+                        <td>
+                          <input type="text" value={row.vehicle} onChange={(event) => updateRow("vi", idx, "vehicle", event.target.value)} />
+                        </td>
+                        <td>
+                          <input type="text" value={row.cityTour} onChange={(event) => updateRow("vi", idx, "cityTour", event.target.value)} />
+                        </td>
+                        <td>
+                          <input type="text" value={row.provinceTrip} onChange={(event) => updateRow("vi", idx, "provinceTrip", event.target.value)} />
+                        </td>
+                        <td>
+                          <input type="text" value={row.airport} onChange={(event) => updateRow("vi", idx, "airport", event.target.value)} />
+                        </td>
+                        <td>
+                          <button className="admin-button admin-button--danger admin-button--small" type="button" onClick={() => confirmRemoveRow("vi", idx)}>
+                            Xóa
+                          </button>
                         </td>
                       </tr>
-                    ) : (
-                      enData.rows.map((row, idx) => (
-                        <tr key={idx} className="admin-pricing-table__row">
-                          <td>
-                            <input type="text" value={row.vehicle} onChange={(event) => updateRow("en", idx, "vehicle", event.target.value)} />
-                          </td>
-                          <td>
-                            <input type="text" value={row.cityTour} onChange={(event) => updateRow("en", idx, "cityTour", event.target.value)} />
-                          </td>
-                          <td>
-                            <input type="text" value={row.provinceTrip} onChange={(event) => updateRow("en", idx, "provinceTrip", event.target.value)} />
-                          </td>
-                          <td>
-                            <input type="text" value={row.airport} onChange={(event) => updateRow("en", idx, "airport", event.target.value)} />
-                          </td>
-                          <td>
-                            <button className="admin-button admin-button--danger admin-button--small" type="button" onClick={() => confirmRemoveRow("en", idx)}>
-                              Xóa
-                            </button>
-                          </td>
-                        </tr>
-                      ))
-                    )}
-                  </tbody>
-                </table>
-              </div>
-              <div className="admin-language-card__footer">
-                <button className="admin-button admin-button--ghost" type="button" onClick={() => addRow("en")}>+ Thêm hàng mới</button>
-              </div>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
+            <div className="admin-language-card__footer">
+              <button className="admin-button admin-button--ghost" type="button" onClick={() => addRow("vi")}>+ Thêm hàng mới</button>
             </div>
           </div>
+          <div className="admin-language-card admin-language-card--second">
+            <div className="admin-language-card__header">
+              <div>
+                <h3>Tiếng Anh</h3>
+                <p className="admin-language-card__subtitle">Chỉnh sửa nội dung tiếng Anh.</p>
+              </div>
+            </div>
+            <div className="admin-language-card__fields">
+              <label>
+                Tiêu đề
+                <input type="text" value={enData.heading} onChange={(event) => updateField("en", "heading", event.target.value)} />
+              </label>
+              <label>
+                Mô tả
+                <input type="text" value={enData.lead} onChange={(event) => updateField("en", "lead", event.target.value)} />
+              </label>
+              <label>
+                Ghi chú
+                <input type="text" value={enData.note} onChange={(event) => updateField("en", "note", event.target.value)} />
+              </label>
+            </div>
+            <div className="admin-pricing-table-wrap">
+              <table className="admin-pricing-table">
+                <thead>
+                  <tr>
+                    <th>{enData.cols[0] || "Vehicle"}</th>
+                    <th>{enData.cols[1] || "City Tour (1 day)"}</th>
+                    <th>{enData.cols[2] || "Out-of-town (from 100km)"}</th>
+                    <th>{enData.cols[3] || "Airport (one-way)"}</th>
+                    <th className="admin-pricing-table__actions-col">Hành động</th>
+                  </tr>
+                  <tr className="admin-pricing-table__edit-row">
+                    {enData.cols.map((col, idx) => (
+                      <th key={idx}>
+                        <input
+                          aria-label={`Column title ${idx + 1}`}
+                          className="admin-pricing-cell-input"
+                          type="text"
+                          value={col}
+                          onChange={(event) => updateCol("en", idx, event.target.value)}
+                        />
+                      </th>
+                    ))}
+                    <th />
+                  </tr>
+                </thead>
+                <tbody>
+                  {enData.rows.length === 0 ? (
+                    <tr>
+                      <td colSpan={5} className="admin-pricing-table__empty">
+                        Chưa có dòng nào. Nhấn + Thêm hàng mới để thêm dữ liệu.
+                      </td>
+                    </tr>
+                  ) : (
+                    enData.rows.map((row, idx) => (
+                      <tr key={idx} className="admin-pricing-table__row">
+                        <td>
+                          <input type="text" value={row.vehicle} onChange={(event) => updateRow("en", idx, "vehicle", event.target.value)} />
+                        </td>
+                        <td>
+                          <input type="text" value={row.cityTour} onChange={(event) => updateRow("en", idx, "cityTour", event.target.value)} />
+                        </td>
+                        <td>
+                          <input type="text" value={row.provinceTrip} onChange={(event) => updateRow("en", idx, "provinceTrip", event.target.value)} />
+                        </td>
+                        <td>
+                          <input type="text" value={row.airport} onChange={(event) => updateRow("en", idx, "airport", event.target.value)} />
+                        </td>
+                        <td>
+                          <button className="admin-button admin-button--danger admin-button--small" type="button" onClick={() => confirmRemoveRow("en", idx)}>
+                            Xóa
+                          </button>
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
+            <div className="admin-language-card__footer">
+              <button className="admin-button admin-button--ghost" type="button" onClick={() => addRow("en")}>+ Thêm hàng mới</button>
+            </div>
+          </div>
+        </div>
 
-          <div className="admin-form__actions">
-            <button className="admin-button" type="submit">
-              Lưu bảng giá
-            </button>
-          </div>
-        </form>
-      </section>
+        <div className="admin-form__actions">
+          <button className="admin-button" type="submit">
+            Lưu bảng giá
+          </button>
+        </div>
+      </form>
+    </section>
   );
 }
 
@@ -1721,6 +1735,17 @@ function SalesPanel({
     setModalOpen(false);
     resetForm();
   }
+
+  useEffect(() => {
+    if (!modalOpen) return;
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        closeModal();
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [modalOpen]);
 
   async function handleDeleteInModal() {
     if (!editingId) return;
@@ -2016,346 +2041,6 @@ function SalesPanel({
   );
 }
 
-function TestimonialsPanel({
-  username,
-  password,
-  onError,
-  onSuccess,
-  setLoading,
-  openConfirm
-}: {
-  username: string;
-  password: string;
-  onError: (message: string) => void;
-  onSuccess: (message: string) => void;
-  setLoading: (value: boolean) => void;
-  openConfirm: (title: string, onConfirm: () => void, confirmText?: string, cancelText?: string, message?: string) => void;
-}) {
-  const api = useAdminFetch(username, password);
-  const [viData, setViData] = useState<TestimonialsData>({
-    heading: "",
-    lead: "",
-    scoreLabel: "",
-    items: [],
-    stats: []
-  });
-  const [enData, setEnData] = useState<TestimonialsData>({
-    heading: "",
-    lead: "",
-    scoreLabel: "",
-    items: [],
-    stats: []
-  });
-  const [warning, setWarning] = useState<string | null>(null);
-
-  useEffect(() => {
-    loadData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  async function loadData() {
-    setLoading(true);
-    try {
-      const [viResult, enResult] = await Promise.all([
-        api.get("/api/admin/data?type=testimonials&lang=vi"),
-        api.get("/api/admin/data?type=testimonials&lang=en")
-      ]);
-      if (viResult.data) setViData(viResult.data);
-      if (enResult.data) setEnData(enResult.data);
-    } catch (err) {
-      onError(err instanceof Error ? err.message : "Lỗi tải dữ liệu");
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  async function saveData(event: React.FormEvent) {
-    event.preventDefault();
-    setLoading(true);
-    try {
-      await Promise.all([
-        api.put("/api/admin/data?type=testimonials&lang=vi", viData),
-        api.put("/api/admin/data?type=testimonials&lang=en", enData)
-      ]);
-      onSuccess("Lưu đánh giá thành công.");
-    } catch (err) {
-      onError(err instanceof Error ? err.message : "Lỗi lưu dữ liệu");
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  function updateField(language: "vi" | "en", field: keyof TestimonialsData, value: string) {
-    const setter = language === "vi" ? setViData : setEnData;
-    setter((prev) => ({ ...prev, [field]: value } as TestimonialsData));
-    setWarning("Cảnh báo: bạn vừa chỉnh sửa tiếng " + (language === "vi" ? "Việt" : "Anh") + ". Vui lòng kiểm tra và cập nhật đúng cả hai ngôn ngữ trước khi lưu.");
-  }
-
-  function updateItem(language: "vi" | "en", index: number, field: keyof TestimonialItem, value: string) {
-    const setter = language === "vi" ? setViData : setEnData;
-    setter((prev) => {
-      const items = [...prev.items];
-      items[index] = { ...items[index], [field]: value };
-      return { ...prev, items };
-    });
-    setWarning("Cảnh báo: bạn vừa chỉnh sửa tiếng " + (language === "vi" ? "Việt" : "Anh") + ". Vui lòng kiểm tra và cập nhật đúng cả hai ngôn ngữ trước khi lưu.");
-  }
-
-  function addItem(language: "vi" | "en") {
-    const setter = language === "vi" ? setViData : setEnData;
-    const otherData = language === "vi" ? enData : viData;
-    setter((prev) => ({
-      ...prev,
-      items: [...prev.items, { quote: "", name: "", role: "", badge: "", tag: "", initials: "" }]
-    }));
-    const newCount = (language === "vi" ? viData.items.length + 1 : enData.items.length + 1);
-    if (otherData.items.length !== newCount) {
-      setWarning("⚠️ Cảnh báo: số lượng phản hồi không khớp! Tiếng Việt: " + (language === "vi" ? newCount : viData.items.length) + ", Tiếng Anh: " + (language === "en" ? newCount : enData.items.length) + ". Vui lòng thêm phản hồi tương ứng cho tiếng " + (language === "vi" ? "Anh" : "Việt") + ".");
-    } else {
-      setWarning("Cảnh báo: bạn vừa thêm 1 phản hồi tiếng " + (language === "vi" ? "Việt" : "Anh") + ". Vui lòng thêm phản hồi tương ứng cho tiếng " + (language === "vi" ? "Anh" : "Việt") + ".");
-    }
-  }
-
-  function removeItem(language: "vi" | "en", index: number) {
-    const setter = language === "vi" ? setViData : setEnData;
-    setter((prev) => ({ ...prev, items: prev.items.filter((_, idx) => idx !== index) }));
-    const otherData = language === "vi" ? enData : viData;
-    const newCount = (language === "vi" ? viData.items.length - 1 : enData.items.length - 1);
-    if (otherData.items.length !== newCount) {
-      setWarning("⚠️ Cảnh báo: số lượng phản hồi không khớp! Tiếng Việt: " + (language === "vi" ? newCount : viData.items.length) + ", Tiếng Anh: " + (language === "en" ? newCount : enData.items.length) + ". Vui lòng xóa phản hồi tương ứng cho tiếng " + (language === "vi" ? "Anh" : "Việt") + ".");
-    }
-  }
-
-  function confirmRemoveItem(language: "vi" | "en", index: number) {
-    openConfirm(
-      "Bạn có chắc chắn không?",
-      () => removeItem(language, index),
-      "Xóa",
-      "Hủy"
-    );
-  }
-
-  function updateStat(language: "vi" | "en", index: number, field: keyof TestimonialStat, value: string) {
-    const setter = language === "vi" ? setViData : setEnData;
-    setter((prev) => {
-      const stats = [...prev.stats];
-      stats[index] = { ...stats[index], [field]: value };
-      return { ...prev, stats };
-    });
-    setWarning("Cảnh báo: bạn vừa chỉnh sửa tiếng " + (language === "vi" ? "Việt" : "Anh") + ". Vui lòng kiểm tra và cập nhật đúng cả hai ngôn ngữ trước khi lưu.");
-  }
-
-  function addStat(language: "vi" | "en") {
-    const setter = language === "vi" ? setViData : setEnData;
-    const otherData = language === "vi" ? enData : viData;
-    setter((prev) => ({ ...prev, stats: [...prev.stats, { value: "", label: "" }] }));
-    const newCount = (language === "vi" ? viData.stats.length + 1 : enData.stats.length + 1);
-    if (otherData.stats.length !== newCount) {
-      setWarning("⚠️ Cảnh báo: số lượng thống kê không khớp! Tiếng Việt: " + (language === "vi" ? newCount : viData.stats.length) + ", Tiếng Anh: " + (language === "en" ? newCount : enData.stats.length) + ". Vui lòng thêm thống kê tương ứng cho tiếng " + (language === "vi" ? "Anh" : "Việt") + ".");
-    } else {
-      setWarning("Cảnh báo: bạn vừa thêm 1 thống kê tiếng " + (language === "vi" ? "Việt" : "Anh") + ". Vui lòng thêm thống kê tương ứng cho tiếng " + (language === "vi" ? "Anh" : "Việt") + ".");
-    }
-  }
-
-  function removeStat(language: "vi" | "en", index: number) {
-    const setter = language === "vi" ? setViData : setEnData;
-    setter((prev) => ({ ...prev, stats: prev.stats.filter((_, idx) => idx !== index) }));
-    const otherData = language === "vi" ? enData : viData;
-    const newCount = (language === "vi" ? viData.stats.length - 1 : enData.stats.length - 1);
-    if (otherData.stats.length !== newCount) {
-      setWarning("⚠️ Cảnh báo: số lượng thống kê không khớp! Tiếng Việt: " + (language === "vi" ? newCount : viData.stats.length) + ", Tiếng Anh: " + (language === "en" ? newCount : enData.stats.length) + ". Vui lòng xóa thống kê tương ứng cho tiếng " + (language === "vi" ? "Anh" : "Việt") + ".");
-    }
-  }
-
-  function confirmRemoveStat(language: "vi" | "en", index: number) {
-    openConfirm(
-      "Bạn có chắc chắn không?",
-      () => removeStat(language, index),
-      "Xóa",
-      "Hủy"
-    );
-  }
-
-  return (
-    <section className="admin-section">
-      <h2>Nội dung đánh giá khách hàng</h2>
-      {warning && <AdminWarningToast message={warning} onClose={() => setWarning(null)} />}
-      <form className={`admin-form admin-form--grid`} onSubmit={saveData}>
-        <div className="admin-form__fullwidth admin-language-grid">
-          <div className="admin-language-card">
-            <h3>Tiếng Việt</h3>
-            <div className="admin-form admin-form--grid">
-              <label className="admin-form__fullwidth">
-                Tiêu đề
-                <input type="text" value={viData.heading} onChange={(event) => updateField("vi", "heading", event.target.value)} />
-              </label>
-              <label className="admin-form__fullwidth">
-                Mô tả
-                <input type="text" value={viData.lead} onChange={(event) => updateField("vi", "lead", event.target.value)} />
-              </label>
-              <label className="admin-form__fullwidth">
-                Nhãn điểm
-                <input type="text" value={viData.scoreLabel} onChange={(event) => updateField("vi", "scoreLabel", event.target.value)} />
-              </label>
-              <div className="admin-form__fullwidth">
-                <h4>Thống kê</h4>
-                {viData.stats.map((stat, idx) => (
-                  <div className="admin-form--grid admin-row" key={idx}>
-                    <label>
-                      Giá trị
-                      <input type="text" value={stat.value} onChange={(event) => updateStat("vi", idx, "value", event.target.value)} />
-                    </label>
-                    <label>
-                      Nhãn
-                      <input type="text" value={stat.label} onChange={(event) => updateStat("vi", idx, "label", event.target.value)} />
-                    </label>
-                    <div className="admin-form__actions">
-                      <button className="admin-button admin-button--danger" type="button" onClick={() => confirmRemoveStat("vi", idx)}>
-                        Xóa
-                      </button>
-                    </div>
-                  </div>
-                ))}
-                <button className="admin-button admin-button--ghost" type="button" onClick={() => addStat("vi")}>
-                  + Thêm thống kê
-                </button>
-              </div>
-              <div className="admin-form__fullwidth">
-                <h4>Phản hồi</h4>
-                {viData.items.map((item, idx) => (
-                  <div className="admin-row admin-row--boxed" key={idx}>
-                    <label className="admin-form__fullwidth">
-                      Nội dung
-                      <input type="text" value={item.quote} onChange={(event) => updateItem("vi", idx, "quote", event.target.value)} />
-                    </label>
-                    <div className="admin-form--grid">
-                      <label>
-                        Tên khách hàng
-                        <input type="text" value={item.name} onChange={(event) => updateItem("vi", idx, "name", event.target.value)} />
-                      </label>
-                      <label>
-                        Vai trò
-                        <input type="text" value={item.role} onChange={(event) => updateItem("vi", idx, "role", event.target.value)} />
-                      </label>
-                      <label>
-                        Badge
-                        <input type="text" value={item.badge} onChange={(event) => updateItem("vi", idx, "badge", event.target.value)} />
-                      </label>
-                      <label>
-                        Tag
-                        <input type="text" value={item.tag} onChange={(event) => updateItem("vi", idx, "tag", event.target.value)} />
-                      </label>
-                      <label>
-                        Chữ cái đầu
-                        <input type="text" value={item.initials} onChange={(event) => updateItem("vi", idx, "initials", event.target.value)} />
-                      </label>
-                    </div>
-                    <div className="admin-form__actions">
-                      <button className="admin-button admin-button--danger" type="button" onClick={() => confirmRemoveItem("vi", idx)}>
-                        Xóa phản hồi
-                      </button>
-                    </div>
-                  </div>
-                ))}
-                <button className="admin-button admin-button--ghost" type="button" onClick={() => addItem("vi")}>
-                  + Thêm phản hồi
-                </button>
-              </div>
-            </div>
-          </div>
-          <div className="admin-language-card">
-            <h3>Tiếng Anh</h3>
-            <div className="admin-form admin-form--grid">
-              <label className="admin-form__fullwidth">
-                Tiêu đề
-                <input type="text" value={enData.heading} onChange={(event) => updateField("en", "heading", event.target.value)} />
-              </label>
-              <label className="admin-form__fullwidth">
-                Mô tả
-                <input type="text" value={enData.lead} onChange={(event) => updateField("en", "lead", event.target.value)} />
-              </label>
-              <label className="admin-form__fullwidth">
-                Nhãn điểm
-                <input type="text" value={enData.scoreLabel} onChange={(event) => updateField("en", "scoreLabel", event.target.value)} />
-              </label>
-              <div className="admin-form__fullwidth">
-                <h4>Thống kê</h4>
-                {enData.stats.map((stat, idx) => (
-                  <div className="admin-form--grid admin-row" key={idx}>
-                    <label>
-                      Giá trị
-                      <input type="text" value={stat.value} onChange={(event) => updateStat("en", idx, "value", event.target.value)} />
-                    </label>
-                    <label>
-                      Nhãn
-                      <input type="text" value={stat.label} onChange={(event) => updateStat("en", idx, "label", event.target.value)} />
-                    </label>
-                    <div className="admin-form__actions">
-                      <button className="admin-button admin-button--danger" type="button" onClick={() => confirmRemoveStat("en", idx)}>
-                        Xóa
-                      </button>
-                    </div>
-                  </div>
-                ))}
-                <button className="admin-button admin-button--ghost" type="button" onClick={() => addStat("en")}>
-                  + Thêm thống kê
-                </button>
-              </div>
-              <div className="admin-form__fullwidth">
-                <h4>Phản hồi</h4>
-                {enData.items.map((item, idx) => (
-                  <div className="admin-row admin-row--boxed" key={idx}>
-                    <label className="admin-form__fullwidth">
-                      Nội dung
-                      <input type="text" value={item.quote} onChange={(event) => updateItem("en", idx, "quote", event.target.value)} />
-                    </label>
-                    <div className="admin-form--grid">
-                      <label>
-                        Tên khách hàng
-                        <input type="text" value={item.name} onChange={(event) => updateItem("en", idx, "name", event.target.value)} />
-                      </label>
-                      <label>
-                        Vai trò
-                        <input type="text" value={item.role} onChange={(event) => updateItem("en", idx, "role", event.target.value)} />
-                      </label>
-                      <label>
-                        Badge
-                        <input type="text" value={item.badge} onChange={(event) => updateItem("en", idx, "badge", event.target.value)} />
-                      </label>
-                      <label>
-                        Tag
-                        <input type="text" value={item.tag} onChange={(event) => updateItem("en", idx, "tag", event.target.value)} />
-                      </label>
-                      <label>
-                        Chữ cái đầu
-                        <input type="text" value={item.initials} onChange={(event) => updateItem("en", idx, "initials", event.target.value)} />
-                      </label>
-                    </div>
-                    <div className="admin-form__actions">
-                      <button className="admin-button admin-button--danger" type="button" onClick={() => confirmRemoveItem("en", idx)}>
-                        Xóa phản hồi
-                      </button>
-                    </div>
-                  </div>
-                ))}
-                <button className="admin-button admin-button--ghost" type="button" onClick={() => addItem("en")}>
-                  + Thêm phản hồi
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="admin-form__actions">
-          <button className="admin-button" type="submit">
-            Lưu đánh giá
-          </button>
-        </div>
-      </form>
-    </section>
-  );
-}
-
 function FaqPanel({
   username,
   password,
@@ -2580,5 +2265,194 @@ function FaqPanel({
         </div>
       </form>
     </section>
+  );
+}
+
+type AdminReview = {
+  id: string;
+  displayName: string;
+  rating: number;
+  content: string;
+  approved: boolean;
+  createdAt: string;
+};
+
+function ReviewsPanel({
+  username,
+  password,
+  onError,
+  onSuccess,
+  setLoading,
+  openConfirm
+}: {
+  username: string;
+  password: string;
+  onError: (message: string) => void;
+  onSuccess: (message: string) => void;
+  setLoading: (value: boolean) => void;
+  openConfirm: (title: string, onConfirm: () => void, confirmText?: string, cancelText?: string, message?: string) => void;
+}) {
+  const api = useAdminFetch(username, password);
+  const [reviews, setReviews] = useState<AdminReview[]>([]);
+  const [filter, setFilter] = useState<"all" | "pending" | "approved">("all");
+
+  useEffect(() => {
+    loadReviews();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  async function loadReviews() {
+    setLoading(true);
+    try {
+      const res = await api.get("/api/admin/reviews");
+      if (res.reviews) {
+        setReviews(res.reviews);
+      }
+    } catch (err) {
+      onError(err instanceof Error ? err.message : "Lỗi tải danh sách đánh giá");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function toggleApprove(review: AdminReview) {
+    setLoading(true);
+    try {
+      const res = await api.put("/api/admin/reviews", {
+        id: review.id,
+        approved: !review.approved
+      });
+      if (res.success) {
+        onSuccess(review.approved ? "Đã bỏ duyệt đánh giá!" : "Đã duyệt đánh giá!");
+        loadReviews();
+      } else {
+        onError(res.error || "Không thể cập nhật đánh giá");
+      }
+    } catch (err) {
+      onError(err instanceof Error ? err.message : "Lỗi kết nối máy chủ");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  function deleteReview(id: string) {
+    openConfirm(
+      "Xác nhận xóa đánh giá",
+      async () => {
+        setLoading(true);
+        try {
+          const res = await api.del(`/api/admin/reviews?id=${encodeURIComponent(id)}`);
+          if (res.success) {
+            onSuccess("Đã xóa đánh giá thành công!");
+            loadReviews();
+          } else {
+            onError(res.error || "Không thể xóa đánh giá");
+          }
+        } catch (err) {
+          onError(err instanceof Error ? err.message : "Lỗi kết nối");
+        } finally {
+          setLoading(false);
+        }
+      },
+      "Xóa đánh giá",
+      "Hủy",
+      "Bạn có chắc chắn muốn xóa đánh giá này khỏi hệ thống?"
+    );
+  }
+
+  const filteredReviews = useMemo(() => {
+    if (filter === "pending") return reviews.filter((r) => !r.approved);
+    if (filter === "approved") return reviews.filter((r) => r.approved);
+    return reviews;
+  }, [reviews, filter]);
+
+  return (
+    <div className="admin-card">
+      <div className="admin-card__header">
+        <div>
+          <h3>Quản Lý Đánh Giá Khách Hàng</h3>
+          <p className="admin-card__subtitle">Kiểm duyệt, phê duyệt và quản lý phản hồi từ người dùng website</p>
+        </div>
+      </div>
+
+      <div className="admin-reviews-filter">
+        <button
+          type="button"
+          className={`admin-filter-btn ${filter === "all" ? "active" : ""}`}
+          onClick={() => setFilter("all")}
+        >
+          Tất cả ({reviews.length})
+        </button>
+        <button
+          type="button"
+          className={`admin-filter-btn ${filter === "pending" ? "active" : ""}`}
+          onClick={() => setFilter("pending")}
+        >
+          Chờ duyệt ({reviews.filter((r) => !r.approved).length})
+        </button>
+        <button
+          type="button"
+          className={`admin-filter-btn ${filter === "approved" ? "active" : ""}`}
+          onClick={() => setFilter("approved")}
+        >
+          Đã duyệt ({reviews.filter((r) => r.approved).length})
+        </button>
+      </div>
+
+      <div className="admin-section admin-reviews-table">
+        <div className="admin-table">
+          <div className="admin-table__row admin-table__header">
+            <div>Tên hiển thị</div>
+            <div>Số sao</div>
+            <div>Nội dung đánh giá</div>
+            <div>Ngày tạo</div>
+            <div>Trạng thái</div>
+            <div>Hành động</div>
+          </div>
+
+          {filteredReviews.length === 0 ? (
+            <div className="admin-table__empty">Không có đánh giá nào phù hợp với bộ lọc.</div>
+          ) : (
+            filteredReviews.map((item) => (
+              <div className="admin-table__row" key={item.id}>
+                <div>
+                  <strong>{item.displayName}</strong>
+                </div>
+                <div style={{ color: "#ffb400", fontWeight: 700 }}>
+                  {"★".repeat(item.rating)}{"☆".repeat(5 - item.rating)}
+                </div>
+                <div style={{ fontSize: "0.92rem", color: "#334756" }}>
+                  {item.content}
+                </div>
+                <div style={{ fontSize: "0.85rem", color: "var(--muted)" }}>
+                  {new Date(item.createdAt).toLocaleString("vi-VN")}
+                </div>
+                <div>
+                  <span className={`admin-status-badge ${item.approved ? "admin-status-badge--approved" : "admin-status-badge--pending"}`}>
+                    {item.approved ? "Đã duyệt" : "Chờ duyệt"}
+                  </span>
+                </div>
+                <div className="admin-actions">
+                  <button
+                    type="button"
+                    className={`admin-button ${item.approved ? "admin-button--ghost" : ""}`}
+                    onClick={() => toggleApprove(item)}
+                  >
+                    {item.approved ? "Bỏ duyệt" : "Duyệt"}
+                  </button>
+                  <button
+                    type="button"
+                    className="admin-button admin-button--danger"
+                    onClick={() => deleteReview(item.id)}
+                  >
+                    Xóa
+                  </button>
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+      </div>
+    </div>
   );
 }

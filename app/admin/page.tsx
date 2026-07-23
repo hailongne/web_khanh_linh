@@ -461,6 +461,7 @@ export default function AdminPage() {
               onError={showError}
               onSuccess={showSuccess}
               setLoading={setLoading}
+              openConfirm={openConfirm}
             />
           )}
           {menu === "pricing" && (
@@ -853,13 +854,15 @@ function VehiclesPanel({
   password,
   onError,
   onSuccess,
-  setLoading
+  setLoading,
+  openConfirm
 }: {
   username: string;
   password: string;
   onError: (message: string) => void;
   onSuccess: (message: string) => void;
   setLoading: (value: boolean) => void;
+  openConfirm: (title: string, onConfirm: () => void, confirmText?: string, cancelText?: string, message?: string) => void;
 }) {
   const api = useAdminFetch(username, password);
   const [items, setItems] = useState<LocalizedVehicle[]>([]);
@@ -927,10 +930,30 @@ function VehiclesPanel({
     resetForm();
   }
 
-  async function handleDeleteInModal() {
+  function handleDeleteInModal() {
     if (!editingId) return;
-    await deleteItem(editingId);
-    closeModal();
+    openConfirm(
+      "Bạn có chắc chắn không?",
+      async () => {
+        const idToDelete = editingId;
+        setLoading(true);
+        try {
+          await Promise.all([
+            api.del(`/api/admin/data?type=vehicles&lang=vi&id=${idToDelete}`),
+            api.del(`/api/admin/data?type=vehicles&lang=en&id=${idToDelete}`)
+          ]);
+          onSuccess("Xóa sản phẩm thành công.");
+          await loadItems();
+          closeModal();
+        } catch (err) {
+          onError(err instanceof Error ? err.message : "Lỗi xóa dữ liệu");
+        } finally {
+          setLoading(false);
+        }
+      },
+      "Xóa",
+      "Hủy"
+    );
   }
 
   useEffect(() => {
@@ -1163,22 +1186,28 @@ function VehiclesPanel({
     }
   }
 
-  async function deleteItem(id: string) {
-    if (!confirm("Bạn có chắc muốn xóa xe này?")) return;
-    setLoading(true);
-    try {
-      await Promise.all([
-        api.del(`/api/admin/data?type=vehicles&lang=vi&id=${id}`),
-        api.del(`/api/admin/data?type=vehicles&lang=en&id=${id}`)
-      ]);
-      onSuccess("Xóa xe thành công.");
-      await loadItems();
-      if (editingId === id) resetForm();
-    } catch (err) {
-      onError(err instanceof Error ? err.message : "Lỗi xóa dữ liệu");
-    } finally {
-      setLoading(false);
-    }
+  function deleteItem(id: string) {
+    openConfirm(
+      "Bạn có chắc chắn không?",
+      async () => {
+        setLoading(true);
+        try {
+          await Promise.all([
+            api.del(`/api/admin/data?type=vehicles&lang=vi&id=${id}`),
+            api.del(`/api/admin/data?type=vehicles&lang=en&id=${id}`)
+          ]);
+          onSuccess("Xóa xe thành công.");
+          await loadItems();
+          if (editingId === id) closeModal();
+        } catch (err) {
+          onError(err instanceof Error ? err.message : "Lỗi xóa dữ liệu");
+        } finally {
+          setLoading(false);
+        }
+      },
+      "Xóa",
+      "Hủy"
+    );
   }
 
   return (
@@ -1476,16 +1505,28 @@ function PricingPanel({
     }
   }
 
-  function removeRow(language: "vi" | "en", index: number) {
-    const setter = language === "vi" ? setViData : setEnData;
-    setter((prev) => ({
-      ...prev,
-      rows: prev.rows.filter((_, idx) => idx !== index)
-    }));
-    const otherData = language === "vi" ? enData : viData;
-    const newCount = (language === "vi" ? viData.rows.length - 1 : enData.rows.length - 1);
-    if (otherData.rows.length !== newCount) {
-      setWarning("⚠️ Cảnh báo: số lượng hàng không khớp! Tiếng Việt: " + (language === "vi" ? newCount : viData.rows.length) + " hàng, Tiếng Anh: " + (language === "en" ? newCount : enData.rows.length) + " hàng. Vui lòng xóa hàng tương ứng cho tiếng " + (language === "vi" ? "Anh" : "Việt") + ".");
+  async function removeRow(language: "vi" | "en", index: number) {
+    const nextVi = language === "vi"
+      ? { ...viData, rows: viData.rows.filter((_, idx) => idx !== index) }
+      : viData;
+    const nextEn = language === "en"
+      ? { ...enData, rows: enData.rows.filter((_, idx) => idx !== index) }
+      : enData;
+
+    setViData(nextVi);
+    setEnData(nextEn);
+
+    setLoading(true);
+    try {
+      await Promise.all([
+        api.put("/api/admin/data?type=pricing&lang=vi", nextVi),
+        api.put("/api/admin/data?type=pricing&lang=en", nextEn)
+      ]);
+      onSuccess("Đã xóa hàng bảng giá thành công!");
+    } catch (err) {
+      onError(err instanceof Error ? err.message : "Lỗi xóa hàng bảng giá");
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -1747,10 +1788,28 @@ function SalesPanel({
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [modalOpen]);
 
-  async function handleDeleteInModal() {
+  function handleDeleteInModal() {
     if (!editingId) return;
-    await deleteItem(editingId);
-    closeModal();
+    openConfirm(
+      "Bạn có chắc chắn không?",
+      async () => {
+        const idToDelete = editingId;
+        setLoading(true);
+        try {
+          setItems((prev) => prev.filter((item) => String(item.id) !== String(idToDelete)));
+          await api.del(`/api/admin/data?type=sales&id=${idToDelete}`);
+          onSuccess("Xóa chuyên viên thành công.");
+          await loadItems();
+          closeModal();
+        } catch (err) {
+          onError(err instanceof Error ? err.message : "Lỗi xóa dữ liệu");
+        } finally {
+          setLoading(false);
+        }
+      },
+      "Xóa",
+      "Hủy"
+    );
   }
 
   useEffect(() => {
@@ -1821,31 +1880,36 @@ function SalesPanel({
     return result.path as string;
   }
 
-  async function handleRemoveAvatar() {
+  function handleRemoveAvatar() {
     if (!form.avatar && !imagePreview) return;
-    if (!confirm("Bạn có chắc muốn xóa ảnh đại diện này?")) return;
+    openConfirm(
+      "Bạn có chắc chắn không?",
+      async () => {
+        setLoading(true);
+        try {
+          const currentAvatarPath = form.avatar;
+          if (currentAvatarPath && currentAvatarPath.startsWith("/images/")) {
+            await api.del(`/api/admin/upload?path=${encodeURIComponent(currentAvatarPath)}`);
+          }
 
-    setLoading(true);
-    try {
-      const currentAvatarPath = form.avatar;
-      if (currentAvatarPath && currentAvatarPath.startsWith("/images/")) {
-        await api.del(`/api/admin/upload?path=${encodeURIComponent(currentAvatarPath)}`);
-      }
+          setForm((prev) => ({ ...prev, avatar: "" }));
+          setImageFile(null);
+          setImagePreview("");
 
-      setForm((prev) => ({ ...prev, avatar: "" }));
-      setImageFile(null);
-      setImagePreview("");
-
-      if (editingId) {
-        await api.put(`/api/admin/data?type=sales&id=${editingId}`, { ...form, avatar: "" });
-        onSuccess("Đã xóa ảnh đại diện thành công.");
-        await loadItems();
-      }
-    } catch (err) {
-      onError(err instanceof Error ? err.message : "Lỗi xóa ảnh đại diện");
-    } finally {
-      setLoading(false);
-    }
+          if (editingId) {
+            await api.put(`/api/admin/data?type=sales&id=${editingId}`, { ...form, avatar: "" });
+            onSuccess("Đã xóa ảnh đại diện thành công.");
+            await loadItems();
+          }
+        } catch (err) {
+          onError(err instanceof Error ? err.message : "Lỗi xóa ảnh đại diện");
+        } finally {
+          setLoading(false);
+        }
+      },
+      "Xóa",
+      "Hủy"
+    );
   }
 
   async function saveItem(event: React.FormEvent) {
@@ -1885,20 +1949,26 @@ function SalesPanel({
     }
   }
 
-  async function deleteItem(id: string) {
-    if (!confirm("Bạn có chắc muốn xóa chuyên viên này?")) return;
-    setLoading(true);
-    try {
-      setItems((prev) => prev.filter((item) => String(item.id) !== String(id)));
-      await api.del(`/api/admin/data?type=sales&id=${id}`);
-      onSuccess("Xóa chuyên viên thành công.");
-      await loadItems();
-      if (editingId === id) resetForm();
-    } catch (err) {
-      onError(err instanceof Error ? err.message : "Lỗi xóa dữ liệu");
-    } finally {
-      setLoading(false);
-    }
+  function deleteItem(id: string) {
+    openConfirm(
+      "Bạn có chắc chắn không?",
+      async () => {
+        setLoading(true);
+        try {
+          setItems((prev) => prev.filter((item) => String(item.id) !== String(id)));
+          await api.del(`/api/admin/data?type=sales&id=${id}`);
+          onSuccess("Xóa chuyên viên thành công.");
+          await loadItems();
+          if (editingId === id) closeModal();
+        } catch (err) {
+          onError(err instanceof Error ? err.message : "Lỗi xóa dữ liệu");
+        } finally {
+          setLoading(false);
+        }
+      },
+      "Xóa",
+      "Hủy"
+    );
   }
 
   return (
@@ -2125,13 +2195,28 @@ function FaqPanel({
     }
   }
 
-  function removeItem(language: "vi" | "en", index: number) {
-    const setter = language === "vi" ? setViData : setEnData;
-    setter((prev) => ({ ...prev, items: prev.items.filter((_, idx) => idx !== index) }));
-    const otherData = language === "vi" ? enData : viData;
-    const newCount = (language === "vi" ? viData.items.length - 1 : enData.items.length - 1);
-    if (otherData.items.length !== newCount) {
-      setWarning("⚠️ Cảnh báo: số lượng câu hỏi không khớp! Tiếng Việt: " + (language === "vi" ? newCount : viData.items.length) + ", Tiếng Anh: " + (language === "en" ? newCount : enData.items.length) + ". Vui lòng xóa câu hỏi tương ứng cho tiếng " + (language === "vi" ? "Anh" : "Việt") + ".");
+  async function removeItem(language: "vi" | "en", index: number) {
+    const nextVi = language === "vi"
+      ? { ...viData, items: viData.items.filter((_, idx) => idx !== index) }
+      : viData;
+    const nextEn = language === "en"
+      ? { ...enData, items: enData.items.filter((_, idx) => idx !== index) }
+      : enData;
+
+    setViData(nextVi);
+    setEnData(nextEn);
+
+    setLoading(true);
+    try {
+      await Promise.all([
+        api.put("/api/admin/data?type=faq&lang=vi", nextVi),
+        api.put("/api/admin/data?type=faq&lang=en", nextEn)
+      ]);
+      onSuccess("Đã xóa câu hỏi thành công!");
+    } catch (err) {
+      onError(err instanceof Error ? err.message : "Lỗi xóa câu hỏi");
+    } finally {
+      setLoading(false);
     }
   }
 

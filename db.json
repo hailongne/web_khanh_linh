@@ -495,10 +495,6 @@
         {
           "question": "Công ty có xuất hóa đơn VAT không?",
           "answer": "Có. Khánh Linh Trans hỗ trợ xuất hóa đơn VAT cho khách doanh nghiệp và khách đoàn. Bạn chỉ cần gửi thông tin xuất hóa đơn khi xác nhận booking để bộ phận kế toán xử lý cùng hồ sơ thanh toán."
-        },
-        {
-          "question": "123",
-          "answer": "123456"
         }
       ]
     },
@@ -517,10 +513,6 @@
         {
           "question": "Do you issue VAT invoices?",
           "answer": "Yes. Khánh Linh Trans issues VAT invoices for corporate and group customers. Provide invoice details when confirming a booking so accounting can process the payment documents."
-        },
-        {
-          "question": "123",
-          "answer": "123456"
         }
       ]
     }

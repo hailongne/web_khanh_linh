@@ -347,17 +347,19 @@ export function SiteHeader({ links, lang = "vi", onToggleLang }: SiteHeaderProps
             >
               {lang === "vi" ? (
                 <>
-                  <span className="site-header__lang-icon site-header__lang-icon--flag">
-                    <VNFlag width={24} height={24} />
+                  <span className="site-header__lang-icon">
+                    <VNFlag width={21} height={14} />
                   </span>
-                  <span className="site-header__lang-label"> Tiếng Việt</span>
+                  <span className="site-header__lang-label">Tiếng Việt</span>
+                  <ChevronDownIcon className="site-header__lang-chevron" />
                 </>
               ) : (
                 <>
-                  <span className="site-header__lang-icon">
-                    <GlobeIcon />
+                  <span className="site-header__lang-icon site-header__lang-icon--globe">
+                    <GlobeIcon width={17} height={17} />
                   </span>
-                  <span className="site-header__lang-label"> English</span>
+                  <span className="site-header__lang-label">English</span>
+                  <ChevronDownIcon className="site-header__lang-chevron" />
                 </>
               )}
             </button>
@@ -441,17 +443,19 @@ export function SiteHeader({ links, lang = "vi", onToggleLang }: SiteHeaderProps
               >
                 {lang === "vi" ? (
                   <>
-                    <span className="site-header__lang-icon site-header__lang-icon--flag">
-                      <VNFlag width={24} height={24} />
+                    <span className="site-header__lang-icon">
+                      <VNFlag width={21} height={14} />
                     </span>
-                    <span className="site-header__lang-label"> Tiếng Việt</span>
+                    <span className="site-header__lang-label">Tiếng Việt</span>
+                    <ChevronDownIcon className="site-header__lang-chevron" />
                   </>
                 ) : (
                   <>
-                    <span className="site-header__lang-icon">
-                      <GlobeIcon />
+                    <span className="site-header__lang-icon site-header__lang-icon--globe">
+                      <GlobeIcon width={17} height={17} />
                     </span>
-                    <span className="site-header__lang-label"> English</span>
+                    <span className="site-header__lang-label">English</span>
+                    <ChevronDownIcon className="site-header__lang-chevron" />
                   </>
                 )}
               </button>

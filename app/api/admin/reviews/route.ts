@@ -3,6 +3,8 @@ import path from "node:path";
 import { NextResponse } from "next/server";
 import { isAuthorized } from "../_lib/adminAuth";
 
+export const dynamic = "force-dynamic";
+
 const DB_PATH = path.join(process.cwd(), "db.json");
 
 export type Review = {

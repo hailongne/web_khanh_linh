@@ -10,6 +10,8 @@ import {
   writeDb
 } from "../_lib/adminAuth";
 
+export const dynamic = "force-dynamic";
+
 function unauthorizedResponse() {
   return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
 }

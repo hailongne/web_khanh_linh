@@ -6,6 +6,7 @@ export const translations: Record<string, any> = {
         { label: "Trang chủ", href: "#top", active: true },
         { label: "Đội xe", href: "#fleet" },
         { label: "Bảng giá", href: "#pricing" },
+        { label: "Tin tức", href: "/blog" },
         { label: "Liên hệ", href: "#sales" },
         { label: "Vé máy bay", href: "https://klfly.com" }
       ],
@@ -218,6 +219,7 @@ export const translations: Record<string, any> = {
         { label: "Home", href: "#top", active: true },
         { label: "Fleet", href: "#fleet" },
         { label: "Pricing", href: "#pricing" },
+        { label: "Blog", href: "/blog" },
         { label: "Contact", href: "#sales" },
         { label: "Flight Tickets", href: "https://klfly.com" }
       ],

@@ -156,6 +156,15 @@ export function SiteHeader({ links, lang = "vi", onToggleLang }: SiteHeaderProps
 
   const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     if (href.startsWith("#")) {
+      const isHomePage = typeof window !== "undefined" && window.location.pathname === "/";
+
+      if (!isHomePage) {
+        e.preventDefault();
+        handleCloseMenu();
+        window.location.href = `/${href}`;
+        return;
+      }
+
       e.preventDefault();
       setActiveHref(href);
       handleCloseMenu();
@@ -185,6 +194,24 @@ export function SiteHeader({ links, lang = "vi", onToggleLang }: SiteHeaderProps
       handleCloseMenu();
     }
   };
+
+  useEffect(() => {
+    if (typeof window !== "undefined" && window.location.pathname === "/" && window.location.hash) {
+      const hash = window.location.hash;
+      const targetId = hash.replace("#", "");
+      setTimeout(() => {
+        const targetEl = document.getElementById(targetId);
+        if (targetEl) {
+          const headerEl = document.querySelector(".site-header");
+          const headerHeight = headerEl ? headerEl.getBoundingClientRect().height : 50;
+          const elementTop = targetEl.getBoundingClientRect().top + window.scrollY;
+          const offsetPosition = Math.max(0, elementTop - headerHeight);
+          window.scrollTo({ top: offsetPosition, behavior: "smooth" });
+          setActiveHref(hash);
+        }
+      }, 150);
+    }
+  }, []);
 
   useEffect(() => {
     const handleResize = () => {
@@ -299,10 +326,12 @@ export function SiteHeader({ links, lang = "vi", onToggleLang }: SiteHeaderProps
     setMounted(true);
   }, []);
 
+  const isHomePage = typeof window !== "undefined" ? window.location.pathname === "/" : true;
+
   return (
     <header className="site-header">
       <div className="site-header__inner">
-        <a className="site-header__brand" href="#top" aria-label={t.header.brand} onClick={(e) => handleNavClick(e, "#top")}>
+        <a className="site-header__brand" href={isHomePage ? "#top" : "/#top"} aria-label={t.header.brand} onClick={(e) => handleNavClick(e, "#top")}>
           <Image
             className="site-header__logo"
             src="/images/logoKhanhLinhFull.png"
@@ -317,10 +346,11 @@ export function SiteHeader({ links, lang = "vi", onToggleLang }: SiteHeaderProps
           {links.map((item) => {
             const isExternal = item.href.startsWith("http");
             const isActive = activeHref === item.href;
+            const linkHref = item.href.startsWith("#") && !isHomePage ? `/${item.href}` : item.href;
             return (
               <a
                 key={item.label}
-                href={item.href}
+                href={linkHref}
                 className={isActive ? "is-active" : undefined}
                 aria-current={isActive ? "page" : undefined}
                 target={isExternal ? "_blank" : undefined}
@@ -335,7 +365,7 @@ export function SiteHeader({ links, lang = "vi", onToggleLang }: SiteHeaderProps
 
         <div className="site-header__right">
           <div className="site-header__actions">
-            <a className="site-header__cta" href="#contact-cta-heading" onClick={(e) => handleNavClick(e, "#contact-cta-heading")}>
+            <a className="site-header__cta" href={isHomePage ? "#contact-cta-heading" : "/#contact-cta-heading"} onClick={(e) => handleNavClick(e, "#contact-cta-heading")}>
               {t.header.cta}
             </a>
             {/* Language toggle button */}
@@ -412,10 +442,11 @@ export function SiteHeader({ links, lang = "vi", onToggleLang }: SiteHeaderProps
               {links.map((item) => {
                 const isExternal = item.href.startsWith("http");
                 const isActive = activeHref === item.href;
+                const linkHref = item.href.startsWith("#") && !isHomePage ? `/${item.href}` : item.href;
                 return (
                   <a
                     key={`mobile-${item.label}`}
-                    href={item.href}
+                    href={linkHref}
                     className={isActive ? "is-active" : undefined}
                     aria-current={isActive ? "page" : undefined}
                     target={isExternal ? "_blank" : undefined}
@@ -432,7 +463,7 @@ export function SiteHeader({ links, lang = "vi", onToggleLang }: SiteHeaderProps
               <a className="site-header__phone" href={`tel:${contacts.phone.replace(/\s+/g, "")}`}>
                 {contacts.phone}
               </a>
-              <a className="site-header__cta" href="#contact-cta-heading" onClick={(e) => handleNavClick(e, "#contact-cta-heading")}>
+              <a className="site-header__cta" href={isHomePage ? "#contact-cta-heading" : "/#contact-cta-heading"} onClick={(e) => handleNavClick(e, "#contact-cta-heading")}>
                 {t.header.cta}
               </a>
               <button

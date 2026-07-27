@@ -430,6 +430,27 @@ export default function AdminPage() {
               {item.label}
             </button>
           ))}
+          <a
+            href="/admin/blog"
+            className="admin-sidebar__button"
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "12px",
+              padding: "12px 16px",
+              borderRadius: "12px",
+              color: "inherit",
+              textDecoration: "none",
+              fontWeight: 600,
+              fontSize: "0.95rem",
+              marginTop: "4px"
+            }}
+          >
+            <span className="admin-sidebar__icon">
+              <i className="fas fa-newspaper" aria-hidden="true" />
+            </span>
+            Blog (Tin tức)
+          </a>
         </nav>
         <div className="admin-sidebar__footer">
           <button className="admin-button admin-button--ghost admin-sidebar__logout" type="button" onClick={handleLogout}>
@@ -2503,8 +2524,19 @@ function ReviewsPanel({
                 <div>
                   <strong>{item.displayName}</strong>
                 </div>
-                <div style={{ color: "#ffb400", fontWeight: 700 }}>
-                  {"★".repeat(item.rating)}{"☆".repeat(5 - item.rating)}
+                <div style={{ display: "inline-flex", alignItems: "center", gap: 2, fontSize: "1.05rem", whiteSpace: "nowrap" }}>
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <span
+                      key={star}
+                      style={{
+                        color: star <= (item.rating || 5) ? "#ffb400" : "#cbd5e1",
+                        fontWeight: 700,
+                        lineHeight: 1,
+                      }}
+                    >
+                      ★
+                    </span>
+                  ))}
                 </div>
                 <div style={{ fontSize: "0.92rem", color: "#334756" }}>
                   {item.content}

@@ -43,6 +43,16 @@
 - **File liên quan**: `app/admin/page.tsx`, `app/api/admin/data/route.ts`, `db.json`.
 - **Luồng xử lý**: Admin Page → `/api/admin/data?type=...` → `adminAuth.ts` → Write `db.json`
 
+## Giao diện & Layout Chuyên viên hỗ trợ (Support Specialists UI)
+- **Mục đích**: Hiển thị danh sách chuyên viên tư vấn hỗ trợ đặt xe, gọi Hotline và gửi tin nhắn Zalo.
+- **File liên quan**: `app/page.tsx`, `app/user.css`, `db.json`.
+- **Quy chuẩn Layout**:
+  - Avatar tỉ lệ chuẩn 1:1 tròn (`aspect-ratio: 1/1`, `object-fit: cover`, `border-radius: 50%`), không biến dạng.
+  - Tên chuyên viên cho phép hiển thị tối đa 2 dòng khi tên dài ~5 từ (ví dụ: *"Nguyễn Văn Minh Anh"*), có `line-clamp: 2` và `word-break: break-word`.
+  - Giữ chiều cao các card bằng nhau trên cùng hàng (`grid-template-columns: repeat(2, 1fr)`, `align-items: stretch`).
+  - Các nút hành động (Liên hệ Hotline / Zalo) luôn căn sát lề phải và thẳng hàng dọc giữa các card (`margin-left: auto`, `flex-shrink: 0`).
+  - Responsive: Desktop (2 cột layout ngang), Mobile (1 cột layout dọc căn giữa, nút bấm 2 cột song song).
+
 ## Bảo mật & Quản lý Tài khoản Admin
 - **Mục đích**: Xác thực quyền truy cập trang quản trị và cho phép đổi username/mật khẩu mã hóa bcrypt.
 - **File liên quan**: `app/admin/page.tsx`, `app/api/admin/account/route.ts`, `app/api/admin/_lib/adminAuth.ts`, `scripts/reset-admin.js`, `db.json`.
@@ -134,12 +144,35 @@
 3. Script dùng `bcryptjs` băm mật khẩu mặc định (`KhanhLinh2026!`).
 4. Ghi trực tiếp Username (`adminKhanhLinhTrans`) và password hash mới vào `db.json`.
 
+## Kiến trúc Module Blog & Block Editor Architecture (Gutenberg/Notion style)
+- **Mục đích**: Hệ thống quản lý bài viết độc lập dạng Block CMS, cho phép người viết chèn, di chuyển, nhân bản và xóa từng khối nội dung (Paragraph, Heading, Image, Gallery, Quote, Divider, Youtube).
+- **Cấu trúc lưu trữ**:
+  - `data/news-index.json`: Lưu danh sách metadata nhẹ (ID, slug, tiêu đề, tóm tắt, thumbnail, ngày đăng, trạng thái draft/published, featured).
+  - `data/news/{slug}.json`: Lưu chi tiết các mảng khối `blocks: { vi: BlogBlock[], en: BlogBlock[] }` và thông tin SEO.
+- **Tương thích ngược (Backward Compatibility)**:
+  - Tự động phát hiện các tệp JSON bài viết cũ lưu `content` HTML và chuyển đổi (migrate) tự động thành các Block tương ứng (`migrateLegacyHtmlToBlocks`).
+- **Các Component Block (`app/components/blog/`)**:
+  - `types.ts`: Khai báo các type khối (`ParagraphBlockData`, `HeadingBlockData`, `ImageBlockData`, `GalleryBlockData`, `QuoteBlockData`, `DividerBlockData`, `YoutubeBlockData`).
+  - `ParagraphBlock.tsx`: Render đoạn văn bản.
+  - `HeadingBlock.tsx`: Render tiêu đề H1-H4.
+  - `ImageBlock.tsx`: Render hình ảnh với căn lề Left/Center/Right/Full Width và chú thích.
+  - `GalleryBlock.tsx`: Render bộ sưu tập ảnh 2, 3, 4 cột responsive.
+  - `QuoteBlock.tsx`: Render khối trích dẫn kèm tác giả.
+  - `DividerBlock.tsx`: Render đường kẻ phân đoạn.
+  - `YoutubeBlock.tsx`: Render video Youtube nhúng tỉ lệ 16:9 responsive.
+  - `BlockRenderer.tsx`: Component trung tâm điều phối render mảng blocks theo `type`.
+- **Trình chỉnh sửa Admin Block Editor (`app/admin/blog/BlockEditor.tsx`)**:
+  - Giao diện Card Block trực quan.
+  - Hỗ trợ nút thao tác trên từng card: Di chuyển Up/Down (▲/▼), Nhân bản (📋), Xóa (🗑️).
+  - Menu chèn Block mới sinh động: `+ Paragraph`, `+ Heading`, `+ Image`, `+ Gallery`, `+ Quote`, `+ Divider`, `+ Youtube`.
+
 # 9. File cần đọc trước
 1. [package.json](file:///f:/web_khanh_linh_trans/web_khanh_linh/package.json): Nắm danh sách các thư viện và lệnh thực thi.
 2. [db.json](file:///f:/web_khanh_linh_trans/web_khanh_linh/db.json): Hiểu cấu trúc lưu trữ toàn bộ dữ liệu dự án.
 3. [adminAuth.ts](file:///f:/web_khanh_linh_trans/web_khanh_linh/app/api/admin/_lib/adminAuth.ts): Đọc cơ chế xác thực Admin và thao tác đọc/ghi JSON database.
 4. [page.tsx](file:///f:/web_khanh_linh_trans/web_khanh_linh/app/page.tsx): Tìm hiểu trang chủ người dùng và cách kết nối các component hiển thị.
-5. [admin/page.tsx](file:///f:/web_khanh_linh_trans/web_khanh_linh/app/admin/page.tsx): Tìm hiểu toàn bộ giao diện quản trị Admin và cách gọi API.
-6. [data/route.ts](file:///f:/web_khanh_linh_trans/web_khanh_linh/app/api/admin/data/route.ts): Tìm hiểu các REST API CRUD dữ liệu chính.
-7. [upload/route.ts](file:///f:/web_khanh_linh_trans/web_khanh_linh/app/api/admin/upload/route.ts): Hiểu cách xử lý upload và dọn dẹp file hình ảnh.
-8. [reset-admin.js](file:///f:/web_khanh_linh_trans/web_khanh_linh/scripts/reset-admin.js): Tham khảo script tiện ích khôi phục mật khẩu Admin.
+5. [user.css](file:///f:/web_khanh_linh_trans/web_khanh_linh/app/user.css): Tìm hiểu hệ thống style, layout responsive và quy chuẩn UI Chuyên viên hỗ trợ.
+6. [admin/page.tsx](file:///f:/web_khanh_linh_trans/web_khanh_linh/app/admin/page.tsx): Tìm hiểu toàn bộ giao diện quản trị Admin và cách gọi API.
+7. [blogDb.ts](file:///f:/web_khanh_linh_trans/web_khanh_linh/app/lib/blogDb.ts): Xử lý đọc/ghi cơ sở dữ liệu bài viết Blog và migrate Block Editor.
+8. [BlockEditor.tsx](file:///f:/web_khanh_linh_trans/web_khanh_linh/app/admin/blog/BlockEditor.tsx): Trình quản lý bài viết theo dạng khối Card Block.
+9. [BlockRenderer.tsx](file:///f:/web_khanh_linh_trans/web_khanh_linh/app/components/blog/BlockRenderer.tsx): Component render động các Block bài viết phía User.

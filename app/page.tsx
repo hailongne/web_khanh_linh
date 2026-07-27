@@ -685,9 +685,12 @@ export default function HomePage() {
                             </div>
                             <div>
                               <div className="review-author-name">{rev.displayName}</div>
-                              <div className="review-item-stars">
-                                {"★".repeat(rev.rating)}
-                                {"☆".repeat(5 - rev.rating)}
+                              <div className="review-item-stars" style={{ display: "inline-flex", gap: 1 }}>
+                                {[1, 2, 3, 4, 5].map((star) => (
+                                  <span key={star} style={{ color: star <= rev.rating ? "#ffb400" : "#cbd5e1" }}>
+                                    ★
+                                  </span>
+                                ))}
                               </div>
                             </div>
                           </div>

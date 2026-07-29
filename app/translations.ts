@@ -3,7 +3,7 @@ export const translations: Record<string, any> = {
     header: {
       brand: "Khánh Linh Trans",
       links: [
-        { label: "Trang chủ", href: "#top", active: true },
+        { label: "Trang chủ", href: "/", active: true },
         { label: "Đội xe", href: "#fleet" },
         { label: "Bảng giá", href: "#pricing" },
         { label: "Tin tức", href: "/blog" },
@@ -216,7 +216,7 @@ export const translations: Record<string, any> = {
     header: {
       brand: "Khánh Linh Trans",
       links: [
-        { label: "Home", href: "#top", active: true },
+        { label: "Home", href: "/", active: true },
         { label: "Fleet", href: "#fleet" },
         { label: "Pricing", href: "#pricing" },
         { label: "Blog", href: "/blog" },

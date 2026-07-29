@@ -20,7 +20,7 @@ export function SiteFooter({ lang = "vi" }: SiteFooterProps) {
     <footer className="site-footer" id="contact">
       <div className="section-shell site-footer__inner">
         <div className="site-footer__logo-top">
-          <a href="/#top" aria-label={t.header?.brand || "Khánh Linh Trans"}>
+          <a href="/" aria-label={t.header?.brand || "Khánh Linh Trans"}>
             <Image
               className="site-footer__brand-logo"
               src="/images/logoKhanhLinhFull.png"

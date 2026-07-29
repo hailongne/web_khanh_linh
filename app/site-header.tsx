@@ -57,7 +57,7 @@ export function SiteHeader({ links, lang = "vi", onToggleLang }: SiteHeaderProps
   const [touchMoved, setTouchMoved] = useState(false);
 
   const [activeHref, setActiveHref] = useState<string>(
-    () => links.find((l) => l.active)?.href || links[0]?.href || "#top"
+    () => links.find((l) => l.active)?.href || links[0]?.href || "/"
   );
   const isClickingRef = useRef(false);
   const clickTimerRef = useRef<NodeJS.Timeout | null>(null);
@@ -65,7 +65,7 @@ export function SiteHeader({ links, lang = "vi", onToggleLang }: SiteHeaderProps
   useEffect(() => {
     const matched = links.find((l) => l.href === activeHref);
     if (!matched && links.length > 0) {
-      setActiveHref(links[0]?.href || "#top");
+      setActiveHref(links[0]?.href || "/");
     }
   }, [links]);
 
@@ -137,7 +137,7 @@ export function SiteHeader({ links, lang = "vi", onToggleLang }: SiteHeaderProps
       const docHeight = document.documentElement.scrollHeight;
 
       if (scrollY < 50) {
-        setActiveHref("#top");
+        setActiveHref("/");
       } else if (scrollY + windowHeight >= docHeight - 30) {
         const lastLink = hashLinks[hashLinks.length - 1];
         if (lastLink) {
@@ -156,9 +156,24 @@ export function SiteHeader({ links, lang = "vi", onToggleLang }: SiteHeaderProps
   }, [links]);
 
   const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
-    if (href.startsWith("#")) {
-      const isHomePage = typeof window !== "undefined" && window.location.pathname === "/";
+    if (href === "/") {
+      if (isHomePage) {
+        e.preventDefault();
+        setActiveHref("/");
+        handleCloseMenu();
+        if (typeof window !== "undefined") {
+          if (window.location.hash) {
+            window.history.pushState("", document.title, window.location.pathname + window.location.search);
+          }
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        }
+        return;
+      }
+      handleCloseMenu();
+      return;
+    }
 
+    if (href.startsWith("#")) {
       if (!isHomePage) {
         e.preventDefault();
         handleCloseMenu();
@@ -178,6 +193,9 @@ export function SiteHeader({ links, lang = "vi", onToggleLang }: SiteHeaderProps
         const targetEl = document.getElementById(targetId);
 
         if (href === "#top" || !targetEl) {
+          if (typeof window !== "undefined" && window.location.hash) {
+            window.history.pushState("", document.title, window.location.pathname + window.location.search);
+          }
           window.scrollTo({ top: 0, behavior: "smooth" });
         } else {
           const headerEl = document.querySelector(".site-header");
@@ -191,6 +209,22 @@ export function SiteHeader({ links, lang = "vi", onToggleLang }: SiteHeaderProps
           isClickingRef.current = false;
         }, 800);
       });
+    } else {
+      handleCloseMenu();
+    }
+  };
+
+  const handleLogoClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    if (isHomePage) {
+      e.preventDefault();
+      setActiveHref("/");
+      handleCloseMenu();
+      if (typeof window !== "undefined") {
+        if (window.location.hash) {
+          window.history.pushState("", document.title, window.location.pathname + window.location.search);
+        }
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
     } else {
       handleCloseMenu();
     }
@@ -334,11 +368,13 @@ export function SiteHeader({ links, lang = "vi", onToggleLang }: SiteHeaderProps
     if (pathname.startsWith("/blog")) {
       return itemHref === "/blog" || itemHref === "/blog/";
     }
-    if (itemHref.startsWith("/")) {
+    if (!isHomePage && itemHref.startsWith("/")) {
       return pathname === itemHref;
     }
     if (isHomePage) {
-      return activeHref === itemHref;
+      const normalizedActive = activeHref === "#top" ? "/" : activeHref;
+      const normalizedItem = itemHref === "#top" ? "/" : itemHref;
+      return normalizedActive === normalizedItem;
     }
     return false;
   };
@@ -346,7 +382,7 @@ export function SiteHeader({ links, lang = "vi", onToggleLang }: SiteHeaderProps
   return (
     <header className="site-header">
       <div className="site-header__inner">
-        <a className="site-header__brand" href={isHomePage ? "#top" : "/#top"} aria-label={t.header.brand} onClick={(e) => handleNavClick(e, "#top")}>
+        <a className="site-header__brand" href="/" aria-label={t.header.brand} onClick={handleLogoClick}>
           <Image
             className="site-header__logo"
             src="/images/logoKhanhLinhFull.png"

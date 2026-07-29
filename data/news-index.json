@@ -1,5 +1,24 @@
 [
   {
+    "id": "news_1785314634934",
+    "slug": "khanh-linh-trans-7-meo-lai-xe-tour-duong-dai-an-toan-do-met-va-chuyen-nghiep",
+    "title": {
+      "vi": "Khánh Linh Trans – 7 Mẹo Lái Xe Tour Đường Dài An Toàn, Đỡ Mệt Và Chuyên Nghiệp",
+      "en": ""
+    },
+    "excerpt": {
+      "vi": "Di chuyển hàng trăm kilomet mỗi ngày không chỉ cần kỹ năng lái xe mà còn đòi hỏi sự tập trung, kinh nghiệm và khả năng xử lý tình huống. Dưới đây là những kinh nghiệm thực tế giúp mỗi chuyến đi trở nên an toàn, êm ái và thoải mái hơn cho cả tài xế lẫn hành khách.",
+      "en": ""
+    },
+    "thumbnail": "/uploads/blog/2_1785313527390.jpg",
+    "category": "Kinh nghiệm du lịch",
+    "status": "published",
+    "featured": false,
+    "authorId": "acc_1785298322411_k16yr",
+    "publishedAt": "2026-07-29T08:43:54.933Z",
+    "updatedAt": "2026-07-29T08:43:54.933Z"
+  },
+  {
     "id": "news_1784883736884",
     "slug": "khanh-linh-trans-dau-tu-doi-xe-moi-nang-tam-chat-luong-van-tai-hanh-khach-tai-mien-bac",
     "title": {
@@ -15,6 +34,7 @@
     "status": "published",
     "featured": true,
     "publishedAt": "2026-07-24T09:02:16.884Z",
-    "updatedAt": "2026-07-27T02:06:51.064Z"
+    "updatedAt": "2026-07-29T03:52:25.786Z",
+    "authorId": "acc_001"
   }
 ]

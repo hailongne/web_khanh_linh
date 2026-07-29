@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { isAuthorized } from "../../_lib/adminAuth";
+import { getAuthenticatedAccount } from "../../_lib/adminAuth";
 import {
   readNewsIndex,
   writeNewsIndex,
@@ -14,8 +14,8 @@ import {
 export const dynamic = "force-dynamic";
 
 export async function GET(req: Request, { params }: { params: Promise<{ slug: string }> }) {
-  const authorized = await isAuthorized(req);
-  if (!authorized) {
+  const account = await getAuthenticatedAccount(req);
+  if (!account || !account.active) {
     return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
   }
 
@@ -35,6 +35,7 @@ export async function GET(req: Request, { params }: { params: Promise<{ slug: st
         ...meta,
         blocks: detail?.blocks || { vi: [], en: [] },
         seo: detail?.seo || {},
+        authorId: detail?.authorId || meta.authorId || account.id,
         createdAt: detail?.createdAt || meta.publishedAt,
       },
     });
@@ -44,8 +45,8 @@ export async function GET(req: Request, { params }: { params: Promise<{ slug: st
 }
 
 export async function PUT(req: Request, { params }: { params: Promise<{ slug: string }> }) {
-  const authorized = await isAuthorized(req);
-  if (!authorized) {
+  const account = await getAuthenticatedAccount(req);
+  if (!account || !account.active) {
     return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
   }
 
@@ -72,6 +73,8 @@ export async function PUT(req: Request, { params }: { params: Promise<{ slug: st
       newSlug = generateUniqueSlug(newTitleStr, targetSlug);
     }
 
+    const authorId = currentMeta.authorId || account.id;
+
     const updatedIndexItem = {
       ...currentMeta,
       slug: newSlug,
@@ -81,6 +84,7 @@ export async function PUT(req: Request, { params }: { params: Promise<{ slug: st
       category: category !== undefined ? category : currentMeta.category,
       status: status !== undefined ? status : currentMeta.status,
       featured: featured !== undefined ? Boolean(featured) : currentMeta.featured,
+      authorId,
       updatedAt: now,
     };
 
@@ -94,6 +98,7 @@ export async function PUT(req: Request, { params }: { params: Promise<{ slug: st
         ? { vi: blocks.vi || [], en: blocks.en || [] }
         : existingDetail?.blocks || { vi: [], en: [] },
       seo: seo !== undefined ? seo : existingDetail?.seo,
+      authorId,
       createdAt: existingDetail?.createdAt || currentMeta.publishedAt,
       updatedAt: now,
     };
@@ -118,8 +123,8 @@ export async function PUT(req: Request, { params }: { params: Promise<{ slug: st
 }
 
 export async function DELETE(req: Request, { params }: { params: Promise<{ slug: string }> }) {
-  const authorized = await isAuthorized(req);
-  if (!authorized) {
+  const account = await getAuthenticatedAccount(req);
+  if (!account || !account.active) {
     return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
   }
 

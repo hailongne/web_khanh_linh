@@ -1,0 +1,28 @@
+[
+  {
+    "id": "acc_001",
+    "username": "admin",
+    "passwordHash": "$2b$10$hSJIRLtfsa7s/jHFmDpJ3ukQbFJkALu3KVQ94vZzT.b2Wn9iKVI52",
+    "displayName": "Administrator",
+    "avatar": "",
+    "role": "SUPER_ADMIN",
+    "permissions": [],
+    "active": true,
+    "createdAt": "2026-07-08T09:20:10.847Z",
+    "updatedAt": "2026-07-29T03:58:41.875Z",
+    "lastLogin": "2026-07-29T03:58:41.875Z"
+  },
+  {
+    "id": "acc_1785298322411_k16yr",
+    "username": "admin_blog",
+    "passwordHash": "$2b$10$iRJtp6vla4cmDyWqpCccw.p.PyUVyGOeOkXvHLqVlO3/i7ydvDx3C",
+    "displayName": "Nguyễn Minh Phúc",
+    "avatar": "",
+    "role": "BLOG_EDITOR",
+    "permissions": [],
+    "active": true,
+    "createdAt": "2026-07-29T04:12:02.342Z",
+    "updatedAt": "2026-07-29T08:16:28.226Z",
+    "lastLogin": "2026-07-29T08:16:28.226Z"
+  }
+]

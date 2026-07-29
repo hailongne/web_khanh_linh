@@ -23,6 +23,7 @@ export type NewsIndexItem = {
   category: string;
   status: NewsStatus;
   featured: boolean;
+  authorId?: string;
   publishedAt: string;
   updatedAt: string;
 };
@@ -38,6 +39,7 @@ export type NewsDetail = {
   blocks: LocalizedBlocks;
   content?: LocalizedText; // legacy support
   seo?: NewsSeo;
+  authorId?: string;
   createdAt: string;
   updatedAt: string;
 };

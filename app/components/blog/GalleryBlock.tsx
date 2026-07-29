@@ -8,14 +8,15 @@ type Props = {
 export default function GalleryBlock({ block }: Props) {
   if (!block.images || !Array.isArray(block.images) || block.images.length === 0) return null;
 
-  const cols = block.columns || Math.min(block.images.length, 3);
+  const validImages = block.images.filter((img) => Boolean(img.url || img.src));
+  if (validImages.length === 0) return null;
+
+  const cols = block.columns || Math.min(validImages.length, 3);
 
   return (
     <div className={`blog-block-gallery blog-block-gallery--cols-${cols}`}>
-      {block.images.map((img, idx) => {
+      {validImages.map((img, idx) => {
         const src = img.url || img.src || "";
-        if (!src) return null;
-
         return (
           <figure key={idx} className="blog-block-gallery__item">
             <img

@@ -1,5 +1,6 @@
 "use client";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 import { createPortal } from "react-dom";
 import { useEffect, useLayoutEffect, useRef, useState, type SVGProps } from "react";
 import db from "../db.json";
@@ -326,7 +327,21 @@ export function SiteHeader({ links, lang = "vi", onToggleLang }: SiteHeaderProps
     setMounted(true);
   }, []);
 
-  const isHomePage = typeof window !== "undefined" ? window.location.pathname === "/" : true;
+  const pathname = usePathname() || "";
+  const isHomePage = pathname === "/";
+
+  const getIsActive = (itemHref: string) => {
+    if (pathname.startsWith("/blog")) {
+      return itemHref === "/blog" || itemHref === "/blog/";
+    }
+    if (itemHref.startsWith("/")) {
+      return pathname === itemHref;
+    }
+    if (isHomePage) {
+      return activeHref === itemHref;
+    }
+    return false;
+  };
 
   return (
     <header className="site-header">
@@ -345,7 +360,7 @@ export function SiteHeader({ links, lang = "vi", onToggleLang }: SiteHeaderProps
         <nav className="site-header__nav" aria-label="Main navigation">
           {links.map((item) => {
             const isExternal = item.href.startsWith("http");
-            const isActive = activeHref === item.href;
+            const isActive = getIsActive(item.href);
             const linkHref = item.href.startsWith("#") && !isHomePage ? `/${item.href}` : item.href;
             return (
               <a
@@ -441,7 +456,7 @@ export function SiteHeader({ links, lang = "vi", onToggleLang }: SiteHeaderProps
             <nav className="site-header__drawer-nav" aria-label="Mobile navigation">
               {links.map((item) => {
                 const isExternal = item.href.startsWith("http");
-                const isActive = activeHref === item.href;
+                const isActive = getIsActive(item.href);
                 const linkHref = item.href.startsWith("#") && !isHomePage ? `/${item.href}` : item.href;
                 return (
                   <a

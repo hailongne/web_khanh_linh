@@ -2,12 +2,9 @@ import bcrypt from "bcryptjs";
 import { NextResponse } from "next/server";
 import {
   ADMIN_MIN_PASSWORD_LENGTH,
-  isAuthorized,
-  readDb,
-  resolveAdminCredentials,
-  verifyAdminCredentials,
-  verifyPassword,
-  writeDb
+  getAuthenticatedAccount,
+  readAccounts,
+  writeAccounts
 } from "../_lib/adminAuth";
 
 export const dynamic = "force-dynamic";
@@ -21,25 +18,26 @@ function badRequest(error: string) {
 }
 
 export async function GET(req: Request) {
-  if (!(await isAuthorized(req))) {
+  const account = await getAuthenticatedAccount(req);
+  if (!account || !account.active) {
     return unauthorizedResponse();
   }
-
-  const db = readDb();
-  const admin = resolveAdminCredentials(db);
 
   return NextResponse.json({
     success: true,
     data: {
-      username: admin.username,
-      createdAt: admin.createdAt ?? null,
-      updatedAt: admin.updatedAt ?? null
+      username: account.username,
+      displayName: account.displayName || account.username,
+      role: account.role,
+      createdAt: account.createdAt || null,
+      updatedAt: account.updatedAt || null
     }
   });
 }
 
 export async function PUT(req: Request) {
-  if (!(await isAuthorized(req))) {
+  const account = await getAuthenticatedAccount(req);
+  if (!account || !account.active) {
     return unauthorizedResponse();
   }
 
@@ -55,48 +53,44 @@ export async function PUT(req: Request) {
     return badRequest("Invalid action");
   }
 
-  const db = readDb();
-  const current = resolveAdminCredentials(db);
+  const accounts = readAccounts();
+  const accIndex = accounts.findIndex((a) => a.id === account.id);
+  if (accIndex === -1) {
+    return unauthorizedResponse();
+  }
+
+  const current = accounts[accIndex];
   const now = new Date().toISOString();
 
   if (action === "username") {
     const currentUsername = typeof payload?.currentUsername === "string" ? payload.currentUsername.trim() : "";
     const newUsername = typeof payload?.newUsername === "string" ? payload.newUsername.trim() : "";
-    const currentPassword = req.headers.get("x-admin-password")?.trim() || "";
 
     if (!currentUsername || !newUsername) {
       return badRequest("Username không được để trống.");
     }
 
-    if (currentUsername !== current.username) {
+    if (currentUsername.toLowerCase() !== current.username.toLowerCase()) {
       return badRequest("Username hiện tại không chính xác.");
     }
 
-    if (newUsername === current.username) {
+    if (newUsername.toLowerCase() === current.username.toLowerCase()) {
       return badRequest("Username mới không được trùng username hiện tại.");
     }
 
-    if (!(await verifyAdminCredentials(currentUsername, currentPassword, current))) {
-      return unauthorizedResponse();
+    if (accounts.some((a) => a.id !== current.id && a.username.toLowerCase() === newUsername.toLowerCase())) {
+      return badRequest("Username mới đã bị sử dụng bởi tài khoản khác.");
     }
 
-    const passwordHash = current.passwordHash || (await bcrypt.hash(currentPassword, 10));
-    const createdAt = db.admin?.createdAt || current.createdAt || now;
-
-    db.admin = {
-      username: newUsername,
-      passwordHash,
-      createdAt,
-      updatedAt: now
-    };
-
-    writeDb(db);
+    accounts[accIndex].username = newUsername;
+    accounts[accIndex].updatedAt = now;
+    writeAccounts(accounts);
 
     return NextResponse.json({
       success: true,
       data: {
         username: newUsername,
-        createdAt,
+        createdAt: current.createdAt,
         updatedAt: now
       }
     });
@@ -105,7 +99,6 @@ export async function PUT(req: Request) {
   const currentPassword = typeof payload?.currentPassword === "string" ? payload.currentPassword : "";
   const newPassword = typeof payload?.newPassword === "string" ? payload.newPassword : "";
   const confirmPassword = typeof payload?.confirmPassword === "string" ? payload.confirmPassword : "";
-  const currentUsername = req.headers.get("x-admin-username")?.trim() || "";
 
   if (!currentPassword || !newPassword || !confirmPassword) {
     return badRequest("Vui lòng nhập đầy đủ các trường mật khẩu.");
@@ -119,32 +112,24 @@ export async function PUT(req: Request) {
     return badRequest(`Mật khẩu mới phải có ít nhất ${ADMIN_MIN_PASSWORD_LENGTH} ký tự.`);
   }
 
-  if (!(await verifyAdminCredentials(currentUsername, currentPassword, current))) {
+  if (!bcrypt.compareSync(currentPassword, current.passwordHash)) {
     return badRequest("Mật khẩu hiện tại không chính xác.");
   }
 
-  const isSamePassword = await verifyPassword(newPassword, current);
-  if (isSamePassword) {
+  if (bcrypt.compareSync(newPassword, current.passwordHash)) {
     return badRequest("Mật khẩu mới không được trùng mật khẩu hiện tại.");
   }
 
-  const newHash = await bcrypt.hash(newPassword, 10);
-  const createdAt = db.admin?.createdAt || current.createdAt || now;
-
-  db.admin = {
-    username: current.username,
-    passwordHash: newHash,
-    createdAt,
-    updatedAt: now
-  };
-
-  writeDb(db);
+  const newHash = bcrypt.hashSync(newPassword, 10);
+  accounts[accIndex].passwordHash = newHash;
+  accounts[accIndex].updatedAt = now;
+  writeAccounts(accounts);
 
   return NextResponse.json({
     success: true,
     data: {
       username: current.username,
-      createdAt,
+      createdAt: current.createdAt,
       updatedAt: now
     }
   });

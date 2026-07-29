@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { isAuthorized } from "../_lib/adminAuth";
+import { getAuthenticatedAccount } from "../_lib/adminAuth";
 import {
   readNewsIndex,
   writeNewsIndex,
@@ -12,8 +12,8 @@ import {
 export const dynamic = "force-dynamic";
 
 export async function GET(req: Request) {
-  const authorized = await isAuthorized(req);
-  if (!authorized) {
+  const account = await getAuthenticatedAccount(req);
+  if (!account || !account.active) {
     return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
   }
 
@@ -28,8 +28,8 @@ export async function GET(req: Request) {
 }
 
 export async function POST(req: Request) {
-  const authorized = await isAuthorized(req);
-  if (!authorized) {
+  const account = await getAuthenticatedAccount(req);
+  if (!account || !account.active) {
     return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
   }
 
@@ -62,6 +62,7 @@ export async function POST(req: Request) {
       category: category || "Tin tức",
       status: status === "published" ? "published" : "draft",
       featured: Boolean(featured),
+      authorId: account.id,
       publishedAt: now,
       updatedAt: now,
     };
@@ -77,6 +78,7 @@ export async function POST(req: Request) {
         metaDescription: excerpt,
         keywords: [],
       },
+      authorId: account.id,
       createdAt: now,
       updatedAt: now,
     };

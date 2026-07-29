@@ -6,15 +6,66 @@ import { BlogBlock, BlockType, ImageAlign, ImageWidth } from "../../components/b
 type BlockEditorProps = {
   blocks: BlogBlock[];
   onChange: (blocks: BlogBlock[]) => void;
-  username?: string;
-  password?: string;
 };
 
-export default function BlockEditor({ blocks = [], onChange, username, password }: BlockEditorProps) {
+type MediaItem = {
+  name: string;
+  url: string;
+  size: number;
+  folder: string;
+  createdAt: string;
+};
+
+export default function BlockEditor({ blocks = [], onChange }: BlockEditorProps) {
   const [insertIndex, setInsertIndex] = useState<number | null>(null);
   const [uploadingBlockId, setUploadingBlockId] = useState<string | null>(null);
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
   const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
+
+  // Media Picker Modal State
+  const [isMediaPickerOpen, setIsMediaPickerOpen] = useState(false);
+  const [mediaTargetCallback, setMediaTargetCallback] = useState<((url: string) => void) | null>(null);
+  const [mediaList, setMediaList] = useState<MediaItem[]>([]);
+  const [loadingMedia, setLoadingMedia] = useState(false);
+
+  React.useEffect(() => {
+    function handleKeyDown(e: KeyboardEvent) {
+      if (e.key === "Escape" && isMediaPickerOpen) {
+        setIsMediaPickerOpen(false);
+      }
+    }
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isMediaPickerOpen]);
+
+  function openMediaPicker(callback: (url: string) => void) {
+    setMediaTargetCallback(() => callback);
+    setIsMediaPickerOpen(true);
+    fetchMediaList();
+  }
+
+  async function fetchMediaList() {
+    setLoadingMedia(true);
+    try {
+      const res = await fetch("/api/admin/media");
+      const json = await res.json();
+      if (json.success) {
+        setMediaList(json.data || []);
+      }
+    } catch (err) {
+      console.error("Error fetching media list:", err);
+    } finally {
+      setLoadingMedia(false);
+    }
+  }
+
+  function selectMediaItem(url: string) {
+    if (mediaTargetCallback) {
+      mediaTargetCallback(url);
+    }
+    setIsMediaPickerOpen(false);
+    setMediaTargetCallback(null);
+  }
 
   function createNewBlock(type: BlockType): BlogBlock {
     const id = `b_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
@@ -109,14 +160,10 @@ export default function BlockEditor({ blocks = [], onChange, username, password 
     try {
       const formData = new FormData();
       formData.append("file", file);
+      formData.append("category", "blog");
 
-      const headers: Record<string, string> = {};
-      if (username) headers["x-admin-username"] = username;
-      if (password) headers["x-admin-password"] = password;
-
-      const res = await fetch("/api/admin/blog/upload", {
+      const res = await fetch("/api/admin/media", {
         method: "POST",
-        headers,
         body: formData,
       });
       const data = await res.json();
@@ -134,8 +181,8 @@ export default function BlockEditor({ blocks = [], onChange, username, password 
   }
 
   return (
-    <div className="notion-editor-root">
-      <div className="notion-document-stream">
+    <div className="notion-editor-root" style={{ width: "100%" }}>
+      <div className="notion-document-stream" style={{ display: "flex", flexDirection: "column", gap: "28px" }}>
         {/* Top Insertion Line */}
         <InterBlockAdder
           index={0}
@@ -146,14 +193,14 @@ export default function BlockEditor({ blocks = [], onChange, username, password 
         />
 
         {blocks.length === 0 ? (
-          <div className="notion-empty-doc">
-            <p>Bài viết chưa có nội dung nào.</p>
-            <p className="sub">Bấm nút <strong style={{ color: "#198ac6" }}>＋ Thêm Block</strong> ở trên để bắt đầu viết bài!</p>
+          <div className="notion-empty-doc" style={{ padding: "40px 24px", background: "#f8fafc", borderRadius: "12px", border: "2px dashed #cbd5e1", textAlign: "center" }}>
+            <p style={{ fontSize: "1.1rem", fontWeight: 600, color: "#334155", margin: 0 }}>Bài viết chưa có khối nội dung nào.</p>
+            <p className="sub" style={{ fontSize: "0.9rem", color: "#64748b", marginTop: "6px" }}>Bấm nút <strong style={{ color: "#2563eb" }}>＋ Thêm Block tại đây</strong> ở trên để bắt đầu chèn đoạn văn, tiêu đề hoặc ảnh!</p>
           </div>
         ) : (
           blocks.map((block, index) => (
             <React.Fragment key={block.id}>
-              {/* Block Item */}
+              {/* Block Card - Full Width */}
               <div
                 draggable
                 onDragStart={(e) => handleDragStart(e, index)}
@@ -162,91 +209,130 @@ export default function BlockEditor({ blocks = [], onChange, username, password 
                 className={`notion-block-row ${
                   draggedIndex === index ? "notion-block-row--dragging" : ""
                 } ${dragOverIndex === index ? "notion-block-row--dragover" : ""}`}
+                style={{
+                  width: "100%",
+                  background: "#ffffff",
+                  border: "1px solid #e2e8f0",
+                  borderRadius: "12px",
+                  boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
+                  overflow: "hidden",
+                  transition: "all 0.2s ease"
+                }}
               >
-                {/* Hover Control Header */}
-                <div className="notion-block-header">
-                  <div className="notion-drag-handle" title="Kéo thả di chuyển Block">
-                    ⋮⋮
+                {/* Block Card Header */}
+                <div
+                  className="notion-block-header"
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    padding: "12px 18px",
+                    background: "#f8fafc",
+                    borderBottom: "1px solid #f1f5f9"
+                  }}
+                >
+                  <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                    <div className="notion-drag-handle" title="Kéo thả di chuyển Block" style={{ cursor: "grab", color: "#94a3b8", fontWeight: 700, fontSize: "1.1rem" }}>
+                      ⋮⋮
+                    </div>
+
+                    <div className="notion-block-badge" style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "0.88rem", fontWeight: 700, color: "#1e293b" }}>
+                      <span className="notion-block-icon" style={{ fontSize: "1rem" }}>
+                        {block.type === "paragraph" && "📝"}
+                        {block.type === "heading" && "🔤"}
+                        {block.type === "image" && "🖼️"}
+                        {block.type === "gallery" && "🌄"}
+                        {block.type === "quote" && "💬"}
+                        {block.type === "divider" && "──"}
+                        {block.type === "youtube" && "▶️"}
+                      </span>
+                      <span className="notion-block-type-name">
+                        {block.type === "paragraph" && "Đoạn văn (Paragraph)"}
+                        {block.type === "heading" && `Tiêu đề (Heading H${(block as any).level || 2})`}
+                        {block.type === "image" && "Hình ảnh (Image)"}
+                        {block.type === "gallery" && "Bộ sưu tập (Gallery)"}
+                        {block.type === "quote" && "Trích dẫn (Quote)"}
+                        {block.type === "divider" && "Đường kẻ (Divider)"}
+                        {block.type === "youtube" && "Video Youtube"}
+                      </span>
+                    </div>
                   </div>
 
-                  <div className="notion-block-badge">
-                    <span className="notion-block-icon">
-                      {block.type === "paragraph" && "📝"}
-                      {block.type === "heading" && "🔤"}
-                      {block.type === "image" && "🖼️"}
-                      {block.type === "gallery" && "🌄"}
-                      {block.type === "quote" && "💬"}
-                      {block.type === "divider" && "──"}
-                      {block.type === "youtube" && "▶️"}
-                    </span>
-                    <span className="notion-block-type-name">
-                      {block.type === "paragraph" && "Đoạn văn"}
-                      {block.type === "heading" && `Tiêu đề (H${(block as any).level || 2})`}
-                      {block.type === "image" && "Hình ảnh"}
-                      {block.type === "gallery" && "Bộ sưu tập"}
-                      {block.type === "quote" && "Trích dẫn"}
-                      {block.type === "divider" && "Đường kẻ"}
-                      {block.type === "youtube" && "Youtube Video"}
-                    </span>
-                  </div>
-
-                  <div className="notion-block-tools">
+                  <div className="notion-block-tools" style={{ display: "flex", gap: "6px" }}>
                     <button
                       type="button"
-                      className="notion-tool-btn"
+                      className="admin-button admin-button--ghost"
+                      style={{ padding: "4px 10px", fontSize: "0.78rem" }}
                       disabled={index === 0}
                       onClick={() => moveBlock(index, "up")}
-                      title="Lên trên"
+                      title="Chuyển lên trên"
                     >
                       ▲
                     </button>
                     <button
                       type="button"
-                      className="notion-tool-btn"
+                      className="admin-button admin-button--ghost"
+                      style={{ padding: "4px 10px", fontSize: "0.78rem" }}
                       disabled={index === blocks.length - 1}
                       onClick={() => moveBlock(index, "down")}
-                      title="Xuống dưới"
+                      title="Chuyển xuống dưới"
                     >
                       ▼
                     </button>
                     <button
                       type="button"
-                      className="notion-tool-btn"
+                      className="admin-button admin-button--ghost"
+                      style={{ padding: "4px 10px", fontSize: "0.78rem" }}
                       onClick={() => duplicateBlock(index)}
-                      title="Nhân bản Block"
+                      title="Nhân bản khối này"
                     >
-                      📋
+                      📋 Nhân bản
                     </button>
                     <button
                       type="button"
-                      className="notion-tool-btn notion-tool-btn--danger"
+                      className="admin-button admin-button--danger"
+                      style={{ padding: "4px 10px", fontSize: "0.78rem" }}
                       onClick={() => removeBlock(block.id)}
-                      title="Xóa Block"
+                      title="Xóa khối này"
                     >
-                      🗑️
+                      🗑️ Xóa
                     </button>
                   </div>
                 </div>
 
-                {/* Block Inputs */}
-                <div className="notion-block-content">
-                  {/* 1. PARAGRAPH */}
+                {/* Block Card Body */}
+                <div className="notion-block-body" style={{ padding: "18px", width: "100%" }}>
+                  {/* 1. PARAGRAPH - Full Width Spacious Textarea */}
                   {block.type === "paragraph" && (
-                    <textarea
-                      className="notion-input notion-textarea"
-                      rows={3}
-                      value={block.text}
-                      onChange={(e) => updateBlockData(block.id, { text: e.target.value })}
-                      placeholder="Nhập nội dung đoạn văn..."
-                    />
+                    <div style={{ width: "100%" }}>
+                      <textarea
+                        className="admin-form input"
+                        rows={6}
+                        style={{
+                          width: "100%",
+                          minHeight: "180px",
+                          resize: "vertical",
+                          borderRadius: "8px",
+                          padding: "12px 16px",
+                          font: "inherit",
+                          fontSize: "0.95rem",
+                          lineHeight: "1.6",
+                          border: "1px solid #cbd5e1",
+                          background: "#ffffff",
+                          boxSizing: "border-box"
+                        }}
+                        value={block.text}
+                        onChange={(e) => updateBlockData(block.id, { text: e.target.value })}
+                        placeholder="Nhập nội dung đoạn văn... (Hỗ trợ xuống dòng tự nhiên)"
+                      />
+                    </div>
                   )}
 
-                  {/* 2. HEADING */}
+                  {/* 2. HEADING - Full Width */}
                   {block.type === "heading" && (
-                    <div className="notion-row">
+                    <div style={{ display: "flex", gap: "12px", alignItems: "center", width: "100%" }}>
                       <select
-                        className="notion-select"
-                        style={{ width: 100 }}
+                        style={{ padding: "10px 14px", borderRadius: "8px", border: "1px solid #cbd5e1", font: "inherit", fontSize: "0.9rem", fontWeight: 700, background: "#fff" }}
                         value={block.level}
                         onChange={(e) =>
                           updateBlockData(block.id, {
@@ -254,16 +340,15 @@ export default function BlockEditor({ blocks = [], onChange, username, password 
                           })
                         }
                       >
-                        <option value={1}>H1</option>
-                        <option value={2}>H2</option>
-                        <option value={3}>H3</option>
-                        <option value={4}>H4</option>
+                        <option value={1}>H1 (Tiêu đề lớn)</option>
+                        <option value={2}>H2 (Tiêu đề chính)</option>
+                        <option value={3}>H3 (Tiêu đề phụ)</option>
+                        <option value={4}>H4 (Tiêu đề nhỏ)</option>
                       </select>
 
                       <input
                         type="text"
-                        className="notion-input notion-input-heading"
-                        style={{ flex: 1, fontWeight: 700 }}
+                        style={{ flex: 1, padding: "10px 14px", borderRadius: "8px", border: "1px solid #cbd5e1", font: "inherit", fontSize: "1.1rem", fontWeight: 700 }}
                         value={block.text}
                         onChange={(e) => updateBlockData(block.id, { text: e.target.value })}
                         placeholder={`Nhập tiêu đề H${(block as any).level || 2}...`}
@@ -271,19 +356,30 @@ export default function BlockEditor({ blocks = [], onChange, username, password 
                     </div>
                   )}
 
-                  {/* 3. IMAGE */}
+                  {/* 3. IMAGE - Spacious Preview */}
                   {block.type === "image" && (
-                    <div className="notion-image-box">
-                      <div className="notion-row">
-                        <input
-                          type="text"
-                          className="notion-input"
-                          style={{ flex: 1 }}
-                          value={block.src}
-                          onChange={(e) => updateBlockData(block.id, { src: e.target.value })}
-                          placeholder="Nhập URL ảnh hoặc bấm chọn Tải ảnh lên..."
-                        />
-                        <label className="notion-btn-upload">
+                    <div style={{ display: "flex", flexDirection: "column", gap: "14px", width: "100%" }}>
+                      {/* Image Large Preview Box */}
+                      {block.src ? (
+                        <div style={{ position: "relative", width: "100%", maxHeight: "380px", borderRadius: "10px", overflow: "hidden", background: "#f8fafc", border: "1px solid #e2e8f0" }}>
+                          <img src={block.src} alt="preview" style={{ width: "100%", maxHeight: "380px", objectFit: "contain" }} />
+                        </div>
+                      ) : (
+                        <div style={{ padding: "36px", border: "2px dashed #cbd5e1", borderRadius: "10px", background: "#f8fafc", textAlign: "center", color: "#64748b" }}>
+                          🖼️ Chưa có hình ảnh. Chọn từ Media hoặc tải ảnh lên.
+                        </div>
+                      )}
+
+                      <div style={{ display: "flex", gap: "10px", flexWrap: "wrap", alignItems: "center" }}>
+                        <button
+                          type="button"
+                          className="admin-button"
+                          style={{ fontSize: "0.85rem", padding: "6px 14px" }}
+                          onClick={() => openMediaPicker((url) => updateBlockData(block.id, { src: url }))}
+                        >
+                          🖼️ Chọn từ Media
+                        </button>
+                        <label className="admin-button admin-button--ghost" style={{ cursor: "pointer", margin: 0, fontSize: "0.85rem", padding: "6px 14px" }}>
                           {uploadingBlockId === block.id ? "Đang tải..." : "📁 Tải ảnh lên"}
                           <input
                             type="file"
@@ -299,23 +395,32 @@ export default function BlockEditor({ blocks = [], onChange, username, password 
                             }}
                           />
                         </label>
+                        {block.src && (
+                          <button
+                            type="button"
+                            className="admin-button admin-button--danger"
+                            style={{ fontSize: "0.85rem", padding: "6px 14px" }}
+                            onClick={() => updateBlockData(block.id, { src: "" })}
+                          >
+                            ❌ Xóa ảnh
+                          </button>
+                        )}
                       </div>
 
-                      {block.src && (
-                        <div
-                          className={`notion-img-preview-wrap notion-img-preview--${block.align || "center"}`}
-                          style={{ width: block.width || "100%" }}
-                        >
-                          <img src={block.src} alt="preview" className="notion-img-preview" />
-                        </div>
-                      )}
+                      <input
+                        type="text"
+                        style={{ width: "100%", padding: "8px 12px", borderRadius: "8px", border: "1px solid #cbd5e1", font: "inherit", fontSize: "0.85rem" }}
+                        value={block.src}
+                        onChange={(e) => updateBlockData(block.id, { src: e.target.value })}
+                        placeholder="Đường dẫn ảnh (URL)..."
+                      />
 
-                      {/* Image Options: Width & Align */}
-                      <div className="notion-img-options">
-                        <div className="notion-option-group">
-                          <span className="notion-option-label">Kích thước (Width):</span>
+                      {/* Width & Alignment Options */}
+                      <div style={{ display: "flex", gap: "20px", flexWrap: "wrap", fontSize: "0.85rem", background: "#f8fafc", padding: "12px 16px", borderRadius: "8px" }}>
+                        <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
+                          <span style={{ fontWeight: 600, color: "var(--ink)" }}>Kích thước (Width):</span>
                           {(["40%", "60%", "100%"] as ImageWidth[]).map((w) => (
-                            <label key={w} className="notion-radio-label">
+                            <label key={w} style={{ display: "flex", alignItems: "center", gap: "4px", cursor: "pointer" }}>
                               <input
                                 type="radio"
                                 name={`width_${block.id}`}
@@ -327,10 +432,10 @@ export default function BlockEditor({ blocks = [], onChange, username, password 
                           ))}
                         </div>
 
-                        <div className="notion-option-group">
-                          <span className="notion-option-label">Căn lề (Align):</span>
+                        <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
+                          <span style={{ fontWeight: 600, color: "var(--ink)" }}>Căn lề (Align):</span>
                           {(["left", "center", "right", "full"] as ImageAlign[]).map((a) => (
-                            <label key={a} className="notion-radio-label">
+                            <label key={a} style={{ display: "flex", alignItems: "center", gap: "4px", cursor: "pointer" }}>
                               <input
                                 type="radio"
                                 name={`align_${block.id}`}
@@ -348,98 +453,167 @@ export default function BlockEditor({ blocks = [], onChange, username, password 
                         </div>
                       </div>
 
-                      <div className="notion-row" style={{ marginTop: 8 }}>
-                        <input
-                          type="text"
-                          className="notion-input"
-                          style={{ flex: 1 }}
-                          value={block.caption}
-                          onChange={(e) => updateBlockData(block.id, { caption: e.target.value })}
-                          placeholder="Chú thích ảnh (Caption)..."
-                        />
-                        <input
-                          type="text"
-                          className="notion-input"
-                          style={{ width: 160 }}
-                          value={block.alt}
-                          onChange={(e) => updateBlockData(block.id, { alt: e.target.value })}
-                          placeholder="Alt (SEO)..."
-                        />
-                      </div>
+                      <input
+                        type="text"
+                        style={{ width: "100%", padding: "8px 12px", borderRadius: "8px", border: "1px solid #cbd5e1", font: "inherit", fontSize: "0.85rem" }}
+                        value={block.caption || ""}
+                        onChange={(e) => updateBlockData(block.id, { caption: e.target.value })}
+                        placeholder="Chú thích ảnh (Caption)..."
+                      />
                     </div>
                   )}
 
-                  {/* 4. GALLERY */}
+                  {/* 4. GALLERY - Support 1, 2, 3, 4 columns & empty state */}
                   {block.type === "gallery" && (
-                    <div className="notion-gallery-box">
-                      <div className="notion-row" style={{ marginBottom: 10 }}>
-                        <span className="notion-option-label">Số cột:</span>
-                        <select
-                          className="notion-select"
-                          style={{ width: 90 }}
-                          value={block.columns || 3}
-                          onChange={(e) =>
-                            updateBlockData(block.id, {
-                              columns: parseInt(e.target.value, 10) as 1 | 2 | 3 | 4,
-                            })
-                          }
-                        >
-                          <option value={1}>1 Cột</option>
-                          <option value={2}>2 Cột</option>
-                          <option value={3}>3 Cột</option>
-                          <option value={4}>4 Cột</option>
-                        </select>
+                    <div style={{ width: "100%" }}>
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "14px", flexWrap: "wrap", gap: "10px" }}>
+                        <div style={{ display: "flex", gap: "8px", alignItems: "center", fontSize: "0.88rem" }}>
+                          <span style={{ fontWeight: 600 }}>Số cột hiển thị:</span>
+                          {[1, 2, 3, 4].map((col) => (
+                            <button
+                              key={col}
+                              type="button"
+                              className={`admin-button ${block.columns === col ? "" : "admin-button--ghost"}`}
+                              style={{ padding: "4px 10px", fontSize: "0.8rem" }}
+                              onClick={() => updateBlockData(block.id, { columns: col as 1 | 2 | 3 | 4 })}
+                            >
+                              {col} Cột
+                            </button>
+                          ))}
+                        </div>
 
-                        <label className="notion-btn-upload" style={{ marginLeft: "auto" }}>
-                          {uploadingBlockId === block.id ? "Đang tải..." : "➕ Tải thêm ảnh bộ sưu tập"}
-                          <input
-                            type="file"
-                            accept="image/*"
-                            multiple
-                            style={{ display: "none" }}
-                            onChange={async (e) => {
-                              const files = Array.from(e.target.files || []);
-                              for (const f of files) {
-                                await handleFileUpload(block.id, f, (url) => {
-                                  const currentImgs = block.images || [];
-                                  updateBlockData(block.id, {
-                                    images: [...currentImgs, { src: url, caption: "" }],
-                                  });
+                        <div style={{ display: "flex", gap: "8px" }}>
+                          <button
+                            type="button"
+                            className="admin-button"
+                            style={{ fontSize: "0.82rem", padding: "5px 12px" }}
+                            onClick={() =>
+                              openMediaPicker((url) => {
+                                const currentImgs = (block.images || []).filter((img: any) => Boolean(img.src || img.url));
+                                updateBlockData(block.id, {
+                                  images: [...currentImgs, { src: url, alt: "", caption: "" }]
                                 });
-                              }
-                            }}
-                          />
-                        </label>
+                              })
+                            }
+                          >
+                            🖼️ Chọn từ Media
+                          </button>
+                          <label className="admin-button admin-button--ghost" style={{ cursor: "pointer", margin: 0, fontSize: "0.82rem", padding: "5px 12px" }}>
+                            ➕ Thêm ảnh mới
+                            <input
+                              type="file"
+                              accept="image/*"
+                              multiple
+                              style={{ display: "none" }}
+                              onChange={async (e) => {
+                                const files = e.target.files;
+                                if (!files || files.length === 0) return;
+                                const currentImgs = (block.images || []).filter((img: any) => Boolean(img.src || img.url));
+                                const newUploaded: { src: string; alt: string; caption: string }[] = [];
+
+                                for (let i = 0; i < files.length; i++) {
+                                  const formData = new FormData();
+                                  formData.append("file", files[i]);
+                                  formData.append("category", "blog");
+                                  try {
+                                    const res = await fetch("/api/admin/media", {
+                                      method: "POST",
+                                      body: formData
+                                    });
+                                    const json = await res.json();
+                                    if (json.url) {
+                                      newUploaded.push({ src: json.url, alt: "", caption: "" });
+                                    }
+                                  } catch {}
+                                }
+                                updateBlockData(block.id, { images: [...currentImgs, ...newUploaded] });
+                              }}
+                            />
+                          </label>
+                        </div>
                       </div>
 
-                      {block.images && block.images.length > 0 && (
-                        <div className="notion-gallery-grid">
-                          {block.images.map((img, i) => (
-                            <div key={i} className="notion-gallery-item">
-                              <img src={img.src} alt="thumb" />
-                              <input
-                                type="text"
-                                className="notion-input notion-input--sm"
-                                value={img.caption || ""}
-                                onChange={(e) => {
-                                  const newImgs = [...block.images];
-                                  newImgs[i].caption = e.target.value;
-                                  updateBlockData(block.id, { images: newImgs });
-                                }}
-                                placeholder="Chú thích..."
-                              />
-                              <button
-                                type="button"
-                                className="notion-gallery-del"
-                                onClick={() => {
-                                  const newImgs = block.images.filter((_, idx) => idx !== i);
-                                  updateBlockData(block.id, { images: newImgs });
-                                }}
-                              >
-                                ✕
-                              </button>
-                            </div>
-                          ))}
+                      {/* Gallery Images List or Empty State */}
+                      {(!block.images || block.images.filter((img: any) => Boolean(img.src || img.url)).length === 0) ? (
+                        <div
+                          style={{
+                            padding: "30px 20px",
+                            border: "2px dashed #cbd5e1",
+                            borderRadius: "10px",
+                            background: "#f8fafc",
+                            textAlign: "center",
+                            color: "#64748b"
+                          }}
+                        >
+                          <p style={{ margin: "0 0 8px 0", fontWeight: 600, fontSize: "0.92rem" }}>
+                            🌄 Chưa có ảnh nào trong bộ sưu tập.
+                          </p>
+                          <p style={{ margin: 0, fontSize: "0.83rem", color: "#94a3b8" }}>
+                            Bấm nút <strong style={{ color: "#2563eb" }}>🖼️ Chọn từ Media</strong> hoặc <strong style={{ color: "#2563eb" }}>➕ Thêm ảnh mới</strong> ở trên để chèn ảnh!
+                          </p>
+                        </div>
+                      ) : (
+                        <div
+                          style={{
+                            display: "grid",
+                            gridTemplateColumns: `repeat(${block.columns || 3}, 1fr)`,
+                            gap: "12px",
+                            width: "100%"
+                          }}
+                        >
+                          {block.images
+                            .filter((img: any) => Boolean(img.src || img.url))
+                            .map((img: any, imgIdx: number) => {
+                              const src = img.src || img.url;
+                              return (
+                                <div
+                                  key={imgIdx}
+                                  style={{
+                                    border: "1px solid #cbd5e1",
+                                    borderRadius: "8px",
+                                    padding: "6px",
+                                    backgroundColor: "#fff",
+                                    position: "relative"
+                                  }}
+                                >
+                                  <img
+                                    src={src}
+                                    alt="gallery"
+                                    style={{
+                                      width: "100%",
+                                      height: block.columns === 1 ? "auto" : "140px",
+                                      maxHeight: block.columns === 1 ? "380px" : "140px",
+                                      objectFit: "cover",
+                                      borderRadius: "6px"
+                                    }}
+                                  />
+                                  <button
+                                    type="button"
+                                    onClick={() => {
+                                      const validImgs = block.images.filter((i: any) => Boolean(i.src || i.url));
+                                      validImgs.splice(imgIdx, 1);
+                                      updateBlockData(block.id, { images: validImgs });
+                                    }}
+                                    style={{
+                                      position: "absolute",
+                                      top: "10px",
+                                      right: "10px",
+                                      background: "rgba(220,38,38,0.9)",
+                                      color: "#fff",
+                                      border: "none",
+                                      borderRadius: "50%",
+                                      width: "24px",
+                                      height: "24px",
+                                      cursor: "pointer",
+                                      fontWeight: 700
+                                    }}
+                                    title="Xóa ảnh"
+                                  >
+                                    &times;
+                                  </button>
+                                </div>
+                              );
+                            })}
                         </div>
                       )}
                     </div>
@@ -447,48 +621,48 @@ export default function BlockEditor({ blocks = [], onChange, username, password 
 
                   {/* 5. QUOTE */}
                   {block.type === "quote" && (
-                    <div className="notion-quote-box">
+                    <div style={{ borderLeft: "4px solid #2563eb", paddingLeft: "14px", width: "100%" }}>
                       <textarea
-                        className="notion-input notion-textarea"
-                        rows={2}
+                        className="admin-form input"
+                        rows={3}
+                        style={{ width: "100%", borderRadius: "8px", padding: "10px 14px", font: "inherit", fontSize: "0.95rem", fontStyle: "italic" }}
                         value={block.text}
                         onChange={(e) => updateBlockData(block.id, { text: e.target.value })}
                         placeholder="Nhập nội dung trích dẫn..."
                       />
                       <input
                         type="text"
-                        className="notion-input"
-                        style={{ marginTop: 6 }}
-                        value={block.author}
+                        style={{ marginTop: "10px", width: "100%", padding: "8px 12px", borderRadius: "8px", border: "1px solid #cbd5e1", font: "inherit", fontSize: "0.85rem" }}
+                        value={block.author || ""}
                         onChange={(e) => updateBlockData(block.id, { author: e.target.value })}
-                        placeholder="Tác giả / Nguồn..."
+                        placeholder="Tác giả hoặc nguồn trích dẫn..."
                       />
                     </div>
                   )}
 
                   {/* 6. DIVIDER */}
                   {block.type === "divider" && (
-                    <div className="notion-divider-box">
-                      <hr />
+                    <div style={{ padding: "12px 0", width: "100%" }}>
+                      <hr style={{ border: "none", borderTop: "2px solid #cbd5e1", margin: 0 }} />
                     </div>
                   )}
 
                   {/* 7. YOUTUBE */}
                   {block.type === "youtube" && (
-                    <div className="notion-youtube-box">
+                    <div style={{ width: "100%" }}>
                       <input
                         type="text"
-                        className="notion-input"
+                        style={{ width: "100%", padding: "10px 14px", borderRadius: "8px", border: "1px solid #cbd5e1", font: "inherit", fontSize: "0.88rem" }}
                         value={block.url}
                         onChange={(e) => updateBlockData(block.id, { url: e.target.value })}
-                        placeholder="Dán đường dẫn URL Video Youtube..."
+                        placeholder="Dán đường dẫn video Youtube (URL hoặc Embed Link)..."
                       />
                     </div>
                   )}
                 </div>
               </div>
 
-              {/* Inter-Block Insertion Line */}
+              {/* Inter-Block Adder */}
               <InterBlockAdder
                 index={index + 1}
                 activeIdx={insertIndex}
@@ -500,96 +674,176 @@ export default function BlockEditor({ blocks = [], onChange, username, password 
           ))
         )}
       </div>
+
+      {/* Media Picker Modal */}
+      {isMediaPickerOpen && (
+        <div className="confirm-dialog__overlay" style={{ display: "flex", alignItems: "center", justifyContent: "center", zIndex: 10000 }}>
+          <div className="admin-card" style={{ maxWidth: "900px", width: "92%", maxHeight: "85vh", overflowY: "auto", padding: "1.5rem" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1rem" }}>
+              <h3 style={{ margin: 0, fontSize: "1.25rem" }}>🖼️ Chọn ảnh từ Thư viện Media</h3>
+              <button
+                type="button"
+                onClick={() => setIsMediaPickerOpen(false)}
+                style={{ background: "none", border: "none", fontSize: "1.5rem", cursor: "pointer", color: "#64748b" }}
+              >
+                &times;
+              </button>
+            </div>
+
+            {loadingMedia ? (
+              <div style={{ padding: "2rem", textAlign: "center", color: "#64748b" }}>
+                <i className="fas fa-spinner fa-spin fa-2x"></i>
+                <p style={{ marginTop: "0.5rem" }}>Đang nạp ảnh...</p>
+              </div>
+            ) : mediaList.length === 0 ? (
+              <div style={{ padding: "2rem", textAlign: "center", color: "#94a3b8" }}>
+                Chưa có ảnh nào trong thư viện Media.
+              </div>
+            ) : (
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(150px, 1fr))", gap: "1rem" }}>
+                {mediaList.map((media) => (
+                  <div
+                    key={media.url}
+                    onClick={() => selectMediaItem(media.url)}
+                    style={{
+                      border: "2px solid #e2e8f0",
+                      borderRadius: "6px",
+                      overflow: "hidden",
+                      cursor: "pointer",
+                      backgroundColor: "#fff",
+                      transition: "all 0.2s ease"
+                    }}
+                  >
+                    <img src={media.url} alt={media.name} style={{ width: "100%", height: "110px", objectFit: "cover" }} />
+                    <div style={{ padding: "0.4rem", fontSize: "0.75rem", wordBreak: "break-all", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                      {media.name}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
 
-// Subcomponent: Inter-block Plus Button & Dropdown Menu
-type InterBlockAdderProps = {
+function InterBlockAdder({
+  index,
+  activeIdx,
+  onOpen,
+  onClose,
+  onSelect
+}: {
   index: number;
   activeIdx: number | null;
   onOpen: (idx: number) => void;
   onClose: () => void;
   onSelect: (type: BlockType, idx: number) => void;
-};
-
-function InterBlockAdder({ index, activeIdx, onOpen, onClose, onSelect }: InterBlockAdderProps) {
+}) {
   const isOpen = activeIdx === index;
 
   return (
-    <div className="inter-block-adder">
-      <button
-        type="button"
-        className="inter-block-btn"
-        onClick={() => (isOpen ? onClose() : onOpen(index))}
-        title="Thêm Block nội dung tại đây"
-      >
-        ＋ Thêm Block
-      </button>
-
-      {isOpen && (
-        <div className="inter-block-menu">
-          <div className="inter-block-menu__header">
-            <span>Chọn loại Block muốn chèn:</span>
-            <button type="button" className="inter-block-menu__close" onClick={onClose}>
-              ✕
+    <div style={{ position: "relative", margin: "6px 0", textAlign: "center", width: "100%" }}>
+      {!isOpen ? (
+        <button
+          type="button"
+          onClick={() => onOpen(index)}
+          style={{
+            background: "#eff6ff",
+            color: "#2563eb",
+            border: "1px dashed #bfdbfe",
+            borderRadius: "20px",
+            padding: "6px 20px",
+            fontSize: "0.83rem",
+            fontWeight: 600,
+            cursor: "pointer",
+            transition: "all 0.2s ease"
+          }}
+        >
+          ＋ Thêm Block tại đây
+        </button>
+      ) : (
+        <div
+          style={{
+            background: "#ffffff",
+            border: "1px solid #cbd5e1",
+            borderRadius: "12px",
+            padding: "14px 18px",
+            boxShadow: "0 4px 20px rgba(0,0,0,0.1)",
+            display: "inline-block",
+            textAlign: "left",
+            zIndex: 5
+          }}
+        >
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "10px", gap: "16px" }}>
+            <span style={{ fontSize: "0.85rem", fontWeight: 700, color: "#1e293b" }}>Chọn loại khối muốn chèn:</span>
+            <button
+              type="button"
+              onClick={onClose}
+              style={{ background: "none", border: "none", fontSize: "1.3rem", cursor: "pointer", color: "#64748b" }}
+            >
+              &times;
             </button>
           </div>
-          <div className="inter-block-menu__grid">
-            <button type="button" className="inter-block-option" onClick={() => onSelect("paragraph", index)}>
-              <span className="opt-icon">📝</span>
-              <div className="opt-text">
-                <span className="opt-title">Đoạn văn (Paragraph)</span>
-                <span className="opt-desc">Văn bản nội dung bài viết</span>
-              </div>
-            </button>
 
-            <button type="button" className="inter-block-option" onClick={() => onSelect("heading", index)}>
-              <span className="opt-icon">🔤</span>
-              <div className="opt-text">
-                <span className="opt-title">Tiêu đề (Heading)</span>
-                <span className="opt-desc">Tiêu đề mục H1, H2, H3, H4</span>
-              </div>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "8px" }}>
+            <button
+              type="button"
+              className="admin-button admin-button--ghost"
+              style={{ justifyContent: "flex-start", padding: "8px 12px", fontSize: "0.82rem" }}
+              onClick={() => onSelect("paragraph", index)}
+            >
+              📝 Đoạn văn (Paragraph)
             </button>
-
-            <button type="button" className="inter-block-option" onClick={() => onSelect("image", index)}>
-              <span className="opt-icon">🖼️</span>
-              <div className="opt-text">
-                <span className="opt-title">Hình ảnh (Image)</span>
-                <span className="opt-desc">Ảnh đơn tùy chỉnh kích thước & căn lề</span>
-              </div>
+            <button
+              type="button"
+              className="admin-button admin-button--ghost"
+              style={{ justifyContent: "flex-start", padding: "8px 12px", fontSize: "0.82rem" }}
+              onClick={() => onSelect("heading", index)}
+            >
+              🔤 Tiêu đề (Heading)
             </button>
-
-            <button type="button" className="inter-block-option" onClick={() => onSelect("gallery", index)}>
-              <span className="opt-icon">🌄</span>
-              <div className="opt-text">
-                <span className="opt-title">Bộ sưu tập (Gallery)</span>
-                <span className="opt-desc">Hiển thị nhiều ảnh 2, 3, 4 cột</span>
-              </div>
+            <button
+              type="button"
+              className="admin-button admin-button--ghost"
+              style={{ justifyContent: "flex-start", padding: "8px 12px", fontSize: "0.82rem" }}
+              onClick={() => onSelect("image", index)}
+            >
+              🖼️ Hình ảnh (Image)
             </button>
-
-            <button type="button" className="inter-block-option" onClick={() => onSelect("quote", index)}>
-              <span className="opt-icon">💬</span>
-              <div className="opt-text">
-                <span className="opt-title">Trích dẫn (Quote)</span>
-                <span className="opt-desc">Đoạn phát biểu hoặc nguồn dẫn</span>
-              </div>
+            <button
+              type="button"
+              className="admin-button admin-button--ghost"
+              style={{ justifyContent: "flex-start", padding: "8px 12px", fontSize: "0.82rem" }}
+              onClick={() => onSelect("gallery", index)}
+            >
+              🌄 Bộ sưu tập (Gallery)
             </button>
-
-            <button type="button" className="inter-block-option" onClick={() => onSelect("divider", index)}>
-              <span className="opt-icon">──</span>
-              <div className="opt-text">
-                <span className="opt-title">Đường kẻ (Divider)</span>
-                <span className="opt-desc">Đường kẻ ngang phân đoạn</span>
-              </div>
+            <button
+              type="button"
+              className="admin-button admin-button--ghost"
+              style={{ justifyContent: "flex-start", padding: "8px 12px", fontSize: "0.82rem" }}
+              onClick={() => onSelect("quote", index)}
+            >
+              💬 Trích dẫn (Quote)
             </button>
-
-            <button type="button" className="inter-block-option" onClick={() => onSelect("youtube", index)}>
-              <span className="opt-icon">▶️</span>
-              <div className="opt-text">
-                <span className="opt-title">Video Youtube</span>
-                <span className="opt-desc">Nhúng video clip Youtube</span>
-              </div>
+            <button
+              type="button"
+              className="admin-button admin-button--ghost"
+              style={{ justifyContent: "flex-start", padding: "8px 12px", fontSize: "0.82rem" }}
+              onClick={() => onSelect("divider", index)}
+            >
+              ── Đường kẻ (Divider)
+            </button>
+            <button
+              type="button"
+              className="admin-button admin-button--ghost"
+              style={{ justifyContent: "flex-start", padding: "8px 12px", fontSize: "0.82rem", gridColumn: "span 2" }}
+              onClick={() => onSelect("youtube", index)}
+            >
+              ▶️ Video Youtube
             </button>
           </div>
         </div>

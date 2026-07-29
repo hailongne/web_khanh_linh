@@ -8,10 +8,6 @@
         "text": "Theo đại diện doanh nghiệp, Khánh Linh Trans định hướng phát triển dựa trên ba yếu tố cốt lõi gồm an toàn – đúng giờ – trải nghiệm khách hàng. Hiện đơn vị cung cấp nhiều dòng xe từ 16 chỗ, 30 chỗ, 47 chỗ đến limousine, đáp ứng nhu cầu đa dạng của khách hàng cá nhân, doanh nghiệp, trường học và các đơn vị lữ hành."
       },
       {
-        "id": "b_1784883521356_x3lsn",
-        "type": "divider"
-      },
-      {
         "id": "b_1784883501708_k3wck",
         "type": "heading",
         "level": 3,
@@ -27,8 +23,9 @@
         "type": "gallery",
         "images": [
           {
-            "src": "/images/news/news-1784885002893-g-u-kh-nh-linh.jpg",
-            "caption": "Gấu Khánh Linh Trans"
+            "src": "/uploads/blog/g_u_kh_nh_linh_1785294925737.jpg",
+            "alt": "",
+            "caption": ""
           }
         ],
         "columns": 1
@@ -70,5 +67,5 @@
     "keywords": []
   },
   "createdAt": "2026-07-24T09:02:16.884Z",
-  "updatedAt": "2026-07-27T02:06:51.064Z"
+  "updatedAt": "2026-07-29T03:52:25.786Z"
 }

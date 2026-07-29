@@ -169,9 +169,11 @@ export default function HomePage() {
   const faqData: FaqData = dbFaq?.[lang] ?? defaultFaqData;
   const toggleLang = () => setLang((l) => (l === "vi" ? "en" : "vi"));
   const isMobile = useMediaQuery("(max-width: 768px)");
+  const isTablet = useMediaQuery("(max-width: 1024px)");
 
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [previewAvatar, setPreviewAvatar] = useState<string | null>(null);
+  const reasonsListRef = useRef<HTMLDivElement | null>(null);
   const processGridRef = useRef<HTMLDivElement | null>(null);
 
   // Reviews System States
@@ -192,6 +194,12 @@ export default function HomePage() {
   const [submitSuccessMsg, setSubmitSuccessMsg] = useState("");
   const [submitErrorMsg, setSubmitErrorMsg] = useState("");
   const [isSubmittingReview, setIsSubmittingReview] = useState(false);
+
+  // Pagination for public reviews (max 5 per page)
+  const [reviewPage, setReviewPage] = useState(1);
+  const REVIEWS_PER_PAGE = 5;
+  const totalReviewPages = Math.ceil(publicReviews.length / REVIEWS_PER_PAGE);
+  const paginatedReviews = publicReviews.slice((reviewPage - 1) * REVIEWS_PER_PAGE, reviewPage * REVIEWS_PER_PAGE);
 
   const fetchPublicReviews = async () => {
     try {
@@ -273,8 +281,6 @@ export default function HomePage() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  const isTablet = useMediaQuery("(max-width: 1200px)");
-
   const heroBannerSlides = [
     { desktopSrc: "/images/banner.png", mobileSrc: "/images/banner.png", alt: "" },
     { desktopSrc: "/images/banner+.png", mobileSrc: "/images/banner+.png", alt: "" },
@@ -288,37 +294,73 @@ export default function HomePage() {
     return () => window.clearInterval(interval);
   }, []);
 
-  // Auto-scroll process grid on mobile
+  // Auto-scroll reasons list on mobile & tablet (1s interval)
   useEffect(() => {
-    const el = processGridRef.current;
-    if (!el || !isMobile) return;
+    const el = reasonsListRef.current;
+    if (!el || !isTablet) return;
 
     let paused = false;
-    const cardWidth = 280; // process-card width on mobile
-    const gap = 16; // process-grid gap on mobile
-    const cardAndGap = cardWidth + gap;
-
     const interval = window.setInterval(() => {
       if (paused) return;
       const maxScrollLeft = el.scrollWidth - el.clientWidth;
-      if (el.scrollLeft >= maxScrollLeft - 1) {
+      if (el.scrollLeft >= maxScrollLeft - 10) {
         el.scrollTo({ left: 0, behavior: "smooth" });
       } else {
-        el.scrollBy({ left: cardAndGap, behavior: "smooth" });
+        const firstCard = el.children[0] as HTMLElement;
+        const step = firstCard ? firstCard.offsetWidth + 16 : 280;
+        el.scrollBy({ left: step, behavior: "smooth" });
       }
-    }, 2500);
+    }, 1000);
 
     const onEnter = () => (paused = true);
     const onLeave = () => (paused = false);
     el.addEventListener("mouseenter", onEnter);
     el.addEventListener("mouseleave", onLeave);
+    el.addEventListener("touchstart", onEnter, { passive: true });
+    el.addEventListener("touchend", onLeave, { passive: true });
 
     return () => {
       window.clearInterval(interval);
       el.removeEventListener("mouseenter", onEnter);
       el.removeEventListener("mouseleave", onLeave);
+      el.removeEventListener("touchstart", onEnter);
+      el.removeEventListener("touchend", onLeave);
     };
-  }, [isMobile]);
+  }, [isTablet]);
+
+  // Auto-scroll process grid on mobile & tablet (1s interval)
+  useEffect(() => {
+    const el = processGridRef.current;
+    if (!el || !isTablet) return;
+
+    let paused = false;
+    const interval = window.setInterval(() => {
+      if (paused) return;
+      const maxScrollLeft = el.scrollWidth - el.clientWidth;
+      if (el.scrollLeft >= maxScrollLeft - 10) {
+        el.scrollTo({ left: 0, behavior: "smooth" });
+      } else {
+        const firstCard = el.children[0] as HTMLElement;
+        const step = firstCard ? firstCard.offsetWidth + 16 : 280;
+        el.scrollBy({ left: step, behavior: "smooth" });
+      }
+    }, 1000);
+
+    const onEnter = () => (paused = true);
+    const onLeave = () => (paused = false);
+    el.addEventListener("mouseenter", onEnter);
+    el.addEventListener("mouseleave", onLeave);
+    el.addEventListener("touchstart", onEnter, { passive: true });
+    el.addEventListener("touchend", onLeave, { passive: true });
+
+    return () => {
+      window.clearInterval(interval);
+      el.removeEventListener("mouseenter", onEnter);
+      el.removeEventListener("mouseleave", onLeave);
+      el.removeEventListener("touchstart", onEnter);
+      el.removeEventListener("touchend", onLeave);
+    };
+  }, [isTablet]);
 
   return (
     <main className="page-shell" id="top">
@@ -355,7 +397,7 @@ export default function HomePage() {
               </div>
 
               <div className="reasons-section__copy">
-                <div className="reasons-list">
+                <div className="reasons-list" ref={reasonsListRef}>
                   {t.reasons.items.map((reason: any) => (
                     <article className="reason-card" key={reason.title}>
                       <div className="reason-card__icon">
@@ -672,11 +714,11 @@ export default function HomePage() {
                 </div>
               </div>
 
-              {/* 3. Danh sách Đánh giá (approved=true) */}
+              {/* 3. Danh sách Đánh giá (approved=true, max 5 per page) */}
               {publicReviews.length > 0 && (
                 <div className="reviews-list-wrapper">
                   <div className="reviews-list-grid">
-                    {publicReviews.map((rev) => (
+                    {paginatedReviews.map((rev) => (
                       <article className="review-item-card" key={rev.id}>
                         <div className="review-item-header">
                           <div className="review-author-info">
@@ -702,6 +744,42 @@ export default function HomePage() {
                       </article>
                     ))}
                   </div>
+
+                  {/* Phân trang đánh giá (tối đa 5 review / trang) */}
+                  {totalReviewPages > 1 && (
+                    <div className="reviews-pagination">
+                      <button
+                        type="button"
+                        className="reviews-page-btn"
+                        disabled={reviewPage === 1}
+                        onClick={() => setReviewPage((p) => Math.max(1, p - 1))}
+                        aria-label="Trang trước"
+                      >
+                        ‹
+                      </button>
+
+                      {Array.from({ length: totalReviewPages }, (_, i) => i + 1).map((pageNum) => (
+                        <button
+                          key={pageNum}
+                          type="button"
+                          className={`reviews-page-btn ${pageNum === reviewPage ? "active" : ""}`}
+                          onClick={() => setReviewPage(pageNum)}
+                        >
+                          {pageNum}
+                        </button>
+                      ))}
+
+                      <button
+                        type="button"
+                        className="reviews-page-btn"
+                        disabled={reviewPage === totalReviewPages}
+                        onClick={() => setReviewPage((p) => Math.min(totalReviewPages, p + 1))}
+                        aria-label="Trang sau"
+                      >
+                        ›
+                      </button>
+                    </div>
+                  )}
                 </div>
               )}
             </div>

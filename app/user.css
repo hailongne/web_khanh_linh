@@ -3255,3 +3255,203 @@ html, body, #__next, main, .page-shell {
   color: #334756;
 }
 
+/* Horizontal Scroll Carousel for Reasons & Booking Process on Mobile & Tablet */
+@media (max-width: 1024px) {
+  .reasons-section {
+    padding-top: 40px !important;
+    padding-bottom: 16px !important;
+  }
+
+  .process-section {
+    padding-top: 16px !important;
+    padding-bottom: 24px !important;
+  }
+
+  .reasons-list,
+  .process-grid {
+    display: flex !important;
+    flex-direction: row !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    scroll-snap-type: x mandatory !important;
+    gap: 16px !important;
+    padding: 8px 8px 16px 8px !important;
+    scrollbar-width: none !important;
+    -webkit-overflow-scrolling: touch !important;
+    margin-top: 16px !important;
+  }
+
+  .reasons-list::-webkit-scrollbar,
+  .process-grid::-webkit-scrollbar {
+    display: none !important;
+  }
+
+  .reasons-section .reason-card,
+  .process-card {
+    flex: 0 0 min(290px, 84vw) !important;
+    width: min(290px, 84vw) !important;
+    scroll-snap-align: center !important;
+    box-sizing: border-box !important;
+    background: #ffffff !important;
+    border-radius: 20px !important;
+    padding: 24px 20px !important;
+    box-shadow: 0 10px 30px rgba(13, 44, 64, 0.08) !important;
+    border: 1px solid rgba(25, 138, 198, 0.12) !important;
+    margin: 0 !important;
+  }
+
+  .reasons-section .reason-card {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    text-align: center !important;
+  }
+
+  .reasons-section .reason-card__icon {
+    margin: 0 auto 14px auto !important;
+  }
+
+  .reasons-section .reason-card__body h3 {
+    text-align: center !important;
+    margin: 4px 0 8px !important;
+    font-size: 1.2rem !important;
+  }
+
+  .reasons-section .reason-card__body p {
+    text-align: center !important;
+    font-size: 0.88rem !important;
+    line-height: 1.5 !important;
+  }
+
+  .process-card {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    text-align: center !important;
+  }
+
+  .process-card h3 {
+    text-align: center !important;
+    margin: 10px 0 8px !important;
+    font-size: 1.2rem !important;
+  }
+
+  .process-card p {
+    text-align: center !important;
+    font-size: 0.88rem !important;
+    line-height: 1.5 !important;
+  }
+
+  .process-grid::before {
+    display: none !important;
+  }
+}
+
+/* Reviews Pagination Styles */
+.reviews-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 24px;
+}
+
+.reviews-page-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  border: 1px solid #cbd5e1;
+  background: #ffffff;
+  color: #334155;
+  font-weight: 700;
+  font-size: 0.95rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.reviews-page-btn:hover:not(:disabled) {
+  border-color: #0f6fec;
+  color: #0f6fec;
+  background: #eff6ff;
+}
+
+.reviews-page-btn.active {
+  background: #0f6fec;
+  color: #ffffff;
+  border-color: #0f6fec;
+  box-shadow: 0 4px 12px rgba(15, 111, 236, 0.25);
+}
+
+.reviews-page-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* Mobile & Tablet Compact Spacing & Fixed Height Sales Specialist List */
+@media (max-width: 1024px) {
+  .fleet-section {
+    padding: 28px 0 20px !important;
+  }
+
+  .reasons-section {
+    padding-top: 24px !important;
+    padding-bottom: 16px !important;
+  }
+
+  .process-section {
+    padding-top: 16px !important;
+    padding-bottom: 20px !important;
+  }
+
+  .pricing-section {
+    padding: 24px 0 20px !important;
+  }
+
+  .addons-section {
+    padding: 24px 0 20px !important;
+  }
+
+  .reviews-section {
+    padding: 24px 0 20px !important;
+  }
+
+  .faq-section {
+    padding: 24px 0 32px !important;
+  }
+
+  .title-luxury {
+    margin-bottom: 12px !important;
+  }
+
+  .title-luxury h2 {
+    font-size: clamp(1.6rem, 4.5vw, 2.2rem) !important;
+    margin-bottom: 6px !important;
+  }
+
+  .title-luxury p {
+    font-size: 0.9rem !important;
+    margin-bottom: 0 !important;
+  }
+
+  /* Sales Specialists List Fixed Height + Internal Scroll on Mobile & Tablet */
+  .addon-card--sales .addon-card__sales-list {
+    max-height: 380px !important;
+    overflow-y: auto !important;
+    padding-right: 6px !important;
+    scrollbar-width: thin !important;
+    scrollbar-color: #cbd5e1 transparent !important;
+  }
+
+  .addon-card--sales .addon-card__sales-list::-webkit-scrollbar {
+    width: 5px;
+  }
+
+  .addon-card--sales .addon-card__sales-list::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 4px;
+  }
+}
+

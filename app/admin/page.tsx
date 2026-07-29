@@ -1,17 +1,20 @@
 "use client";
 
 import React, { useEffect, useMemo, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import Link from "next/link";
 import "./admin.css";
+import AdminHeader from "./AdminHeader";
 import ToastContainer from "../components/toast/ToastContainer";
 import { showToast } from "../components/toast/toastService";
+import { getAccessibleMenuItems, Role } from "./adminConfig";
 
-const MENU_ITEMS: { key: MenuKey; label: string; icon: string }[] = [
-  { key: "vehicles", label: "Đội xe", icon: "fas fa-car-side" },
-  { key: "pricing", label: "Bảng giá", icon: "fas fa-money-bill-wave" },
-  { key: "sales", label: "Chuyên viên", icon: "fas fa-user-tie" },
-  { key: "reviews", label: "Đánh giá", icon: "fas fa-quote-right" },
-  { key: "faq", label: "Câu hỏi", icon: "fas fa-question-circle" },
-  { key: "account", label: "Tài khoản", icon: "fas fa-user-shield" }
+const TAB_MENU_ITEMS: { key: MenuKey; label: string; icon: string; permission: Role[] }[] = [
+  { key: "vehicles", label: "Đội xe", icon: "fas fa-car-side", permission: ["SUPER_ADMIN", "ADMIN"] },
+  { key: "pricing", label: "Bảng giá", icon: "fas fa-money-bill-wave", permission: ["SUPER_ADMIN", "ADMIN"] },
+  { key: "sales", label: "Chuyên viên", icon: "fas fa-user-tie", permission: ["SUPER_ADMIN"] },
+  { key: "reviews", label: "Đánh giá", icon: "fas fa-quote-right", permission: ["SUPER_ADMIN", "ADMIN"] },
+  { key: "faq", label: "Câu hỏi", icon: "fas fa-question-circle", permission: ["SUPER_ADMIN", "ADMIN"] }
 ];
 
 type MenuKey = "vehicles" | "pricing" | "sales" | "reviews" | "faq" | "account";
@@ -70,11 +73,9 @@ type AccountInfo = {
   updatedAt: string | null;
 };
 
-function buildHeaders(currentUsername: string, currentPassword: string) {
+function buildHeaders(currentUsername?: string, currentPassword?: string) {
   return {
-    "Content-Type": "application/json",
-    "x-admin-username": currentUsername,
-    "x-admin-password": currentPassword
+    "Content-Type": "application/json"
   };
 }
 
@@ -184,16 +185,25 @@ function ConfirmDialog({
   );
 }
 
-export default function AdminPage() {
+function AdminPageContent() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const tabParam = searchParams.get("tab");
+  const [currentUser, setCurrentUser] = useState<any>(null);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
   const [authorized, setAuthorized] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [menu, setMenu] = useState<MenuKey>("vehicles");
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
+
+  useEffect(() => {
+    if (tabParam && ["vehicles", "pricing", "sales", "reviews", "faq"].includes(tabParam)) {
+      setMenu(tabParam as MenuKey);
+    }
+  }, [tabParam]);
   const [confirm, setConfirm] = useState<{
     isOpen: boolean;
     title: string;
@@ -210,15 +220,32 @@ export default function AdminPage() {
   });
 
   useEffect(() => {
-    if (typeof window === "undefined") return;
-    const savedUsername = sessionStorage.getItem("admin-username");
-    const savedPassword = sessionStorage.getItem("admin-password");
-    if (savedUsername && savedPassword) {
-      setUsername(savedUsername);
-      setPassword(savedPassword);
-      setAuthorized(true);
-    }
-  }, []);
+    fetch("/api/admin/me")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success && data.data) {
+          if (!data.data.active) {
+            router.replace("/login");
+            return;
+          }
+          if (data.data.role === "BLOG_EDITOR") {
+            router.replace("/admin/blog");
+            return;
+          }
+          setCurrentUser(data.data);
+          setUsername(data.data.username || "");
+          setAuthorized(true);
+        } else {
+          router.replace("/login");
+        }
+      })
+      .catch(() => {
+        router.replace("/login");
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, [router]);
 
   // show existing messages as toasts (do not change business logic)
   useEffect(() => {
@@ -232,45 +259,6 @@ export default function AdminPage() {
       showToast("success", successMessage);
     }
   }, [successMessage]);
-
-
-
-  async function handleLogin(event: React.FormEvent) {
-    event.preventDefault();
-    setError(null);
-    setLoading(true);
-    try {
-      const response = await fetch(`/api/admin/data?type=vehicles&lang=vi`, {
-        headers: buildHeaders(username, password)
-      });
-      const raw = await response.text();
-      let result: any = null;
-      try {
-        result = raw ? JSON.parse(raw) : null;
-      } catch {
-        result = null;
-      }
-      if (!response.ok) {
-        throw new Error(result?.error || "Đăng nhập thất bại");
-      }
-      setAuthorized(true);
-      sessionStorage.setItem("admin-username", username);
-      sessionStorage.setItem("admin-password", password);
-    } catch (err) {
-      setAuthorized(false);
-      if (err instanceof Error) {
-        if (err.message === "Unauthorized") {
-          setError("Sai tài khoản hoặc mật khẩu. Vui lòng thử lại.");
-        } else {
-          setError(err.message);
-        }
-      } else {
-        setError("Lỗi đăng nhập.");
-      }
-    } finally {
-      setLoading(false);
-    }
-  }
 
   function openConfirm(
     title: string,
@@ -295,17 +283,17 @@ export default function AdminPage() {
 
   function handleLogout() {
     openConfirm(
-      "Bạn có chắc chắn không?",
-      () => {
-        sessionStorage.removeItem("admin-username");
-        sessionStorage.removeItem("admin-password");
-        setUsername("");
-        setPassword("");
-        setAuthorized(false);
-        closeConfirm();
+      "Xác nhận đăng xuất",
+      async () => {
+        try {
+          await fetch("/api/admin/logout", { method: "POST" });
+        } catch {}
+        router.replace("/login");
+        router.refresh();
       },
       "Đăng xuất",
-      "Hủy"
+      "Hủy",
+      "Bạn có chắc chắn muốn đăng xuất khỏi hệ thống?"
     );
   }
 
@@ -322,75 +310,16 @@ export default function AdminPage() {
   function handleCredentialsChange(nextUsername: string, nextPassword: string) {
     setUsername(nextUsername);
     setPassword(nextPassword);
-    if (typeof window !== "undefined") {
-      sessionStorage.setItem("admin-username", nextUsername);
-      sessionStorage.setItem("admin-password", nextPassword);
-    }
   }
 
   if (!authorized) {
     return (
-      <main className="admin-shell">
-        <ToastContainer />
-        <div className="admin-card admin-card--login">
-          <div className="admin-header admin-header--center">
-            <div>
-              <p className="admin-tag">Quản trị nội dung</p>
-              <h1>Admin Dashboard</h1>
-              <p>Địa chỉ riêng: <strong>/admin</strong></p>
-            </div>
-          </div>
-
-          <form className="admin-form" onSubmit={handleLogin}>
-            <label>
-              Tên đăng nhập
-              <div className="admin-input-wrap">
-                <span className="admin-input-icon" aria-hidden="true">
-                  <i className="fas fa-user" />
-                </span>
-                <input
-                  type="text"
-                  value={username}
-                  onChange={(event) => setUsername(event.target.value)}
-                  placeholder="Nhập tên đăng nhập"
-                />
-              </div>
-            </label>
-            <label>
-              Mật khẩu
-              <div className="admin-input-wrap">
-                <span className="admin-input-icon" aria-hidden="true">
-                  <i className="fas fa-lock" />
-                </span>
-                <input
-                  type={showPassword ? "text" : "password"}
-                  value={password}
-                  onChange={(event) => setPassword(event.target.value)}
-                  placeholder="Nhập mật khẩu"
-                />
-                <button
-                  className="admin-password-toggle"
-                  type="button"
-                  onClick={() => setShowPassword((value) => !value)}
-                  aria-label={showPassword ? "Ẩn mật khẩu" : "Hiện mật khẩu"}
-                  title={showPassword ? "Ẩn mật khẩu" : "Hiện mật khẩu"}
-                >
-                  <i className={`fas ${showPassword ? "fa-eye-slash" : "fa-eye"}`} />
-                </button>
-              </div>
-            </label>
-            <button className="admin-button" type="submit" disabled={loading || !username.trim() || !password.trim()}>
-              Đăng nhập
-            </button>
-            {error && (
-              <div className="admin-alert admin-alert--error admin-login-error">
-                <i className="fas fa-circle-exclamation" aria-hidden="true" />
-                <span>{error}</span>
-              </div>
-            )}
-          </form>
+      <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", backgroundColor: "#f8fafc", color: "#64748b" }}>
+        <div style={{ textAlign: "center" }}>
+          <i className="fas fa-spinner fa-spin fa-2x" style={{ marginBottom: "0.75rem", color: "#2563eb" }}></i>
+          <p style={{ fontWeight: 500 }}>Đang xác thực quyền truy cập...</p>
         </div>
-      </main>
+      </div>
     );
   }
 
@@ -414,43 +343,33 @@ export default function AdminPage() {
           </div>
         </div>
         <nav className="admin-sidebar__nav">
-          {MENU_ITEMS.map((item) => (
-            <button
-              key={item.key}
-              type="button"
-              className={menu === item.key ? "is-active" : ""}
-              onClick={() => {
-                setMenu(item.key);
-                setMobileSidebarOpen(false);
-              }}
-            >
-              <span className="admin-sidebar__icon">
-                <i className={item.icon} aria-hidden="true" />
-              </span>
-              {item.label}
-            </button>
-          ))}
-          <a
-            href="/admin/blog"
-            className="admin-sidebar__button"
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "12px",
-              padding: "12px 16px",
-              borderRadius: "12px",
-              color: "inherit",
-              textDecoration: "none",
-              fontWeight: 600,
-              fontSize: "0.95rem",
-              marginTop: "4px"
-            }}
-          >
-            <span className="admin-sidebar__icon">
-              <i className="fas fa-newspaper" aria-hidden="true" />
-            </span>
-            Blog (Tin tức)
-          </a>
+          {getAccessibleMenuItems(currentUser?.role || "ADMIN").map((item) => {
+            let isActive = false;
+            let targetTab = "";
+            if (item.href.includes("?tab=")) {
+              targetTab = item.href.split("?tab=")[1];
+              isActive = menu === targetTab;
+            }
+
+            return (
+              <Link
+                key={item.key}
+                href={item.href}
+                className={isActive ? "is-active" : ""}
+                onClick={() => {
+                  if (targetTab) {
+                    setMenu(targetTab as MenuKey);
+                  }
+                  setMobileSidebarOpen(false);
+                }}
+              >
+                <span className="admin-sidebar__icon">
+                  <i className={item.icon} aria-hidden="true" />
+                </span>
+                <span>{item.label}</span>
+              </Link>
+            );
+          })}
         </nav>
         <div className="admin-sidebar__footer">
           <button className="admin-button admin-button--ghost admin-sidebar__logout" type="button" onClick={handleLogout}>
@@ -461,20 +380,15 @@ export default function AdminPage() {
       </aside>
 
       <div className="admin-main">
-        <header className="admin-topbar">
-          <button
-            type="button"
-            className="admin-topbar__menu"
-            onClick={() => setMobileSidebarOpen((open) => !open)}
-            aria-label="Mở menu"
-          >
-            ☰
-          </button>
-          <h2 className="admin-topbar__title">{MENU_ITEMS.find((item) => item.key === menu)?.label}</h2>
-          <div />
-        </header>
+        <AdminHeader
+          title={TAB_MENU_ITEMS.find((item) => item.key === menu)?.label || "Bảng điều khiển"}
+          subtitle="Quản lý cấu hình dịch vụ, đội xe và hệ thống website"
+          tag="QUẢN TRỊ NỘI DUNG"
+          user={currentUser ? { displayName: currentUser.displayName, username: currentUser.username, role: currentUser.role } : undefined}
+          onToggleMobileSidebar={() => setMobileSidebarOpen((open) => !open)}
+        />
 
-        <main className="admin-content">
+        <main className="admin-content" style={{ paddingTop: 0 }}>
           {menu === "vehicles" && (
             <VehiclesPanel
               username={username}
@@ -2571,5 +2485,20 @@ function ReviewsPanel({
         </div>
       </div>
     </div>
+  );
+}
+
+export default function AdminPage() {
+  return (
+    <React.Suspense fallback={
+      <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", backgroundColor: "#f8fafc", color: "#64748b" }}>
+        <div style={{ textAlign: "center" }}>
+          <i className="fas fa-spinner fa-spin fa-2x" style={{ marginBottom: "0.75rem", color: "#2563eb" }}></i>
+          <p style={{ fontWeight: 500 }}>Đang nạp dữ liệu Admin...</p>
+        </div>
+      </div>
+    }>
+      <AdminPageContent />
+    </React.Suspense>
   );
 }

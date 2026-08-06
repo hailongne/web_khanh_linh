@@ -39,8 +39,9 @@ export async function GET(req: Request, { params }: { params: Promise<{ slug: st
         createdAt: detail?.createdAt || meta.publishedAt,
       },
     });
-  } catch (error: any) {
-    return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+  } catch (error: unknown) {
+    const errorMsg = error instanceof Error ? error.message : "Internal error";
+    return NextResponse.json({ success: false, error: errorMsg }, { status: 500 });
   }
 }
 
@@ -117,8 +118,9 @@ export async function PUT(req: Request, { params }: { params: Promise<{ slug: st
       message: "Cập nhật bài viết thành công.",
       data: { ...updatedIndexItem, ...updatedDetail },
     });
-  } catch (error: any) {
-    return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+  } catch (error: unknown) {
+    const errorMsg = error instanceof Error ? error.message : "Internal error";
+    return NextResponse.json({ success: false, error: errorMsg }, { status: 500 });
   }
 }
 
@@ -150,7 +152,8 @@ export async function DELETE(req: Request, { params }: { params: Promise<{ slug:
       success: true,
       message: "Đã xóa bài viết thành công.",
     });
-  } catch (error: any) {
-    return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+  } catch (error: unknown) {
+    const errorMsg = error instanceof Error ? error.message : "Internal error";
+    return NextResponse.json({ success: false, error: errorMsg }, { status: 500 });
   }
 }

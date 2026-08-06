@@ -22,8 +22,9 @@ export async function GET(req: Request) {
     // Sort by updatedAt descending for admin list
     items.sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime());
     return NextResponse.json({ success: true, data: items });
-  } catch (error: any) {
-    return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+  } catch (error: unknown) {
+    const errorMsg = error instanceof Error ? error.message : "Internal error";
+    return NextResponse.json({ success: false, error: errorMsg }, { status: 500 });
   }
 }
 
@@ -94,7 +95,8 @@ export async function POST(req: Request) {
       message: "Tạo bài viết mới thành công.",
       data: { ...newIndexItem, ...newDetail },
     });
-  } catch (error: any) {
-    return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+  } catch (error: unknown) {
+    const errorMsg = error instanceof Error ? error.message : "Internal error";
+    return NextResponse.json({ success: false, error: errorMsg }, { status: 500 });
   }
 }

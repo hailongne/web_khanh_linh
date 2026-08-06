@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { BlogBlock, BlockType, ImageAlign, ImageWidth } from "../../components/blog/types";
+import { BlogBlock, BlockType, ImageAlign, ImageWidth, HeadingBlockData, GalleryItem } from "../../components/blog/types";
 
 type BlockEditorProps = {
   blocks: BlogBlock[];
@@ -206,9 +206,8 @@ export default function BlockEditor({ blocks = [], onChange }: BlockEditorProps)
                 onDragStart={(e) => handleDragStart(e, index)}
                 onDragOver={(e) => handleDragOver(e, index)}
                 onDrop={(e) => handleDrop(e, index)}
-                className={`notion-block-row ${
-                  draggedIndex === index ? "notion-block-row--dragging" : ""
-                } ${dragOverIndex === index ? "notion-block-row--dragover" : ""}`}
+                className={`notion-block-row ${draggedIndex === index ? "notion-block-row--dragging" : ""
+                  } ${dragOverIndex === index ? "notion-block-row--dragover" : ""}`}
                 style={{
                   width: "100%",
                   background: "#ffffff",
@@ -248,7 +247,7 @@ export default function BlockEditor({ blocks = [], onChange }: BlockEditorProps)
                       </span>
                       <span className="notion-block-type-name">
                         {block.type === "paragraph" && "Đoạn văn (Paragraph)"}
-                        {block.type === "heading" && `Tiêu đề (Heading H${(block as any).level || 2})`}
+                        {block.type === "heading" && `Tiêu đề (Heading H${(block as HeadingBlockData).level || 2})`}
                         {block.type === "image" && "Hình ảnh (Image)"}
                         {block.type === "gallery" && "Bộ sưu tập (Gallery)"}
                         {block.type === "quote" && "Trích dẫn (Quote)"}
@@ -351,7 +350,7 @@ export default function BlockEditor({ blocks = [], onChange }: BlockEditorProps)
                         style={{ flex: 1, padding: "10px 14px", borderRadius: "8px", border: "1px solid #cbd5e1", font: "inherit", fontSize: "1.1rem", fontWeight: 700 }}
                         value={block.text}
                         onChange={(e) => updateBlockData(block.id, { text: e.target.value })}
-                        placeholder={`Nhập tiêu đề H${(block as any).level || 2}...`}
+                        placeholder={`Nhập tiêu đề H${(block as HeadingBlockData).level || 2}...`}
                       />
                     </div>
                   )}
@@ -489,7 +488,7 @@ export default function BlockEditor({ blocks = [], onChange }: BlockEditorProps)
                             style={{ fontSize: "0.82rem", padding: "5px 12px" }}
                             onClick={() =>
                               openMediaPicker((url) => {
-                                const currentImgs = (block.images || []).filter((img: any) => Boolean(img.src || img.url));
+                                const currentImgs = (block.images || []).filter((img: GalleryItem) => Boolean(img.src || img.url));
                                 updateBlockData(block.id, {
                                   images: [...currentImgs, { src: url, alt: "", caption: "" }]
                                 });
@@ -508,7 +507,7 @@ export default function BlockEditor({ blocks = [], onChange }: BlockEditorProps)
                               onChange={async (e) => {
                                 const files = e.target.files;
                                 if (!files || files.length === 0) return;
-                                const currentImgs = (block.images || []).filter((img: any) => Boolean(img.src || img.url));
+                                const currentImgs = (block.images || []).filter((img: GalleryItem) => Boolean(img.src || img.url));
                                 const newUploaded: { src: string; alt: string; caption: string }[] = [];
 
                                 for (let i = 0; i < files.length; i++) {
@@ -524,7 +523,7 @@ export default function BlockEditor({ blocks = [], onChange }: BlockEditorProps)
                                     if (json.url) {
                                       newUploaded.push({ src: json.url, alt: "", caption: "" });
                                     }
-                                  } catch {}
+                                  } catch { }
                                 }
                                 updateBlockData(block.id, { images: [...currentImgs, ...newUploaded] });
                               }}
@@ -534,7 +533,7 @@ export default function BlockEditor({ blocks = [], onChange }: BlockEditorProps)
                       </div>
 
                       {/* Gallery Images List or Empty State */}
-                      {(!block.images || block.images.filter((img: any) => Boolean(img.src || img.url)).length === 0) ? (
+                      {(!block.images || block.images.filter((img: GalleryItem) => Boolean(img.src || img.url)).length === 0) ? (
                         <div
                           style={{
                             padding: "30px 20px",
@@ -562,8 +561,8 @@ export default function BlockEditor({ blocks = [], onChange }: BlockEditorProps)
                           }}
                         >
                           {block.images
-                            .filter((img: any) => Boolean(img.src || img.url))
-                            .map((img: any, imgIdx: number) => {
+                            .filter((img: GalleryItem) => Boolean(img.src || img.url))
+                            .map((img: GalleryItem, imgIdx: number) => {
                               const src = img.src || img.url;
                               return (
                                 <div
@@ -590,7 +589,7 @@ export default function BlockEditor({ blocks = [], onChange }: BlockEditorProps)
                                   <button
                                     type="button"
                                     onClick={() => {
-                                      const validImgs = block.images.filter((i: any) => Boolean(i.src || i.url));
+                                      const validImgs = block.images.filter((i: GalleryItem) => Boolean(i.src || i.url));
                                       validImgs.splice(imgIdx, 1);
                                       updateBlockData(block.id, { images: validImgs });
                                     }}

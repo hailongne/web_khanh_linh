@@ -20,10 +20,11 @@ export async function GET(req: Request) {
   try {
     const accounts = readAccounts();
     // Return sanitized accounts without passwordHash
-    const sanitized = accounts.map(({ passwordHash, ...rest }) => rest);
+    const sanitized = accounts.map(({ passwordHash: _hash, ...rest }) => rest);
     return NextResponse.json({ success: true, data: sanitized });
-  } catch (error: any) {
-    return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+  } catch (error: unknown) {
+    const errorMsg = error instanceof Error ? error.message : "Internal Error";
+    return NextResponse.json({ success: false, error: errorMsg }, { status: 500 });
   }
 }
 
@@ -79,14 +80,15 @@ export async function POST(req: Request) {
     accounts.push(newAccount);
     writeAccounts(accounts);
 
-    const { passwordHash: _, ...result } = newAccount;
+    const { passwordHash: _hash, ...result } = newAccount;
     return NextResponse.json({
       success: true,
       message: "Tạo tài khoản thành công.",
       data: result
     });
-  } catch (error: any) {
-    return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+  } catch (error: unknown) {
+    const errorMsg = error instanceof Error ? error.message : "Internal Error";
+    return NextResponse.json({ success: false, error: errorMsg }, { status: 500 });
   }
 }
 
@@ -139,14 +141,15 @@ export async function PUT(req: Request) {
     accounts[idx] = existingAcc;
     writeAccounts(accounts);
 
-    const { passwordHash: _, ...result } = existingAcc;
+    const { passwordHash: _hash, ...result } = existingAcc;
     return NextResponse.json({
       success: true,
       message: "Cập nhật tài khoản thành công.",
       data: result
     });
-  } catch (error: any) {
-    return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+  } catch (error: unknown) {
+    const errorMsg = error instanceof Error ? error.message : "Internal Error";
+    return NextResponse.json({ success: false, error: errorMsg }, { status: 500 });
   }
 }
 
@@ -177,7 +180,8 @@ export async function DELETE(req: Request) {
 
     writeAccounts(filtered);
     return NextResponse.json({ success: true, message: "Xóa tài khoản thành công." });
-  } catch (error: any) {
-    return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+  } catch (error: unknown) {
+    const errorMsg = error instanceof Error ? error.message : "Internal Error";
+    return NextResponse.json({ success: false, error: errorMsg }, { status: 500 });
   }
 }

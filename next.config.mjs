@@ -38,6 +38,16 @@ const nextConfig = {
   reactStrictMode: true,
   devIndicators: false,
   poweredByHeader: false,
+  async redirects() {
+    return [
+      {
+        source: "/admin/blog/editor",
+        has: [{ type: "query", key: "slug", value: "(?<slug>.*)" }],
+        destination: "/admin/blog/edit/:slug",
+        permanent: true,
+      },
+    ];
+  },
   async headers() {
     return [
       {

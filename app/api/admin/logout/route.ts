@@ -30,9 +30,10 @@ export async function POST(req: Request) {
     });
 
     return response;
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const errorMsg = error instanceof Error ? error.message : "Lỗi khi đăng xuất.";
     return NextResponse.json(
-      { success: false, error: error.message || "Lỗi khi đăng xuất." },
+      { success: false, error: errorMsg },
       { status: 500 }
     );
   }

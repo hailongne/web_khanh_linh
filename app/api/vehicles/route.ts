@@ -5,7 +5,7 @@ import { NextResponse } from "next/server";
 const DB_PATH = path.join(process.cwd(), "db.json");
 
 type DbShape = {
-  vehicles?: Record<string, any[]>;
+  vehicles?: Record<string, Record<string, unknown>[]>;
 };
 
 type ItemWithId = { id: string };
@@ -43,7 +43,7 @@ export async function POST(req: Request) {
   const url = new URL(req.url);
   const lang = getLang(url);
 
-  let payload: Record<string, any>;
+  let payload: Record<string, unknown>;
   try {
     payload = await req.json();
   } catch {
@@ -58,7 +58,7 @@ export async function POST(req: Request) {
   db.vehicles = db.vehicles ?? {};
   db.vehicles[lang] = db.vehicles[lang] ?? [];
 
-  const newItem = { ...payload, id: generateId(db.vehicles[lang]) };
+  const newItem = { ...payload, id: generateId(db.vehicles[lang] as unknown as ItemWithId[]) };
   db.vehicles[lang].push(newItem);
   writeDb(db);
 
@@ -74,7 +74,7 @@ export async function PUT(req: Request) {
     return NextResponse.json({ success: false, error: "Missing id parameter" }, { status: 400 });
   }
 
-  let payload: Record<string, any>;
+  let payload: Record<string, unknown>;
   try {
     payload = await req.json();
   } catch {

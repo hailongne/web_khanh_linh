@@ -18,50 +18,13 @@ type FleetItem = {
   specs: Spec[];
 };
 
-type FontAwesomePrefix = "fas" | "fab";
-
-const fontAwesomeIcons: Record<string, { prefix: FontAwesomePrefix; icon: string }> = {
-  fleet: { prefix: "fas", icon: "fa-bus" },
-  driver: { prefix: "fas", icon: "fa-user-tie" },
-  pricing: { prefix: "fas", icon: "fa-money-bill-wave" },
-  support: { prefix: "fas", icon: "fa-headset" },
-  seat: { prefix: "fas", icon: "fa-chair" },
-  comfort: { prefix: "fas", icon: "fa-snowflake" },
-  storage: { prefix: "fas", icon: "fa-suitcase" },
-  choose: { prefix: "fas", icon: "fa-bus" },
-  quote: { prefix: "fas", icon: "fa-comments" },
-  contract: { prefix: "fas", icon: "fa-file-signature" },
-  departure: { prefix: "fas", icon: "fa-route" },
-  wedding: { prefix: "fas", icon: "fa-glass-cheers" },
-  guide: { prefix: "fas", icon: "fa-map-marked-alt" },
-  insurance: { prefix: "fas", icon: "fa-shield-alt" },
-  chauffeur: { prefix: "fas", icon: "fa-car-side" },
-  location: { prefix: "fas", icon: "fa-map-marker-alt" },
-  phone: { prefix: "fas", icon: "fa-phone-alt" },
-  mail: { prefix: "fas", icon: "fa-envelope" },
-  chat: { prefix: "fas", icon: "fa-comments" },
-  faq: { prefix: "fas", icon: "fa-chevron-down" },
-  close: { prefix: "fas", icon: "fa-times" },
-  tripadvisor: { prefix: "fas", icon: "fa-compass" },
-  youtube: { prefix: "fab", icon: "fa-youtube" },
-  favorite: { prefix: "fas", icon: "fa-heart" },
-  bag: { prefix: "fas", icon: "fa-shopping-bag" },
-  default: { prefix: "fas", icon: "fa-check-circle" }
-};
-
-function FontAwesomeIcon({ type, className = "fa-fw" }: { type: string; className?: string }) {
-  const icon = fontAwesomeIcons[type] ?? fontAwesomeIcons.default;
-  return <i className={["fa-icon", icon.prefix, icon.icon, className].filter(Boolean).join(" ")} aria-hidden="true" />;
-}
-
 export default function FleetSection({ lang = "vi" }: { lang?: string }) {
-  const t = translations[lang] ?? translations.vi;
+  const t = (translations as Record<string, typeof translations.vi>)[lang] ?? translations.vi;
   const [items, setItems] = useState<FleetItem[]>([]);
   const [loading, setLoading] = useState(true);
   const scrollRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    setLoading(true);
     fetch(`/api/vehicles?lang=${encodeURIComponent(lang)}`)
       .then((res) => res.json())
       .then((data) => setItems(data.items ?? []))

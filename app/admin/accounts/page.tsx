@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import AdminShell from "../AdminShell";
 import ToastContainer from "../../components/toast/ToastContainer";
@@ -42,21 +42,7 @@ export default function AdminAccountsPage() {
   const [active, setActive] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  useEffect(() => {
-    fetchAccounts();
-  }, []);
-
-  useEffect(() => {
-    function handleKeyDown(e: KeyboardEvent) {
-      if (e.key === "Escape" && isModalOpen) {
-        setIsModalOpen(false);
-      }
-    }
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [isModalOpen]);
-
-  async function fetchAccounts() {
+  const fetchAccounts = useCallback(async () => {
     try {
       setLoading(true);
       const res = await fetch("/api/admin/accounts");
@@ -72,7 +58,21 @@ export default function AdminAccountsPage() {
     } finally {
       setLoading(false);
     }
-  }
+  }, [router]);
+
+  useEffect(() => {
+    Promise.resolve().then(fetchAccounts);
+  }, [fetchAccounts]);
+
+  useEffect(() => {
+    function handleKeyDown(e: KeyboardEvent) {
+      if (e.key === "Escape" && isModalOpen) {
+        setIsModalOpen(false);
+      }
+    }
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isModalOpen]);
 
   function openCreateModal() {
     setEditingId(null);
@@ -115,7 +115,7 @@ export default function AdminAccountsPage() {
 
     setIsSubmitting(true);
     try {
-      const payload: any = {
+      const payload: Record<string, unknown> = {
         username: username.trim(),
         displayName: displayName.trim(),
         role,
@@ -148,8 +148,9 @@ export default function AdminAccountsPage() {
       showToast("success", json.message || "Lưu tài khoản thành công.");
       setIsModalOpen(false);
       fetchAccounts();
-    } catch (err: any) {
-      showToast("error", err.message || "Đã xảy ra lỗi.");
+    } catch (err: unknown) {
+      const errorMsg = err instanceof Error ? err.message : "Đã xảy ra lỗi.";
+      showToast("error", errorMsg);
     } finally {
       setIsSubmitting(false);
     }
@@ -208,11 +209,6 @@ export default function AdminAccountsPage() {
       title="Quản lý tài khoản"
       subtitle="Quản trị người dùng hệ thống"
       tag="Quản trị hệ thống"
-      actions={
-        <button onClick={openCreateModal} className="account-btn-add">
-          <i className="fas fa-plus" aria-hidden="true" /> Thêm tài khoản mới
-        </button>
-      }
     >
       <ToastContainer />
 
@@ -250,6 +246,10 @@ export default function AdminAccountsPage() {
             <option value="active">🟢 Hoạt động</option>
             <option value="locked">🔴 Đã khóa</option>
           </select>
+
+          <button onClick={openCreateModal} className="account-btn-add" style={{ marginLeft: "auto" }}>
+            <i className="fas fa-plus" aria-hidden="true" /> Thêm tài khoản mới
+          </button>
         </div>
 
         {/* Accounts Table V2 */}
@@ -339,7 +339,7 @@ export default function AdminAccountsPage() {
                       className="account-action-btn"
                       title="Sửa thông tin tài khoản"
                     >
-                      ✏️
+                      <i className="fas fa-pen-to-square" aria-hidden="true" />
                     </button>
                     <button
                       type="button"
@@ -347,7 +347,7 @@ export default function AdminAccountsPage() {
                       className="account-action-btn account-action-btn--lock"
                       title={acc.active ? "Khóa tài khoản" : "Mở khóa tài khoản"}
                     >
-                      {acc.active ? "🔒" : "🔓"}
+                      <i className={`fas ${acc.active ? "fa-lock" : "fa-unlock"}`} aria-hidden="true" />
                     </button>
                     <button
                       type="button"
@@ -355,7 +355,7 @@ export default function AdminAccountsPage() {
                       className="account-action-btn account-action-btn--delete"
                       title="Xóa tài khoản"
                     >
-                      🗑️
+                      <i className="fas fa-trash-alt" aria-hidden="true" />
                     </button>
                   </div>
                 </div>

@@ -12,11 +12,45 @@
     },
     "thumbnail": "/uploads/blog/2_1785313527390.jpg",
     "category": "Kinh nghiệm du lịch",
+    "subCategory": "",
+    "tags": [],
     "status": "published",
+    "scheduledAt": "",
     "featured": false,
-    "authorId": "acc_1785298322411_k16yr",
+    "pinned": false,
+    "recommended": false,
+    "isTrending": false,
+    "viewCount": 3,
+    "readingTime": "3 phút đọc",
+    "author": {
+      "name": "Khánh Linh Trans Editorial",
+      "role": "Ban Biên Tập"
+    },
     "publishedAt": "2026-07-29T08:43:54.933Z",
-    "updatedAt": "2026-07-29T08:43:54.933Z"
+    "createdAt": "2026-07-29T08:43:54.933Z",
+    "updatedAt": "2026-08-06T07:45:15.739Z",
+    "lastUpdatedBy": "Admin",
+    "seo": {
+      "metaTitle": {
+        "vi": "Khánh Linh Trans – 7 Mẹo Lái Xe Tour Đường Dài An Toàn, Đỡ Mệt Và Chuyên Nghiệp",
+        "en": ""
+      },
+      "metaDescription": {
+        "vi": "Di chuyển hàng trăm kilomet mỗi ngày không chỉ cần kỹ năng lái xe mà còn đòi hỏi sự tập trung, kinh nghiệm và khả năng xử lý tình huống. Dưới đây là những kinh nghiệm thực tế giúp mỗi chuyến đi trở nên an toàn, êm ái và thoải mái hơn cho cả tài xế lẫn hành khách.",
+        "en": ""
+      },
+      "focusKeyword": "",
+      "canonicalUrl": "",
+      "robots": "index, follow",
+      "ogImage": "/uploads/blog/2_1785313527390.jpg",
+      "twitterCard": "summary_large_image",
+      "featuredImageAlt": "",
+      "imageCaption": "",
+      "faqSchema": false,
+      "breadcrumbSchema": true,
+      "jsonLdSchema": true
+    },
+    "authorId": "acc_001"
   },
   {
     "id": "news_1784883736884",
@@ -29,12 +63,1188 @@
       "vi": "Hà Nội – Trong bối cảnh nhu cầu thuê xe du lịch, xe đưa đón doanh nghiệp và vận tải hành khách ngày càng tăng, Khánh Linh Trans đang từng bước khẳng định vị thế bằng việc liên tục đầu tư đội xe đời mới, nâng cao chất lượng dịch vụ và mở rộng quy mô hoạt động tại khu vực miền Bắc.",
       "en": ""
     },
-    "thumbnail": "/images/news/news-1784883298242-xe-to.jpg",
+    "thumbnail": "/uploads/blog/1_1785313522909.jpg",
     "category": "Kinh nghiệm du lịch",
+    "subCategory": "",
+    "tags": [],
     "status": "published",
+    "scheduledAt": "",
     "featured": true,
+    "pinned": false,
+    "recommended": false,
+    "isTrending": false,
+    "viewCount": 3,
+    "readingTime": "3 phút đọc",
+    "author": {
+      "name": "Khánh Linh Trans Editorial",
+      "role": "Ban Biên Tập"
+    },
     "publishedAt": "2026-07-24T09:02:16.884Z",
-    "updatedAt": "2026-07-29T03:52:25.786Z",
+    "createdAt": "2026-07-24T09:02:16.884Z",
+    "updatedAt": "2026-08-06T07:46:01.722Z",
+    "lastUpdatedBy": "Admin",
+    "seo": {
+      "metaTitle": {
+        "vi": "Khánh Linh Trans – Đầu tư đội xe mới, nâng tầm chất lượng vận tải hành khách tại miền Bắc",
+        "en": ""
+      },
+      "metaDescription": {
+        "vi": "Hà Nội – Trong bối cảnh nhu cầu thuê xe du lịch, xe đưa đón doanh nghiệp và vận tải hành khách ngày càng tăng, Khánh Linh Trans đang từng bước khẳng định vị thế bằng việc liên tục đầu tư đội xe đời mới, nâng cao chất lượng dịch vụ và mở rộng quy mô hoạt động tại khu vực miền Bắc.",
+        "en": ""
+      },
+      "focusKeyword": "",
+      "canonicalUrl": "",
+      "robots": "index, follow",
+      "ogImage": "/images/news/news-1784883298242-xe-to.jpg",
+      "twitterCard": "summary_large_image",
+      "featuredImageAlt": "",
+      "imageCaption": "",
+      "faqSchema": false,
+      "breadcrumbSchema": true,
+      "jsonLdSchema": true
+    },
+    "authorId": "acc_001"
+  },
+  {
+    "id": "news_1786004051606_825",
+    "slug": "kinh-nghiem-thue-xe-du-lich-ha-noi-chi-tiet-cho-nguoi-moi-di-lan-dau",
+    "title": {
+      "vi": "Kinh nghiệm thuê xe du lịch Hà Nội chi tiết cho người mới đi lần đầu",
+      "en": ""
+    },
+    "excerpt": {
+      "vi": "Thuê xe du lịch tại Hà Nội cho gia đình hoặc doanh nghiệp đòi hỏi sự chuẩn bị kỹ lưỡng về hợp đồng, dòng xe và chi phí. Dưới đây là những lưu ý quan trọng giúp bạn an tâm chuyến đi.",
+      "en": ""
+    },
+    "thumbnail": "/uploads/blog/1_1785313522909.jpg",
+    "category": "Thuê xe",
+    "subCategory": "",
+    "tags": [
+      "Kinh nghiệm",
+      "Thuê xe Hà Nội",
+      "Du lịch"
+    ],
+    "status": "published",
+    "scheduledAt": "",
+    "featured": true,
+    "pinned": false,
+    "recommended": false,
+    "isTrending": false,
+    "viewCount": 842,
+    "readingTime": "5 phút đọc",
+    "author": {
+      "name": "Khánh Linh Trans Editorial",
+      "role": "Ban Biên Tập"
+    },
+    "publishedAt": "2026-08-05T09:00:00.000Z",
+    "createdAt": "2026-08-05T09:00:00.000Z",
+    "updatedAt": "2026-08-05T09:00:00.000Z",
+    "lastUpdatedBy": "Admin",
+    "seo": {
+      "metaTitle": {
+        "vi": "Kinh nghiệm thuê xe du lịch Hà Nội chi tiết từ A đến Z",
+        "en": ""
+      },
+      "metaDescription": {
+        "vi": "Chia sẻ kinh nghiệm thuê xe du lịch Hà Nội uy tín, hợp đồng rõ ràng, chọn dòng xe phù hợp và các lưu ý giá cả tránh phát sinh chi phí.",
+        "en": ""
+      },
+      "focusKeyword": "thuê xe du lịch Hà Nội",
+      "canonicalUrl": "",
+      "robots": "index, follow",
+      "ogImage": "/uploads/blog/1_1785313522909.jpg",
+      "twitterCard": "summary_large_image",
+      "featuredImageAlt": "Kinh nghiệm thuê xe du lịch Hà Nội chi tiết cho người mới đi lần đầu",
+      "imageCaption": "",
+      "faqSchema": false,
+      "breadcrumbSchema": true,
+      "jsonLdSchema": true
+    },
+    "authorId": "acc_001"
+  },
+  {
+    "id": "news_1786004051607_613",
+    "slug": "nen-thue-xe-16-cho-hay-29-cho-cho-doan-khach-dong-nguoi",
+    "title": {
+      "vi": "Nên thuê xe 16 chỗ hay 29 chỗ cho đoàn khách đông người?",
+      "en": ""
+    },
+    "excerpt": {
+      "vi": "Lựa chọn dòng xe phù hợp với số lượng thành viên trong đoàn vừa giúp đảm bảo không gian di chuyển thoải mái, vừa tối ưu chi phí cho hành trình.",
+      "en": ""
+    },
+    "thumbnail": "/uploads/blog/2_1785313527390.jpg",
+    "category": "Cẩm nang",
+    "subCategory": "",
+    "tags": [
+      "Tư vấn chọn xe",
+      "Thuê xe 16 chỗ",
+      "Thuê xe 29 chỗ"
+    ],
+    "status": "published",
+    "scheduledAt": "",
+    "featured": true,
+    "pinned": false,
+    "recommended": false,
+    "isTrending": false,
+    "viewCount": 615,
+    "readingTime": "3 phút đọc",
+    "author": {
+      "name": "Khánh Linh Trans Editorial",
+      "role": "Ban Biên Tập"
+    },
+    "publishedAt": "2026-08-04T14:30:00.000Z",
+    "createdAt": "2026-08-04T14:30:00.000Z",
+    "updatedAt": "2026-08-06T09:11:36.159Z",
+    "lastUpdatedBy": "Admin",
+    "seo": {
+      "metaTitle": {
+        "vi": "So sánh chọn thuê xe 16 chỗ hay 29 chỗ tối ưu chi phí",
+        "en": ""
+      },
+      "metaDescription": {
+        "vi": "Phân tích ưu nhược điểm của xe 16 chỗ Ford Transit, Hyundai Solati và xe 29 chỗ Hyundai County để quý khách dễ dàng lựa chọn.",
+        "en": ""
+      },
+      "focusKeyword": "thuê xe 16 chỗ hay 29 chỗ",
+      "canonicalUrl": "",
+      "robots": "index, follow",
+      "ogImage": "/uploads/blog/2_1785313527390.jpg",
+      "twitterCard": "summary_large_image",
+      "featuredImageAlt": "Nên thuê xe 16 chỗ hay 29 chỗ cho đoàn khách đông người?",
+      "imageCaption": "",
+      "faqSchema": false,
+      "breadcrumbSchema": true,
+      "jsonLdSchema": true
+    },
+    "authorId": "acc_001"
+  },
+  {
+    "id": "news_1786004051609_918",
+    "slug": "bi-quyet-chong-say-xe-hieu-qua-cho-cac-chuyen-du-lich-duong-dai",
+    "title": {
+      "vi": "Bí quyết chống say xe hiệu quả cho các chuyến du lịch đường dài",
+      "en": ""
+    },
+    "excerpt": {
+      "vi": "Cảm giác say xe có thể làm giảm trải nghiệm chuyến du lịch. Áp dụng ngay những mẹo đơn giản dưới đây để giữ sức khỏe tốt trong suốt chặng đường.",
+      "en": ""
+    },
+    "thumbnail": "/uploads/blog/1_1786003882256.jpg",
+    "category": "Cẩm nang",
+    "subCategory": "",
+    "tags": [
+      "Sức khỏe du lịch",
+      "Chống say xe",
+      "Mẹo du lịch"
+    ],
+    "status": "published",
+    "scheduledAt": "",
+    "featured": false,
+    "pinned": false,
+    "recommended": false,
+    "isTrending": false,
+    "viewCount": 428,
+    "readingTime": "3 phút đọc",
+    "author": {
+      "name": "Khánh Linh Trans Editorial",
+      "role": "Ban Biên Tập"
+    },
+    "publishedAt": "2026-08-03T10:15:00.000Z",
+    "createdAt": "2026-08-03T10:15:00.000Z",
+    "updatedAt": "2026-08-03T10:15:00.000Z",
+    "lastUpdatedBy": "Admin",
+    "seo": {
+      "metaTitle": {
+        "vi": "10 Mẹo chống say xe du lịch đường dài hiệu quả nhất",
+        "en": ""
+      },
+      "metaDescription": {
+        "vi": "Tổng hợp các phương pháp tự nhiên và kinh nghiệm thực tế giúp bạn không lo say xe khi di chuyển bằng ô tô hay xe khách du lịch.",
+        "en": ""
+      },
+      "focusKeyword": "mẹo chống say xe du lịch",
+      "canonicalUrl": "",
+      "robots": "index, follow",
+      "ogImage": "/uploads/blog/1_1786003882256.jpg",
+      "twitterCard": "summary_large_image",
+      "featuredImageAlt": "Bí quyết chống say xe hiệu quả cho các chuyến du lịch đường dài",
+      "imageCaption": "",
+      "faqSchema": false,
+      "breadcrumbSchema": true,
+      "jsonLdSchema": true
+    },
+    "authorId": "acc_001"
+  },
+  {
+    "id": "news_1786004051610_308",
+    "slug": "10-dia-diem-gan-ha-noi-cuc-dep-thich-hop-di-du-lich-cuoi-tuan",
+    "title": {
+      "vi": "10 địa điểm gần Hà Nội cực đẹp thích hợp đi du lịch cuối tuần",
+      "en": ""
+    },
+    "excerpt": {
+      "vi": "Những ngày cuối tuần là khoảng thời gian tuyệt vời để tạm gác lại công việc bận rộn và tận hưởng không khí trong lành tại các điểm du lịch quanh Hà Nội.",
+      "en": ""
+    },
+    "thumbnail": "/uploads/blog/2_1786003882217.jpg",
+    "category": "Điểm đến",
+    "subCategory": "",
+    "tags": [
+      "Địa điểm Hà Nội",
+      "Du lịch cuối tuần",
+      "Phượt miền Bắc"
+    ],
+    "status": "published",
+    "scheduledAt": "",
+    "featured": true,
+    "pinned": false,
+    "recommended": false,
+    "isTrending": false,
+    "viewCount": 1250,
+    "readingTime": "7 phút đọc",
+    "author": {
+      "name": "Khánh Linh Trans Editorial",
+      "role": "Ban Biên Tập"
+    },
+    "publishedAt": "2026-08-02T16:00:00.000Z",
+    "createdAt": "2026-08-02T16:00:00.000Z",
+    "updatedAt": "2026-08-02T16:00:00.000Z",
+    "lastUpdatedBy": "Admin",
+    "seo": {
+      "metaTitle": {
+        "vi": "Top 10 địa điểm du lịch gần Hà Nội đẹp mê ly đi cuối tuần",
+        "en": ""
+      },
+      "metaDescription": {
+        "vi": "Gợi ý 10 tọa độ du lịch lý tưởng quanh Hà Nội như Tam Đảo, Ba Vì, Ninh Bình, Hồ Đại Lải... phù hợp cho chuyến đi 1-2 ngày nghỉ ngơi.",
+        "en": ""
+      },
+      "focusKeyword": "địa điểm du lịch gần Hà Nội",
+      "canonicalUrl": "",
+      "robots": "index, follow",
+      "ogImage": "/uploads/blog/2_1786003882217.jpg",
+      "twitterCard": "summary_large_image",
+      "featuredImageAlt": "10 địa điểm gần Hà Nội cực đẹp thích hợp đi du lịch cuối tuần",
+      "imageCaption": "",
+      "faqSchema": false,
+      "breadcrumbSchema": true,
+      "jsonLdSchema": true
+    },
+    "authorId": "acc_001"
+  },
+  {
+    "id": "news_1786004051611_154",
+    "slug": "cam-nang-du-lich-tam-dao-tu-tuc-tron-goi-2-ngay-1-dem",
+    "title": {
+      "vi": "Cẩm nang du lịch Tam Đảo tự túc trọn gói 2 ngày 1 đêm",
+      "en": ""
+    },
+    "excerpt": {
+      "vi": "Tam Đảo được mệnh danh là Đà Lạt thu nhỏ của miền Bắc với thời tiết 4 mùa trong 1 ngày. Khám phá ngay lịch trình ăn chơi tự túc thú vị nhất.",
+      "en": ""
+    },
+    "thumbnail": "/uploads/blog/3_1786003882179.jpg",
+    "category": "Kinh nghiệm du lịch",
+    "subCategory": "",
+    "tags": [
+      "Tam Đảo",
+      "Cẩm nang du lịch",
+      "Thuê xe Tam Đảo"
+    ],
+    "status": "published",
+    "scheduledAt": "",
+    "featured": false,
+    "pinned": false,
+    "recommended": false,
+    "isTrending": false,
+    "viewCount": 934,
+    "readingTime": "9 phút đọc",
+    "author": {
+      "name": "Khánh Linh Trans Editorial",
+      "role": "Ban Biên Tập"
+    },
+    "publishedAt": "2026-08-01T08:20:00.000Z",
+    "createdAt": "2026-08-01T08:20:00.000Z",
+    "updatedAt": "2026-08-01T08:20:00.000Z",
+    "lastUpdatedBy": "Admin",
+    "seo": {
+      "metaTitle": {
+        "vi": "Cẩm nang du lịch Tam Đảo tự túc 2 ngày 1 đêm chi tiết",
+        "en": ""
+      },
+      "metaDescription": {
+        "vi": "Kinh nghiệm đi Tam Đảo bằng xe ô tô du lịch: ở đâu, ăn gì, chơi gì và những lưu ý lái xe leo đèo an toàn.",
+        "en": ""
+      },
+      "focusKeyword": "du lịch Tam Đảo tự túc",
+      "canonicalUrl": "",
+      "robots": "index, follow",
+      "ogImage": "/uploads/blog/3_1786003882179.jpg",
+      "twitterCard": "summary_large_image",
+      "featuredImageAlt": "Cẩm nang du lịch Tam Đảo tự túc trọn gói 2 ngày 1 đêm",
+      "imageCaption": "",
+      "faqSchema": false,
+      "breadcrumbSchema": true,
+      "jsonLdSchema": true
+    },
+    "authorId": "acc_001"
+  },
+  {
+    "id": "news_1786004051612_878",
+    "slug": "lich-trinh-du-lich-ninh-binh-1-ngay-tron-ven-kham-pha-danh-thang",
+    "title": {
+      "vi": "Lịch trình du lịch Ninh Bình 1 ngày trọn vẹn khám phá danh thắng",
+      "en": ""
+    },
+    "excerpt": {
+      "vi": "Ninh Bình chỉ cách Hà Nội khoảng 90km, là lựa chọn hàng đầu cho các chuyến tham quan 1 ngày với quần thể di sản thiên nhiên thế giới độc đáo.",
+      "en": ""
+    },
+    "thumbnail": "/uploads/blog/g_u_kh_nh_linh_1785294925737.jpg",
+    "category": "Điểm đến",
+    "subCategory": "",
+    "tags": [
+      "Du lịch Ninh Bình",
+      "Tràng An",
+      "Lịch trình 1 ngày"
+    ],
+    "status": "published",
+    "scheduledAt": "",
+    "featured": false,
+    "pinned": false,
+    "recommended": false,
+    "isTrending": false,
+    "viewCount": 1105,
+    "readingTime": "7 phút đọc",
+    "author": {
+      "name": "Khánh Linh Trans Editorial",
+      "role": "Ban Biên Tập"
+    },
+    "publishedAt": "2026-07-31T11:45:00.000Z",
+    "createdAt": "2026-07-31T11:45:00.000Z",
+    "updatedAt": "2026-07-31T11:45:00.000Z",
+    "lastUpdatedBy": "Admin",
+    "seo": {
+      "metaTitle": {
+        "vi": "Lịch trình du lịch Ninh Bình 1 ngày tự túc ngắm cảnh cực chill",
+        "en": ""
+      },
+      "metaDescription": {
+        "vi": "Hướng dẫn du lịch Ninh Bình 1 ngày ghé thăm Tràng An, Hang Múa, Chùa Bái Đính và thưởng thức đặc sản thịt dê cơm cháy.",
+        "en": ""
+      },
+      "focusKeyword": "du lịch Ninh Bình 1 ngày",
+      "canonicalUrl": "",
+      "robots": "index, follow",
+      "ogImage": "/uploads/blog/g_u_kh_nh_linh_1785294925737.jpg",
+      "twitterCard": "summary_large_image",
+      "featuredImageAlt": "Lịch trình du lịch Ninh Bình 1 ngày trọn vẹn khám phá danh thắng",
+      "imageCaption": "",
+      "faqSchema": false,
+      "breadcrumbSchema": true,
+      "jsonLdSchema": true
+    },
+    "authorId": "acc_001"
+  },
+  {
+    "id": "news_1786004051614_116",
+    "slug": "quy-trinh-kiem-tra-va-bao-duong-o-to-chuyen-nghiep-truoc-chuyen-di-xa",
+    "title": {
+      "vi": "Quy trình kiểm tra và bảo dưỡng ô tô chuyên nghiệp trước chuyến đi xa",
+      "en": ""
+    },
+    "excerpt": {
+      "vi": "Để có chuyến đi an toàn tuyệt đối, việc kiểm tra kỹ thuật xe ô tô định kỳ và trước mỗi chặng đường xa là nguyên tắc bắt buộc của các bác tài.",
+      "en": ""
+    },
+    "thumbnail": "/uploads/blog/1_1785313522909.jpg",
+    "category": "Xe cộ",
+    "subCategory": "",
+    "tags": [
+      "Bảo dưỡng ô tô",
+      "Kỹ thuật xe",
+      "An toàn giao thông"
+    ],
+    "status": "published",
+    "scheduledAt": "",
+    "featured": false,
+    "pinned": false,
+    "recommended": false,
+    "isTrending": false,
+    "viewCount": 780,
+    "readingTime": "5 phút đọc",
+    "author": {
+      "name": "Khánh Linh Trans Editorial",
+      "role": "Ban Biên Tập"
+    },
+    "publishedAt": "2026-07-30T15:10:00.000Z",
+    "createdAt": "2026-07-30T15:10:00.000Z",
+    "updatedAt": "2026-07-30T15:10:00.000Z",
+    "lastUpdatedBy": "Admin",
+    "seo": {
+      "metaTitle": {
+        "vi": "Hướng dẫn bảo dưỡng xe ô tô an toàn trước chuyến đi xa",
+        "en": ""
+      },
+      "metaDescription": {
+        "vi": "Các bước kiểm tra phanh, lốp xe, dầu động cơ và hệ thống chiếu sáng giúp ô tô hoạt động bền bỉ, an toàn trên mọi nẻo đường.",
+        "en": ""
+      },
+      "focusKeyword": "bảo dưỡng xe trước chuyến đi",
+      "canonicalUrl": "",
+      "robots": "index, follow",
+      "ogImage": "/uploads/blog/1_1785313522909.jpg",
+      "twitterCard": "summary_large_image",
+      "featuredImageAlt": "Quy trình kiểm tra và bảo dưỡng ô tô chuyên nghiệp trước chuyến đi xa",
+      "imageCaption": "",
+      "faqSchema": false,
+      "breadcrumbSchema": true,
+      "jsonLdSchema": true
+    },
+    "authorId": "acc_001"
+  },
+  {
+    "id": "news_1786004051615_73",
+    "slug": "checklist-15-vat-dung-khong-the-thieu-cho-chuyen-du-lich-dai-ngay",
+    "title": {
+      "vi": "Checklist 15 vật dụng không thể thiếu cho chuyến du lịch dài ngày",
+      "en": ""
+    },
+    "excerpt": {
+      "vi": "Quên đồ dùng quan trọng có thể ảnh hưởng lớn tới tâm lý chuyến đi. Tham khảo ngay checklist khoa học dưới đây để xếp hành lý nhanh chóng.",
+      "en": ""
+    },
+    "thumbnail": "/uploads/blog/2_1785313527390.jpg",
+    "category": "Cẩm nang",
+    "subCategory": "",
+    "tags": [
+      "Checklist đồ du lịch",
+      "Chuẩn bị hành lý",
+      "Mẹo du lịch"
+    ],
+    "status": "published",
+    "scheduledAt": "",
+    "featured": false,
+    "pinned": false,
+    "recommended": false,
+    "isTrending": false,
+    "viewCount": 520,
+    "readingTime": "5 phút đọc",
+    "author": {
+      "name": "Khánh Linh Trans Editorial",
+      "role": "Ban Biên Tập"
+    },
+    "publishedAt": "2026-07-28T09:30:00.000Z",
+    "createdAt": "2026-07-28T09:30:00.000Z",
+    "updatedAt": "2026-07-28T09:30:00.000Z",
+    "lastUpdatedBy": "Admin",
+    "seo": {
+      "metaTitle": {
+        "vi": "Checklist 15 món đồ cần chuẩn bị trước chuyến đi xa",
+        "en": ""
+      },
+      "metaDescription": {
+        "vi": "Danh sách đầy đủ các vật dụng thiết yếu như giấy tờ, đồ y tế, phụ kiện điện tử giúp chuyến đi của bạn luôn chu đáo và trọn vẹn.",
+        "en": ""
+      },
+      "focusKeyword": "checklist vật dụng du lịch",
+      "canonicalUrl": "",
+      "robots": "index, follow",
+      "ogImage": "/uploads/blog/2_1785313527390.jpg",
+      "twitterCard": "summary_large_image",
+      "featuredImageAlt": "Checklist 15 vật dụng không thể thiếu cho chuyến du lịch dài ngày",
+      "imageCaption": "",
+      "faqSchema": false,
+      "breadcrumbSchema": true,
+      "jsonLdSchema": true
+    },
+    "authorId": "acc_001"
+  },
+  {
+    "id": "news_1786004051616_22",
+    "slug": "nhung-loi-pho-bien-can-tranh-khi-lam-hop-dong-thue-xe-o-to",
+    "title": {
+      "vi": "Những lỗi phổ biến cần tránh khi làm hợp đồng thuê xe ô tô",
+      "en": ""
+    },
+    "excerpt": {
+      "vi": "Ký hợp đồng thuê xe là bước quan trọng bảo vệ quyền lợi hai bên. Đọc kỹ các lưu ý pháp lý và kỹ thuật này để không vướng tranh chấp.",
+      "en": ""
+    },
+    "thumbnail": "/uploads/blog/1_1786003882256.jpg",
+    "category": "Thuê xe",
+    "subCategory": "",
+    "tags": [
+      "Hợp đồng thuê xe",
+      "Lưu ý hợp đồng",
+      "Kinh nghiệm thuê xe"
+    ],
+    "status": "published",
+    "scheduledAt": "",
+    "featured": false,
+    "pinned": false,
+    "recommended": false,
+    "isTrending": false,
+    "viewCount": 690,
+    "readingTime": "5 phút đọc",
+    "author": {
+      "name": "Khánh Linh Trans Editorial",
+      "role": "Ban Biên Tập"
+    },
+    "publishedAt": "2026-07-27T13:20:00.000Z",
+    "createdAt": "2026-07-27T13:20:00.000Z",
+    "updatedAt": "2026-07-27T13:20:00.000Z",
+    "lastUpdatedBy": "Admin",
+    "seo": {
+      "metaTitle": {
+        "vi": "5 Lỗi cần tránh khi làm hợp đồng thuê xe ô tô du lịch",
+        "en": ""
+      },
+      "metaDescription": {
+        "vi": "Giải đáp các điều khoản phát sinh chi phí, bảo hiểm, thời gian trả xe và trách nhiệm nhà xe giúp bạn ký hợp đồng thuê xe an toàn.",
+        "en": ""
+      },
+      "focusKeyword": "lỗi hợp đồng thuê xe",
+      "canonicalUrl": "",
+      "robots": "index, follow",
+      "ogImage": "/uploads/blog/1_1786003882256.jpg",
+      "twitterCard": "summary_large_image",
+      "featuredImageAlt": "Những lỗi phổ biến cần tránh khi làm hợp đồng thuê xe ô tô",
+      "imageCaption": "",
+      "faqSchema": false,
+      "breadcrumbSchema": true,
+      "jsonLdSchema": true
+    },
+    "authorId": "acc_001"
+  },
+  {
+    "id": "news_1786004051617_761",
+    "slug": "checklist-an-toan-danh-rieng-cho-tai-xe-truoc-khi-khoi-hanh-tour",
+    "title": {
+      "vi": "Checklist an toàn dành riêng cho tài xế trước khi khởi hành tour",
+      "en": ""
+    },
+    "excerpt": {
+      "vi": "Sự an toàn của toàn bộ hành khách phụ thuộc vào tinh thần trách nhiệm và quy trình chuẩn bị chu đáo của bác tài trước giờ xuất phát.",
+      "en": ""
+    },
+    "thumbnail": "/uploads/blog/2_1786003882217.jpg",
+    "category": "Xe cộ",
+    "subCategory": "",
+    "tags": [
+      "An toàn lái xe",
+      "Kinh nghiệm tài xế",
+      "Vận tải hành khách"
+    ],
+    "status": "published",
+    "scheduledAt": "",
+    "featured": false,
+    "pinned": false,
+    "recommended": false,
+    "isTrending": false,
+    "viewCount": 885,
+    "readingTime": "5 phút đọc",
+    "author": {
+      "name": "Khánh Linh Trans Editorial",
+      "role": "Ban Biên Tập"
+    },
+    "publishedAt": "2026-07-26T07:45:00.000Z",
+    "createdAt": "2026-07-26T07:45:00.000Z",
+    "updatedAt": "2026-07-26T07:45:00.000Z",
+    "lastUpdatedBy": "Admin",
+    "seo": {
+      "metaTitle": {
+        "vi": "Checklist an toàn 10 bước dành cho tài xế xe tour đường dài",
+        "en": ""
+      },
+      "metaDescription": {
+        "vi": "Quy trình kiểm tra xe, hành lý và tâm lý lái xe chuyên nghiệp giúp chuyến vận tải khách an toàn 100%.",
+        "en": ""
+      },
+      "focusKeyword": "checklist an toàn lái xe tour",
+      "canonicalUrl": "",
+      "robots": "index, follow",
+      "ogImage": "/uploads/blog/2_1786003882217.jpg",
+      "twitterCard": "summary_large_image",
+      "featuredImageAlt": "Checklist an toàn dành riêng cho tài xế trước khi khởi hành tour",
+      "imageCaption": "",
+      "faqSchema": false,
+      "breadcrumbSchema": true,
+      "jsonLdSchema": true
+    },
+    "authorId": "acc_001"
+  },
+  {
+    "id": "news_1786006155071_358",
+    "slug": "kinh-nghiem-thue-xe-16-cho-tu-ha-noi-di-cac-tinh-mien-bac-tiet-kiem-nhat",
+    "title": {
+      "vi": "Kinh nghiệm thuê xe 16 chỗ từ Hà Nội đi các tỉnh miền Bắc tiết kiệm nhất",
+      "en": ""
+    },
+    "excerpt": {
+      "vi": "Thuê xe 16 chỗ là giải pháp di chuyển phổ biến hàng đầu cho các đoàn gia đình, công ty. Khám phá ngay bảng giá và kinh nghiệm chốt xe chuẩn nhất.",
+      "en": ""
+    },
+    "thumbnail": "/uploads/blog/1_1785313522909.jpg",
+    "category": "Thuê xe",
+    "subCategory": "",
+    "tags": [
+      "Thuê xe 16 chỗ",
+      "Ford Transit",
+      "Hyundai Solati",
+      "Du lịch miền Bắc"
+    ],
+    "status": "published",
+    "scheduledAt": "",
+    "featured": true,
+    "pinned": true,
+    "recommended": false,
+    "isTrending": true,
+    "viewCount": 2480,
+    "readingTime": "8 phút đọc",
+    "author": {
+      "name": "Khánh Linh Trans Editorial",
+      "role": "Ban Biên Tập"
+    },
+    "publishedAt": "2026-08-06T08:00:00.000Z",
+    "createdAt": "2026-08-06T08:00:00.000Z",
+    "updatedAt": "2026-08-06T08:00:00.000Z",
+    "lastUpdatedBy": "Admin",
+    "seo": {
+      "metaTitle": {
+        "vi": "Kinh nghiệm thuê xe 16 chỗ Hà Nội đi tỉnh giá rẻ uy tín",
+        "en": ""
+      },
+      "metaDescription": {
+        "vi": "Bí quyết đặt xe 16 chỗ Ford Transit, Hyundai Solati chất lượng cao, tài xế kinh nghiệm đèo dốc và cách chốt hợp đồng thuê xe trọn gói.",
+        "en": ""
+      },
+      "focusKeyword": "thuê xe 16 chỗ Hà Nội",
+      "canonicalUrl": "",
+      "robots": "index, follow",
+      "ogImage": "/uploads/blog/1_1785313522909.jpg",
+      "twitterCard": "summary_large_image",
+      "featuredImageAlt": "Kinh nghiệm thuê xe 16 chỗ từ Hà Nội đi các tỉnh miền Bắc tiết kiệm nhất",
+      "imageCaption": "",
+      "faqSchema": false,
+      "breadcrumbSchema": true,
+      "jsonLdSchema": true
+    },
+    "authorId": "acc_001"
+  },
+  {
+    "id": "news_1786006155073_149",
+    "slug": "top-7-cung-duong-phuot-va-du-lich-dep-nhat-mien-bac-mua-thu-dong",
+    "title": {
+      "vi": "Top 7 cung đường phượt và du lịch đẹp nhất miền Bắc mùa thu đông",
+      "en": ""
+    },
+    "excerpt": {
+      "vi": "Miền Bắc sở hữu những cung đường đèo hùng vĩ cùng thảm thực vật thay đổi theo mùa. Cùng Khánh Linh Trans điểm qua 7 hành trình ấn tượng nhất.",
+      "en": ""
+    },
+    "thumbnail": "/uploads/blog/2_1785313527390.jpg",
+    "category": "Điểm đến",
+    "subCategory": "",
+    "tags": [
+      "Du lịch miền Bắc",
+      "Cung đường đẹp",
+      "Mộc Châu",
+      "Hà Giang"
+    ],
+    "status": "published",
+    "scheduledAt": "",
+    "featured": true,
+    "pinned": true,
+    "recommended": false,
+    "isTrending": true,
+    "viewCount": 1950,
+    "readingTime": "10 phút đọc",
+    "author": {
+      "name": "Khánh Linh Trans Editorial",
+      "role": "Ban Biên Tập"
+    },
+    "publishedAt": "2026-08-05T14:20:00.000Z",
+    "createdAt": "2026-08-05T14:20:00.000Z",
+    "updatedAt": "2026-08-05T14:20:00.000Z",
+    "lastUpdatedBy": "Admin",
+    "seo": {
+      "metaTitle": {
+        "vi": "Top 7 cung đường du lịch miền Bắc đẹp ngỡ ngàng",
+        "en": ""
+      },
+      "metaDescription": {
+        "vi": "Tổng hợp các tuyến đường du lịch tuyệt đẹp từ Hà Nội đi Hà Giang, Mộc Châu, Sa Pa, Y Tý với cảnh sắc núi rừng hùng vĩ.",
+        "en": ""
+      },
+      "focusKeyword": "cung đường đẹp miền Bắc",
+      "canonicalUrl": "",
+      "robots": "index, follow",
+      "ogImage": "/uploads/blog/2_1785313527390.jpg",
+      "twitterCard": "summary_large_image",
+      "featuredImageAlt": "Top 7 cung đường phượt và du lịch đẹp nhất miền Bắc mùa thu đông",
+      "imageCaption": "",
+      "faqSchema": false,
+      "breadcrumbSchema": true,
+      "jsonLdSchema": true
+    },
+    "authorId": "acc_001"
+  },
+  {
+    "id": "news_1786006155074_790",
+    "slug": "kinh-nghiem-thue-xe-xe-cuoi-hoi-cao-cap-5-luu-y-vang-cho-ngay-trong-dai",
+    "title": {
+      "vi": "Kinh nghiệm thuê xe xe cưới hỏi cao cấp: 5 Lưu ý vàng cho ngày trọng đại",
+      "en": ""
+    },
+    "excerpt": {
+      "vi": "Ngày cưới là sự kiện trọng đại cả đời. Lựa chọn đoàn xe đưa đón cô dâu chú rể và quan khách sang trọng, đúng giờ giúp lễ cưới hoàn hảo.",
+      "en": ""
+    },
+    "thumbnail": "/uploads/blog/1_1786003882256.jpg",
+    "category": "Thuê xe",
+    "subCategory": "",
+    "tags": [
+      "Thuê xe cưới",
+      "Xe cô dâu",
+      "Xe hoa Hà Nội"
+    ],
+    "status": "published",
+    "scheduledAt": "",
+    "featured": true,
+    "pinned": true,
+    "recommended": false,
+    "isTrending": true,
+    "viewCount": 1620,
+    "readingTime": "6 phút đọc",
+    "author": {
+      "name": "Khánh Linh Trans Editorial",
+      "role": "Ban Biên Tập"
+    },
+    "publishedAt": "2026-08-04T09:15:00.000Z",
+    "createdAt": "2026-08-04T09:15:00.000Z",
+    "updatedAt": "2026-08-04T09:15:00.000Z",
+    "lastUpdatedBy": "Admin",
+    "seo": {
+      "metaTitle": {
+        "vi": "Mẹo chọn và thuê xe cưới hỏi đẹp sang trọng tại Hà Nội",
+        "en": ""
+      },
+      "metaDescription": {
+        "vi": "Kinh nghiệm chọn màu xe hoa, loại xe đưa đón quan khách hai họ và thời gian đặt xe chuẩn để ngày cưới diễn ra suôn sẻ trọn vẹn.",
+        "en": ""
+      },
+      "focusKeyword": "thuê xe cưới hỏi Hà Nội",
+      "canonicalUrl": "",
+      "robots": "index, follow",
+      "ogImage": "/uploads/blog/1_1786003882256.jpg",
+      "twitterCard": "summary_large_image",
+      "featuredImageAlt": "Kinh nghiệm thuê xe xe cưới hỏi cao cấp: 5 Lưu ý vàng cho ngày trọng đại",
+      "imageCaption": "",
+      "faqSchema": false,
+      "breadcrumbSchema": true,
+      "jsonLdSchema": true
+    },
+    "authorId": "acc_001"
+  },
+  {
+    "id": "news_1786006155075_807",
+    "slug": "review-chi-tiet-tour-du-lich-ha-long-2-ngay-1-dem-bang-xe-du-lich-29-cho",
+    "title": {
+      "vi": "Review chi tiết tour du lịch Hạ Long 2 ngày 1 đêm bằng xe du lịch 29 chỗ",
+      "en": ""
+    },
+    "excerpt": {
+      "vi": "Vịnh Hạ Long luôn là kỳ quan thu hút du khách trong và ngoài nước. Lịch trình 2 ngày 1 đêm bằng xe ô tô du lịch chất lượng cao dành cho đoàn.",
+      "en": ""
+    },
+    "thumbnail": "/uploads/blog/2_1786003882217.jpg",
+    "category": "Điểm đến",
+    "subCategory": "",
+    "tags": [
+      "Hạ Long",
+      "Tour 2 ngày 1 đêm",
+      "Thuê xe 29 chỗ"
+    ],
+    "status": "published",
+    "scheduledAt": "",
+    "featured": true,
+    "pinned": true,
+    "recommended": false,
+    "isTrending": true,
+    "viewCount": 2100,
+    "readingTime": "9 phút đọc",
+    "author": {
+      "name": "Khánh Linh Trans Editorial",
+      "role": "Ban Biên Tập"
+    },
+    "publishedAt": "2026-08-03T11:00:00.000Z",
+    "createdAt": "2026-08-03T11:00:00.000Z",
+    "updatedAt": "2026-08-03T11:00:00.000Z",
+    "lastUpdatedBy": "Admin",
+    "seo": {
+      "metaTitle": {
+        "vi": "Review lịch trình du lịch Hạ Long 2 ngày 1 đêm trọn gói",
+        "en": ""
+      },
+      "metaDescription": {
+        "vi": "Hướng dẫn di chuyển đường cao tốc Hà Nội - Hải Phòng - Hạ Long bằng xe 29 chỗ đời mới, thăm vịnh Hạ Long và thưởng thức hải sản tươi ngon.",
+        "en": ""
+      },
+      "focusKeyword": "tour Hạ Long 2 ngày 1 đêm",
+      "canonicalUrl": "",
+      "robots": "index, follow",
+      "ogImage": "/uploads/blog/2_1786003882217.jpg",
+      "twitterCard": "summary_large_image",
+      "featuredImageAlt": "Review chi tiết tour du lịch Hạ Long 2 ngày 1 đêm bằng xe du lịch 29 chỗ",
+      "imageCaption": "",
+      "faqSchema": false,
+      "breadcrumbSchema": true,
+      "jsonLdSchema": true
+    },
+    "authorId": "acc_001"
+  },
+  {
+    "id": "news_1786006155077_573",
+    "slug": "nen-thue-xe-tu-lai-hay-thue-xe-co-tai-xe-rieng-cho-hanh-trinh-xa",
+    "title": {
+      "vi": "Nên thuê xe tự lái hay thuê xe có tài xế riêng cho hành trình xa?",
+      "en": ""
+    },
+    "excerpt": {
+      "vi": "Nhiều du khách băn khoăn giữa tự cầm lái hay giao vô-lăng cho bác tài chuyên nghiệp. Cùng phân tích chi tiết ưu nhược điểm của từng hình thức.",
+      "en": ""
+    },
+    "thumbnail": "/uploads/blog/3_1786003882179.jpg",
+    "category": "Thuê xe",
+    "subCategory": "",
+    "tags": [
+      "Thuê xe có lái",
+      "Thuê xe tự lái",
+      "Tư vấn du lịch"
+    ],
+    "status": "published",
+    "scheduledAt": "",
+    "featured": true,
+    "pinned": false,
+    "recommended": false,
+    "isTrending": true,
+    "viewCount": 1450,
+    "readingTime": "7 phút đọc",
+    "author": {
+      "name": "Khánh Linh Trans Editorial",
+      "role": "Ban Biên Tập"
+    },
+    "publishedAt": "2026-08-02T15:40:00.000Z",
+    "createdAt": "2026-08-02T15:40:00.000Z",
+    "updatedAt": "2026-08-02T15:40:00.000Z",
+    "lastUpdatedBy": "Admin",
+    "seo": {
+      "metaTitle": {
+        "vi": "So sánh thuê xe tự lái và thuê xe có lái chuyên nghiệp",
+        "en": ""
+      },
+      "metaDescription": {
+        "vi": "Phân tích bài toán chi phí, độ an toàn và sự thoải mái giữa dịch vụ tự lái và thuê xe có tài xế riêng kinh nghiệm đưa đón.",
+        "en": ""
+      },
+      "focusKeyword": "thuê xe tự lái hay có lái",
+      "canonicalUrl": "",
+      "robots": "index, follow",
+      "ogImage": "/uploads/blog/3_1786003882179.jpg",
+      "twitterCard": "summary_large_image",
+      "featuredImageAlt": "Nên thuê xe tự lái hay thuê xe có tài xế riêng cho hành trình xa?",
+      "imageCaption": "",
+      "faqSchema": false,
+      "breadcrumbSchema": true,
+      "jsonLdSchema": true
+    },
+    "authorId": "acc_001"
+  },
+  {
+    "id": "news_1786006155078_43",
+    "slug": "kinh-nghiem-du-lich-moc-chau-mua-hoa-cai-va-mua-hai-dau-tay",
+    "title": {
+      "vi": "Kinh nghiệm du lịch Mộc Châu mùa hoa cải và mùa hái dâu tây",
+      "en": ""
+    },
+    "excerpt": {
+      "vi": "Mộc Châu quanh năm mát mẻ với những đồi chè xanh ngút ngàn và thiên đường hoa cải trắng. Khám phá ngay lịch trình di chuyển thuận tiện nhất.",
+      "en": ""
+    },
+    "thumbnail": "/uploads/blog/g_u_kh_nh_linh_1785294925737.jpg",
+    "category": "Kinh nghiệm du lịch",
+    "subCategory": "",
+    "tags": [
+      "Du lịch Mộc Châu",
+      "Mùa hoa cải",
+      "Dâu tây Mộc Châu"
+    ],
+    "status": "published",
+    "scheduledAt": "",
+    "featured": false,
+    "pinned": false,
+    "recommended": false,
+    "isTrending": false,
+    "viewCount": 1180,
+    "readingTime": "6 phút đọc",
+    "author": {
+      "name": "Khánh Linh Trans Editorial",
+      "role": "Ban Biên Tập"
+    },
+    "publishedAt": "2026-07-25T10:30:00.000Z",
+    "createdAt": "2026-07-25T10:30:00.000Z",
+    "updatedAt": "2026-07-25T10:30:00.000Z",
+    "lastUpdatedBy": "Admin",
+    "seo": {
+      "metaTitle": {
+        "vi": "Cẩm nang du lịch Mộc Châu các mùa trong năm tự túc",
+        "en": ""
+      },
+      "metaDescription": {
+        "vi": "Thời điểm lý tưởng đi Mộc Châu ngắm hoa đồi chè, đồi hoa cải trắng và thưởng thức đặc sản sữa tươi, bê chao nổi tiếng.",
+        "en": ""
+      },
+      "focusKeyword": "du lịch Mộc Châu mùa nào đẹp",
+      "canonicalUrl": "",
+      "robots": "index, follow",
+      "ogImage": "/uploads/blog/g_u_kh_nh_linh_1785294925737.jpg",
+      "twitterCard": "summary_large_image",
+      "featuredImageAlt": "Kinh nghiệm du lịch Mộc Châu mùa hoa cải và mùa hái dâu tây",
+      "imageCaption": "",
+      "faqSchema": false,
+      "breadcrumbSchema": true,
+      "jsonLdSchema": true
+    },
+    "authorId": "acc_001"
+  },
+  {
+    "id": "news_1786006155079_425",
+    "slug": "checklist-10-vat-dung-luon-nen-trang-bi-san-tren-xe-o-to-ca-nhan",
+    "title": {
+      "vi": "Checklist 10 vật dụng luôn nên trang bị sẵn trên xe ô tô cá nhân",
+      "en": ""
+    },
+    "excerpt": {
+      "vi": "Trang bị đầy đủ các vật dụng cứu hộ khẩn cấp trên ô tô giúp chủ xe chủ động xử lý các tình huống hỏng hóc hoặc sự cố thời tiết xấu.",
+      "en": ""
+    },
+    "thumbnail": "/uploads/blog/1_1785313522909.jpg",
+    "category": "Xe cộ",
+    "subCategory": "",
+    "tags": [
+      "Phụ kiện ô tô",
+      "Checklist xe",
+      "An toàn giao thông"
+    ],
+    "status": "published",
+    "scheduledAt": "",
+    "featured": false,
+    "pinned": false,
+    "recommended": false,
+    "isTrending": false,
+    "viewCount": 890,
+    "readingTime": "5 phút đọc",
+    "author": {
+      "name": "Khánh Linh Trans Editorial",
+      "role": "Ban Biên Tập"
+    },
+    "publishedAt": "2026-07-20T08:15:00.000Z",
+    "createdAt": "2026-07-20T08:15:00.000Z",
+    "updatedAt": "2026-07-20T08:15:00.000Z",
+    "lastUpdatedBy": "Admin",
+    "seo": {
+      "metaTitle": {
+        "vi": "10 Vật dụng an toàn bắt buộc nên trang bị trên xe ô tô",
+        "en": ""
+      },
+      "metaDescription": {
+        "vi": "Bộ kích bình acquy, bơm lốp điện tử, bộ cấp cứu y tế, búa phá kính... giúp bạn xử lý mọi sự cố bất ngờ trên đường xa.",
+        "en": ""
+      },
+      "focusKeyword": "vật dụng nên có trên ô tô",
+      "canonicalUrl": "",
+      "robots": "index, follow",
+      "ogImage": "/uploads/blog/1_1785313522909.jpg",
+      "twitterCard": "summary_large_image",
+      "featuredImageAlt": "Checklist 10 vật dụng luôn nên trang bị sẵn trên xe ô tô cá nhân",
+      "imageCaption": "",
+      "faqSchema": false,
+      "breadcrumbSchema": true,
+      "jsonLdSchema": true
+    },
+    "authorId": "acc_001"
+  },
+  {
+    "id": "news_1786006155081_835",
+    "slug": "checklist-chuan-bi-cho-chuyen-du-lich-gia-dinh-co-nguoi-gia-va-tre-nho",
+    "title": {
+      "vi": "Checklist chuẩn bị cho chuyến du lịch gia đình có người già và trẻ nhỏ",
+      "en": ""
+    },
+    "excerpt": {
+      "vi": "Chuyến du lịch đa thế hệ đòi hỏi sự chuẩn bị kỹ lưỡng về chỗ ngồi trên xe, lộ trình nghỉ ngơi giữa chặng và đồ dùng cá nhân cho trẻ em.",
+      "en": ""
+    },
+    "thumbnail": "/uploads/blog/2_1785313527390.jpg",
+    "category": "Cẩm nang",
+    "subCategory": "",
+    "tags": [
+      "Du lịch gia đình",
+      "Checklist du lịch",
+      "Kinh nghiệm gia đình"
+    ],
+    "status": "published",
+    "scheduledAt": "",
+    "featured": false,
+    "pinned": false,
+    "recommended": false,
+    "isTrending": false,
+    "viewCount": 1320,
+    "readingTime": "6 phút đọc",
+    "author": {
+      "name": "Khánh Linh Trans Editorial",
+      "role": "Ban Biên Tập"
+    },
+    "publishedAt": "2026-07-15T13:45:00.000Z",
+    "createdAt": "2026-07-15T13:45:00.000Z",
+    "updatedAt": "2026-07-15T13:45:00.000Z",
+    "lastUpdatedBy": "Admin",
+    "seo": {
+      "metaTitle": {
+        "vi": "Checklist du lịch gia đình có người già và trẻ em chu đáo",
+        "en": ""
+      },
+      "metaDescription": {
+        "vi": "Bí quyết chọn xe du lịch êm ái, xếp hành lý thông minh và chuẩn bị thực phẩm, thuốc men an toàn cho người thân.",
+        "en": ""
+      },
+      "focusKeyword": "checklist du lịch gia đình",
+      "canonicalUrl": "",
+      "robots": "index, follow",
+      "ogImage": "/uploads/blog/2_1785313527390.jpg",
+      "twitterCard": "summary_large_image",
+      "featuredImageAlt": "Checklist chuẩn bị cho chuyến du lịch gia đình có người già và trẻ nhỏ",
+      "imageCaption": "",
+      "faqSchema": false,
+      "breadcrumbSchema": true,
+      "jsonLdSchema": true
+    },
+    "authorId": "acc_001"
+  },
+  {
+    "id": "news_1786006155082_849",
+    "slug": "nhung-sai-lam-nghiem-trong-can-tranh-khi-dat-thue-xe-du-lich-mua-cao-diem",
+    "title": {
+      "vi": "Những sai lầm nghiêm trọng cần tránh khi đặt thuê xe du lịch mùa cao điểm",
+      "en": ""
+    },
+    "excerpt": {
+      "vi": "Đặt xe quá sát ngày đi hoặc ham giá rẻ bất thường là nguyên nhân hàng đầu khiến nhiều du khách gặp sự cố vỡ lịch trình nghỉ dưỡng.",
+      "en": ""
+    },
+    "thumbnail": "/uploads/blog/1_1786003882256.jpg",
+    "category": "Thuê xe",
+    "subCategory": "",
+    "tags": [
+      "Sai lầm thuê xe",
+      "Thuê xe lễ tết",
+      "Cảnh báo thuê xe"
+    ],
+    "status": "published",
+    "scheduledAt": "",
+    "featured": false,
+    "pinned": false,
+    "recommended": false,
+    "isTrending": false,
+    "viewCount": 970,
+    "readingTime": "5 phút đọc",
+    "author": {
+      "name": "Khánh Linh Trans Editorial",
+      "role": "Ban Biên Tập"
+    },
+    "publishedAt": "2026-07-10T16:20:00.000Z",
+    "createdAt": "2026-07-10T16:20:00.000Z",
+    "updatedAt": "2026-07-10T16:20:00.000Z",
+    "lastUpdatedBy": "Admin",
+    "seo": {
+      "metaTitle": {
+        "vi": "5 Sai lầm phổ biến khi thuê xe ô tô du lịch mùa cao điểm",
+        "en": ""
+      },
+      "metaDescription": {
+        "vi": "Cảnh báo chiêu trò ép giá, xe cũ kém chất lượng và bỏ qua điều khoản hủy đặt xe trong các dịp nghỉ lễ 30/4, 2/9 và Tết.",
+        "en": ""
+      },
+      "focusKeyword": "sai lầm khi thuê xe du lịch",
+      "canonicalUrl": "",
+      "robots": "index, follow",
+      "ogImage": "/uploads/blog/1_1786003882256.jpg",
+      "twitterCard": "summary_large_image",
+      "featuredImageAlt": "Những sai lầm nghiêm trọng cần tránh khi đặt thuê xe du lịch mùa cao điểm",
+      "imageCaption": "",
+      "faqSchema": false,
+      "breadcrumbSchema": true,
+      "jsonLdSchema": true
+    },
+    "authorId": "acc_001"
+  },
+  {
+    "id": "news_1786006155083_796",
+    "slug": "top-5-diem-check-in-song-ao-cuc-hot-quanh-khu-vuc-ngoai-thanh-ha-noi",
+    "title": {
+      "vi": "Top 5 điểm check-in sống ảo cực hot quanh khu vực ngoại thành Hà Nội",
+      "en": ""
+    },
+    "excerpt": {
+      "vi": "Không cần đi đâu xa, ngay vùng ven Hà Nội có vô vàn tọa độ thiên nhiên thoáng đãng tuyệt đẹp phục vụ nhu cầu dã ngoại và chụp ảnh cuối tuần.",
+      "en": ""
+    },
+    "thumbnail": "/uploads/blog/2_1786003882217.jpg",
+    "category": "Điểm đến",
+    "subCategory": "",
+    "tags": [
+      "Check in Hà Nội",
+      "Địa điểm hot",
+      "Sống ảo ngoại thành"
+    ],
+    "status": "published",
+    "scheduledAt": "",
+    "featured": false,
+    "pinned": false,
+    "recommended": false,
+    "isTrending": false,
+    "viewCount": 1760,
+    "readingTime": "7 phút đọc",
+    "author": {
+      "name": "Khánh Linh Trans Editorial",
+      "role": "Ban Biên Tập"
+    },
+    "publishedAt": "2026-07-01T09:00:00.000Z",
+    "createdAt": "2026-07-01T09:00:00.000Z",
+    "updatedAt": "2026-07-01T09:00:00.000Z",
+    "lastUpdatedBy": "Admin",
+    "seo": {
+      "metaTitle": {
+        "vi": "Top 5 điểm check-in ngoại thành Hà Nội đẹp siêu lòng",
+        "en": ""
+      },
+      "metaDescription": {
+        "vi": "Gợi ý làng cổ Đường Lâm, đồi cỏ Ba Vì, làng hoa Quảng Bá, thung lũng hoa Hồ Tây cho bạn trẻ thỏa sức chụp ảnh dã ngoại.",
+        "en": ""
+      },
+      "focusKeyword": "điểm check in gần Hà Nội",
+      "canonicalUrl": "",
+      "robots": "index, follow",
+      "ogImage": "/uploads/blog/2_1786003882217.jpg",
+      "twitterCard": "summary_large_image",
+      "featuredImageAlt": "Top 5 điểm check-in sống ảo cực hot quanh khu vực ngoại thành Hà Nội",
+      "imageCaption": "",
+      "faqSchema": false,
+      "breadcrumbSchema": true,
+      "jsonLdSchema": true
+    },
     "authorId": "acc_001"
   }
 ]

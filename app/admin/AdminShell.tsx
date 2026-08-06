@@ -5,7 +5,7 @@ import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import ToastContainer from "../components/toast/ToastContainer";
 import AdminHeader from "./AdminHeader";
-import { getAccessibleMenuItems } from "./adminConfig";
+import { getAccessibleMenuItems, Account } from "./adminConfig";
 import "./admin.css";
 
 function AdminShellContent({
@@ -25,7 +25,7 @@ function AdminShellContent({
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const currentTab = searchParams.get("tab") || "vehicles";
-  const [currentUser, setCurrentUser] = useState<any>(null);
+  const [currentUser, setCurrentUser] = useState<Account | null>(null);
   const [loading, setLoading] = useState(true);
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
 

@@ -90,7 +90,6 @@ export function migrateLegacyHtmlToBlocks(htmlStr: string): BlogBlock[] {
   // Simple regex-based HTML chunk parsing for migration
   const tagRegex = /<(h[1-4]|p|blockquote|hr|img)[^>]*>([\s\S]*?)<\/\1>|<(hr|img)[^>]*\/?>/gi;
   let match;
-  let lastIndex = 0;
 
   while ((match = tagRegex.exec(cleanStr)) !== null) {
     const fullTag = match[0];
@@ -146,8 +145,6 @@ export function migrateLegacyHtmlToBlocks(htmlStr: string): BlogBlock[] {
         });
       }
     }
-
-    lastIndex = tagRegex.lastIndex;
   }
 
   // If no HTML tags matched, treat the whole text as a paragraph block
@@ -215,7 +212,7 @@ export function readNewsDetail(slug: string): NewsDetail | null {
 export function writeNewsDetail(slug: string, detail: NewsDetail): void {
   ensureDirs();
   const filePath = path.join(NEWS_DIR, `${slug}.json`);
-  
+
   // Clean up legacy `content` field when saving new block structure
   const dataToSave = {
     slug: detail.slug,

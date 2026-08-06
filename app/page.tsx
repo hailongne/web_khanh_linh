@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import "./user.css";
 import db from "../db.json";
@@ -72,11 +72,30 @@ type FaqData = {
   items: FaqItem[];
 };
 
-const salesContacts = (db as any).sales as SalesPerson[];
-const siteContacts = (db as any).contacts as ContactInfo;
-const dbPricing = (db as any).pricing as Record<string, PricingData>;
-const dbTestimonials = (db as any).testimonials as Record<string, TestimonialsData>;
-const dbFaq = (db as any).faq as Record<string, FaqData>;
+type TypedDb = {
+  sales?: SalesPerson[];
+  contacts?: ContactInfo;
+  pricing?: Record<string, PricingData>;
+  testimonials?: Record<string, TestimonialsData>;
+  faq?: Record<string, FaqData>;
+};
+
+type ReasonItem = { icon: string; title: string; description: string };
+type BookingStep = { icon: string; title: string; description: string };
+type FooterLink = { label: string; href: string };
+type PublicReview = {
+  id: string;
+  displayName: string;
+  rating: number;
+  content: string;
+  createdAt: string;
+};
+
+const typedDb = db as unknown as TypedDb;
+const salesContacts = typedDb.sales || [];
+const siteContacts = typedDb.contacts || ({} as ContactInfo);
+const dbPricing = typedDb.pricing || {};
+const dbFaq = typedDb.faq || {};
 
 const fontAwesomeIcons: Record<string, { prefix: FontAwesomePrefix; icon: string }> = {
   fleet: { prefix: "fas", icon: "fa-bus" },
@@ -111,61 +130,54 @@ function FontAwesomeIcon({ type, className = "fa-fw" }: { type: string; classNam
   return <i className={["fa-icon", icon.prefix, icon.icon, className].filter(Boolean).join(" ")} aria-hidden="true" />;
 }
 
-const testimonials = [
-  { initials: "T" },
-  { initials: "H" },
-  { initials: "N" }
-];
-
 function useMediaQuery(query: string) {
-  const [matches, setMatches] = useState(false);
+  const [matches, setMatches] = useState(() => {
+    if (typeof window !== "undefined") {
+      return window.matchMedia(query).matches;
+    }
+    return false;
+  });
   useEffect(() => {
     if (typeof window === "undefined") return;
     const mq = window.matchMedia(query);
     const handleChange = (e: MediaQueryListEvent) => setMatches(e.matches);
-    setMatches(mq.matches);
     if (mq.addEventListener) mq.addEventListener("change", handleChange);
-    else mq.addListener(handleChange as any);
+    else mq.addListener(handleChange as (e: Event) => void);
     return () => {
       if (mq.removeEventListener) mq.removeEventListener("change", handleChange);
-      else mq.removeListener(handleChange as any);
+      else mq.removeListener(handleChange as (e: Event) => void);
     };
   }, [query]);
   return matches;
 }
 
 export default function HomePage() {
-  const [lang, setLang] = useState<"vi" | "en">("vi");
-
-  useEffect(() => {
-    try {
-      // Read from localStorage after hydration
-      const savedLang = (localStorage.getItem("site_lang") as "vi" | "en") ?? "vi";
-      if (savedLang !== lang) {
-        setLang(savedLang);
+  const [lang, setLang] = useState<"vi" | "en">(() => {
+    if (typeof window !== "undefined") {
+      try {
+        const savedLang = localStorage.getItem("site_lang") as "vi" | "en";
+        if (savedLang === "vi" || savedLang === "en") return savedLang;
+      } catch {
+        // noop
       }
-      document.documentElement.lang = savedLang;
-    } catch (e) {
-      // noop
     }
-  }, []);
+    return "vi";
+  });
 
   useEffect(() => {
     try {
       document.documentElement.lang = lang;
       localStorage.setItem("site_lang", lang);
-    } catch (e) {
+    } catch {
       // noop
     }
   }, [lang]);
 
-  const t = (translations as any)[lang] ?? translations.vi;
+  const t = (translations as Record<string, typeof translations.vi>)[lang] ?? translations.vi;
   const defaultPricing: PricingData = dbPricing?.vi ?? { heading: "", lead: "", note: "", cols: [], rows: [] };
-  const defaultTestimonialsData: TestimonialsData = dbTestimonials?.vi ?? { heading: "", lead: "", scoreLabel: "", items: [], stats: [] };
   const defaultFaqData: FaqData = dbFaq?.vi ?? { heading: "", lead: "", items: [] };
 
   const pricing: PricingData = dbPricing?.[lang] ?? defaultPricing;
-  const testimonialsData: TestimonialsData = dbTestimonials?.[lang] ?? defaultTestimonialsData;
   const faqData: FaqData = dbFaq?.[lang] ?? defaultFaqData;
   const toggleLang = () => setLang((l) => (l === "vi" ? "en" : "vi"));
   const isMobile = useMediaQuery("(max-width: 768px)");
@@ -177,7 +189,7 @@ export default function HomePage() {
   const processGridRef = useRef<HTMLDivElement | null>(null);
 
   // Reviews System States
-  const [publicReviews, setPublicReviews] = useState<any[]>([]);
+  const [publicReviews, setPublicReviews] = useState<PublicReview[]>([]);
   const [reviewStats, setReviewStats] = useState<{
     totalReviews: number;
     averageRating: number;
@@ -201,7 +213,7 @@ export default function HomePage() {
   const totalReviewPages = Math.ceil(publicReviews.length / REVIEWS_PER_PAGE);
   const paginatedReviews = publicReviews.slice((reviewPage - 1) * REVIEWS_PER_PAGE, reviewPage * REVIEWS_PER_PAGE);
 
-  const fetchPublicReviews = async () => {
+  const fetchPublicReviews = useCallback(async () => {
     try {
       const res = await fetch("/api/reviews");
       const json = await res.json();
@@ -214,11 +226,11 @@ export default function HomePage() {
     } catch {
       // noop
     }
-  };
+  }, []);
 
   useEffect(() => {
-    fetchPublicReviews();
-  }, []);
+    Promise.resolve().then(fetchPublicReviews);
+  }, [fetchPublicReviews]);
 
   const handleReviewSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -292,7 +304,7 @@ export default function HomePage() {
       setBannerIndex((current) => (current + 1) % heroBannerSlides.length);
     }, 5000);
     return () => window.clearInterval(interval);
-  }, []);
+  }, [heroBannerSlides.length]);
 
   // Auto-scroll reasons list on mobile & tablet (1s interval)
   useEffect(() => {
@@ -398,7 +410,7 @@ export default function HomePage() {
 
               <div className="reasons-section__copy">
                 <div className="reasons-list" ref={reasonsListRef}>
-                  {t.reasons.items.map((reason: any) => (
+                  {t.reasons.items.map((reason: ReasonItem) => (
                     <article className="reason-card" key={reason.title}>
                       <div className="reason-card__icon">
                         <FontAwesomeIcon type={reason.icon} />
@@ -422,7 +434,7 @@ export default function HomePage() {
                 <p>{t.booking.lead}</p>
               </div>
               <div className="process-grid" ref={processGridRef}>
-                {t.booking.steps.map((step: any) => (
+                {t.booking.steps.map((step: BookingStep) => (
                   <article className="process-card" key={step.title}>
                     <div className="process-card__icon">
                       <FontAwesomeIcon type={step.icon} />
@@ -453,7 +465,7 @@ export default function HomePage() {
                       </tr>
                     </thead>
                     <tbody>
-                      {pricing.rows.map((row: any) => {
+                      {pricing.rows.map((row: PricingRow) => {
                         const seatsMatch = String(row.vehicle).match(/(\d+)/);
                         const seats = seatsMatch ? Number(seatsMatch[1]) : 0;
                         const iconType = seats > 7 ? "fleet" : "car";
@@ -478,7 +490,7 @@ export default function HomePage() {
                   </table>
                 ) : (
                   <div className="pricing-cards" role="list">
-                    {pricing.rows.map((row: any) => {
+                    {pricing.rows.map((row: PricingRow) => {
                       const seatsMatch = String(row.vehicle).match(/(\d+)/);
                       const seats = seatsMatch ? Number(seatsMatch[1]) : 0;
                       const iconType = seats > 7 ? "fleet" : "car";
@@ -793,7 +805,7 @@ export default function HomePage() {
                 <p>{faqData.lead}</p>
               </div>
               <div className="faq-list">
-                {faqData.items.map((item: any) => (
+                {faqData.items.map((item: FaqItem) => (
                   <details className="faq-item" key={item.question}>
                     <summary className="faq-item__summary">
                       <span>{item.question}</span>
@@ -854,7 +866,7 @@ export default function HomePage() {
                 <div className="site-footer__column">
                   <h2 className="site-footer__heading">{t.footer.servicesHeading}</h2>
                   <nav className="site-footer__nav" aria-label="Dá»‹ch vá»¥ footer">
-                    {t.footer.services.map((item: any) => (
+                    {t.footer.services.map((item: FooterLink) => (
                       <a key={item.label} href={item.href}>{item.label}</a>
                     ))}
                   </nav>
@@ -863,7 +875,7 @@ export default function HomePage() {
                 <div className="site-footer__column">
                   <h2 className="site-footer__heading">{t.footer.supportHeading}</h2>
                   <nav className="site-footer__nav" aria-label="Há»— trá»£ footer">
-                    {t.footer.supportLinks.map((item: any) => (
+                    {t.footer.supportLinks.map((item: FooterLink) => (
                       <a key={item.label} href={item.href}>{item.label}</a>
                     ))}
                   </nav>

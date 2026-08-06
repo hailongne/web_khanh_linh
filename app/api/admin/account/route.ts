@@ -41,7 +41,7 @@ export async function PUT(req: Request) {
     return unauthorizedResponse();
   }
 
-  let payload: any;
+  let payload: Record<string, unknown>;
   try {
     payload = await req.json();
   } catch {

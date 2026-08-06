@@ -13,7 +13,7 @@ export type Review = {
   createdAt: string;
 };
 
-type DbShape = Record<string, any> & {
+type DbShape = Record<string, unknown> & {
   reviews?: Review[];
 };
 
@@ -65,7 +65,7 @@ export async function GET() {
 }
 
 export async function POST(req: Request) {
-  let body: any;
+  let body: Record<string, unknown>;
   try {
     body = await req.json();
   } catch {
@@ -74,7 +74,7 @@ export async function POST(req: Request) {
 
   const displayName = typeof body?.displayName === "string" ? body.displayName.trim() : "";
   const content = typeof body?.content === "string" ? body.content.trim() : "";
-  const rating = Number.parseInt(body?.rating, 10);
+  const rating = Number.parseInt(String(body?.rating ?? ""), 10);
 
   if (!displayName) {
     return NextResponse.json({ success: false, error: "Vui lòng nhập tên hiển thị" }, { status: 400 });

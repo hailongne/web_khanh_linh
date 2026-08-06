@@ -1,0 +1,75 @@
+{
+  "slug": "checklist-10-vat-dung-luon-nen-trang-bi-san-tren-xe-o-to-ca-nhan",
+  "blocks": {
+    "vi": [
+      {
+        "id": "h_qrqtha9",
+        "type": "heading",
+        "level": 2,
+        "text": "1. Giới thiệu & Định hướng hành trình"
+      },
+      {
+        "id": "p_eowp9l5",
+        "type": "paragraph",
+        "text": "Trang bị đầy đủ các vật dụng cứu hộ khẩn cấp trên ô tô giúp chủ xe chủ động xử lý các tình huống hỏng hóc hoặc sự cố thời tiết xấu. Đồng hành cùng Khánh Linh Trans, quý khách luôn được đảm bảo tiêu chuẩn xe chất lượng cao và phong cách phục vụ tận tâm."
+      },
+      {
+        "id": "h_b3eg4vr",
+        "type": "heading",
+        "level": 2,
+        "text": "2. Danh sách kiểm tra chi tiết (Checklist)"
+      },
+      {
+        "id": "p_ze6gvl5",
+        "type": "paragraph",
+        "text": "Dưới đây là các hạng mục quan trọng bạn nên rà soát cẩn thận trước khi lên đường:"
+      },
+      {
+        "id": "list_est6e9r",
+        "type": "bullet",
+        "items": [
+          "✓ Kiểm tra giấy tờ xe, bảo hiểm và căn cước công dân.",
+          "✓ Kiểm tra lốp xe dự phòng, con đội và bộ dụng cụ tháo bánh.",
+          "✓ Chuẩn bị túi y tế gồm thuốc say xe, băng gạc, thuốc cảm sốt.",
+          "✓ Chuẩn bị sạc dự phòng, cáp sạc đa năng cho thiết bị thông minh.",
+          "✓ Rà soát lại lộ trình di chuyển và các điểm dừng nghỉ dừng chân.",
+          "✓ Đặt hẹn thời gian đón trả chính xác với nhà xe Khánh Linh Trans."
+        ]
+      },
+      {
+        "id": "h_u32km2e",
+        "type": "heading",
+        "level": 2,
+        "text": "3. Đặt xe du lịch Khánh Linh Trans nhanh chóng"
+      },
+      {
+        "id": "p_lcjhker",
+        "type": "paragraph",
+        "text": "Khánh Linh Trans cung cấp giải pháp cho thuê xe du lịch 4-45 chỗ, xe cưới hỏi, xe đưa đón chuyên gia chất lượng cao. Quý khách vui lòng liên hệ hotline để nhận báo giá ưu đãi nhất!"
+      }
+    ],
+    "en": []
+  },
+  "seo": {
+    "metaTitle": {
+      "vi": "10 Vật dụng an toàn bắt buộc nên trang bị trên xe ô tô",
+      "en": ""
+    },
+    "metaDescription": {
+      "vi": "Bộ kích bình acquy, bơm lốp điện tử, bộ cấp cứu y tế, búa phá kính... giúp bạn xử lý mọi sự cố bất ngờ trên đường xa.",
+      "en": ""
+    },
+    "focusKeyword": "vật dụng nên có trên ô tô",
+    "canonicalUrl": "",
+    "robots": "index, follow",
+    "ogImage": "/uploads/blog/1_1785313522909.jpg",
+    "twitterCard": "summary_large_image",
+    "featuredImageAlt": "Checklist 10 vật dụng luôn nên trang bị sẵn trên xe ô tô cá nhân",
+    "imageCaption": "",
+    "faqSchema": false,
+    "breadcrumbSchema": true,
+    "jsonLdSchema": true
+  },
+  "createdAt": "2026-07-20T08:15:00.000Z",
+  "updatedAt": "2026-07-20T08:15:00.000Z"
+}

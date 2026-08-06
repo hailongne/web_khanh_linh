@@ -1,0 +1,79 @@
+{
+  "slug": "bi-quyet-chong-say-xe-hieu-qua-cho-cac-chuyen-du-lich-duong-dai",
+  "blocks": {
+    "vi": [
+      {
+        "id": "h_d96plgv",
+        "type": "heading",
+        "level": 2,
+        "text": "1. Tổng quan & Tầm quan trọng"
+      },
+      {
+        "id": "p_p1zxvrn",
+        "type": "paragraph",
+        "text": "Cảm giác say xe có thể làm giảm trải nghiệm chuyến du lịch. Áp dụng ngay những mẹo đơn giản dưới đây để giữ sức khỏe tốt trong suốt chặng đường. Lựa chọn đơn vị đồng hành uy tín như Khánh Linh Trans giúp bạn an tâm tuyệt đối trên từng cung đường."
+      },
+      {
+        "id": "h_dupzi9r",
+        "type": "heading",
+        "level": 2,
+        "text": "2. Chi tiết các kinh nghiệm cốt lõi"
+      },
+      {
+        "id": "p_rwh7w4d",
+        "type": "paragraph",
+        "text": "Việc nắm rõ các nguyên tắc an toàn, thời gian di chuyển và chọn dòng xe phù hợp sẽ giúp giảm thiểu rủi ro và tăng tính thoải mái cho toàn bộ hành khách."
+      },
+      {
+        "id": "list_5rxhujz",
+        "type": "bullet",
+        "items": [
+          "Lựa chọn thời điểm xuất phát tránh giờ cao điểm ô nhiễm.",
+          "Liên hệ nhà xe đặt trước từ 3-5 ngày đối với dịp nghỉ lễ.",
+          "Yêu cầu thống nhất hợp đồng minh bạch về phụ phí phát sinh.",
+          "Đảm bảo tài xế có đầy đủ bằng lái và kinh nghiệm đường đèo dốc."
+        ]
+      },
+      {
+        "id": "q_m48pktz",
+        "type": "quote",
+        "text": "Một chuyến đi trọn vẹn bắt đầu từ sự chuẩn bị kỹ lưỡng và một đối tác vận chuyển tận tâm.",
+        "author": "Khánh Linh Trans Editorial"
+      },
+      {
+        "id": "h_gizpv9h",
+        "type": "heading",
+        "level": 2,
+        "text": "3. Liên hệ đặt xe du lịch uy tín"
+      },
+      {
+        "id": "p_uwp93ux",
+        "type": "paragraph",
+        "text": "Khánh Linh Trans tự hào mang đến dịch vụ cho thuê xe du lịch từ 4 đến 45 chỗ chuyên nghiệp, uy tín hàng đầu. Quý khách có nhu cầu tư vấn báo giá vui lòng liên hệ hotline để nhận nhiều ưu đãi hấp dẫn!"
+      }
+    ],
+    "en": []
+  },
+  "seo": {
+    "metaTitle": {
+      "vi": "10 Mẹo chống say xe du lịch đường dài hiệu quả nhất",
+      "en": ""
+    },
+    "metaDescription": {
+      "vi": "Tổng hợp các phương pháp tự nhiên và kinh nghiệm thực tế giúp bạn không lo say xe khi di chuyển bằng ô tô hay xe khách du lịch.",
+      "en": ""
+    },
+    "focusKeyword": "mẹo chống say xe du lịch",
+    "canonicalUrl": "",
+    "robots": "index, follow",
+    "ogImage": "/uploads/blog/1_1786003882256.jpg",
+    "twitterCard": "summary_large_image",
+    "featuredImageAlt": "Bí quyết chống say xe hiệu quả cho các chuyến du lịch đường dài",
+    "imageCaption": "",
+    "faqSchema": false,
+    "breadcrumbSchema": true,
+    "jsonLdSchema": true
+  },
+  "createdAt": "2026-08-03T10:15:00.000Z",
+  "updatedAt": "2026-08-03T10:15:00.000Z"
+}

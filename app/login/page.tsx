@@ -43,8 +43,8 @@ export default function LoginPage() {
         router.replace("/admin");
       }
       router.refresh();
-    } catch (err: any) {
-      setError(err.message || "Lỗi đăng nhập.");
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : "Lỗi đăng nhập.");
     } finally {
       setLoading(false);
     }

@@ -28,9 +28,10 @@ export async function GET(req: Request) {
         lastLogin: account.lastLogin
       }
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const errorMsg = error instanceof Error ? error.message : "Internal Server Error";
     return NextResponse.json(
-      { success: false, error: error.message || "Internal Server Error" },
+      { success: false, error: errorMsg },
       { status: 500 }
     );
   }

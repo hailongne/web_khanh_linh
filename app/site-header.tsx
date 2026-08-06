@@ -1,11 +1,12 @@
 "use client";
 import Image from "next/image";
-import { usePathname } from "next/navigation";
+import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
 import { createPortal } from "react-dom";
 import { useEffect, useLayoutEffect, useRef, useState, type SVGProps } from "react";
 import db from "../db.json";
 import { translations } from "./translations";
-import { VNFlag, USFlag } from "./flag-icons";
+import { VNFlag } from "./flag-icons";
 
 const GlobeIcon = (props: SVGProps<SVGSVGElement>) => (
   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false" {...props}>
@@ -51,6 +52,7 @@ type SiteHeaderProps = {
 };
 
 export function SiteHeader({ links, lang = "vi", onToggleLang }: SiteHeaderProps) {
+  const router = useRouter();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [touchStartX, setTouchStartX] = useState<number | null>(null);
   const [touchStartY, setTouchStartY] = useState<number | null>(null);
@@ -62,12 +64,14 @@ export function SiteHeader({ links, lang = "vi", onToggleLang }: SiteHeaderProps
   const isClickingRef = useRef(false);
   const clickTimerRef = useRef<NodeJS.Timeout | null>(null);
 
-  useEffect(() => {
+  const [prevLinks, setPrevLinks] = useState(links);
+  if (links !== prevLinks) {
+    setPrevLinks(links);
     const matched = links.find((l) => l.href === activeHref);
     if (!matched && links.length > 0) {
       setActiveHref(links[0]?.href || "/");
     }
-  }, [links]);
+  }
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -177,7 +181,7 @@ export function SiteHeader({ links, lang = "vi", onToggleLang }: SiteHeaderProps
       if (!isHomePage) {
         e.preventDefault();
         handleCloseMenu();
-        window.location.href = `/${href}`;
+        router.push(`/${href}`);
         return;
       }
 
@@ -308,7 +312,7 @@ export function SiteHeader({ links, lang = "vi", onToggleLang }: SiteHeaderProps
     setIsMenuOpen(false);
   };
 
-  const handleTouchStart = (e: any) => {
+  const handleTouchStart = (e: React.TouchEvent) => {
     if (!isMenuOpen) return;
     const t = e.touches[0];
     setTouchStartX(t.clientX);
@@ -316,7 +320,7 @@ export function SiteHeader({ links, lang = "vi", onToggleLang }: SiteHeaderProps
     setTouchMoved(false);
   };
 
-  const handleTouchMove = (e: any) => {
+  const handleTouchMove = (e: React.TouchEvent) => {
     if (touchStartX === null || touchStartY === null) return;
     const t = e.touches[0];
     const dx = t.clientX - touchStartX;
@@ -327,7 +331,7 @@ export function SiteHeader({ links, lang = "vi", onToggleLang }: SiteHeaderProps
     }
   };
 
-  const handleTouchEnd = (e: any) => {
+  const handleTouchEnd = (e: React.TouchEvent) => {
     if (!touchMoved || touchStartX === null) {
       setTouchStartX(null);
       setTouchStartY(null);
@@ -353,12 +357,12 @@ export function SiteHeader({ links, lang = "vi", onToggleLang }: SiteHeaderProps
     address: string;
   };
 
-  const contacts = (db as any).contacts as ContactInfo;
-  const t = (translations as any)[lang] ?? translations.vi;
+  const contacts = (db as unknown as { contacts?: ContactInfo }).contacts || ({ phone: "", zalo: "", email: "", address: "" } as ContactInfo);
+  const t = (translations as Record<string, typeof translations.vi>)[lang] ?? translations.vi;
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    setMounted(true);
+    Promise.resolve().then(() => setMounted(true));
   }, []);
 
   const pathname = usePathname() || "";
@@ -382,7 +386,7 @@ export function SiteHeader({ links, lang = "vi", onToggleLang }: SiteHeaderProps
   return (
     <header className="site-header">
       <div className="site-header__inner">
-        <a className="site-header__brand" href="/" aria-label={t.header.brand} onClick={handleLogoClick}>
+        <Link className="site-header__brand" href="/" aria-label={t.header.brand} onClick={handleLogoClick}>
           <Image
             className="site-header__logo"
             src="/images/logoKhanhLinhFull.png"
@@ -391,7 +395,7 @@ export function SiteHeader({ links, lang = "vi", onToggleLang }: SiteHeaderProps
             height={64}
             priority
           />
-        </a>
+        </Link>
 
         <nav className="site-header__nav" aria-label="Main navigation">
           {links.map((item) => {

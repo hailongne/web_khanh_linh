@@ -1,0 +1,75 @@
+{
+  "slug": "checklist-chuan-bi-cho-chuyen-du-lich-gia-dinh-co-nguoi-gia-va-tre-nho",
+  "blocks": {
+    "vi": [
+      {
+        "id": "h_olkquuo",
+        "type": "heading",
+        "level": 2,
+        "text": "1. Giới thiệu & Định hướng hành trình"
+      },
+      {
+        "id": "p_rkdhj4t",
+        "type": "paragraph",
+        "text": "Chuyến du lịch đa thế hệ đòi hỏi sự chuẩn bị kỹ lưỡng về chỗ ngồi trên xe, lộ trình nghỉ ngơi giữa chặng và đồ dùng cá nhân cho trẻ em. Đồng hành cùng Khánh Linh Trans, quý khách luôn được đảm bảo tiêu chuẩn xe chất lượng cao và phong cách phục vụ tận tâm."
+      },
+      {
+        "id": "h_1vpp9db",
+        "type": "heading",
+        "level": 2,
+        "text": "2. Danh sách kiểm tra chi tiết (Checklist)"
+      },
+      {
+        "id": "p_jgf5h70",
+        "type": "paragraph",
+        "text": "Dưới đây là các hạng mục quan trọng bạn nên rà soát cẩn thận trước khi lên đường:"
+      },
+      {
+        "id": "list_ylb4e5h",
+        "type": "bullet",
+        "items": [
+          "✓ Kiểm tra giấy tờ xe, bảo hiểm và căn cước công dân.",
+          "✓ Kiểm tra lốp xe dự phòng, con đội và bộ dụng cụ tháo bánh.",
+          "✓ Chuẩn bị túi y tế gồm thuốc say xe, băng gạc, thuốc cảm sốt.",
+          "✓ Chuẩn bị sạc dự phòng, cáp sạc đa năng cho thiết bị thông minh.",
+          "✓ Rà soát lại lộ trình di chuyển và các điểm dừng nghỉ dừng chân.",
+          "✓ Đặt hẹn thời gian đón trả chính xác với nhà xe Khánh Linh Trans."
+        ]
+      },
+      {
+        "id": "h_s4xmkt4",
+        "type": "heading",
+        "level": 2,
+        "text": "3. Đặt xe du lịch Khánh Linh Trans nhanh chóng"
+      },
+      {
+        "id": "p_uzhtxe1",
+        "type": "paragraph",
+        "text": "Khánh Linh Trans cung cấp giải pháp cho thuê xe du lịch 4-45 chỗ, xe cưới hỏi, xe đưa đón chuyên gia chất lượng cao. Quý khách vui lòng liên hệ hotline để nhận báo giá ưu đãi nhất!"
+      }
+    ],
+    "en": []
+  },
+  "seo": {
+    "metaTitle": {
+      "vi": "Checklist du lịch gia đình có người già và trẻ em chu đáo",
+      "en": ""
+    },
+    "metaDescription": {
+      "vi": "Bí quyết chọn xe du lịch êm ái, xếp hành lý thông minh và chuẩn bị thực phẩm, thuốc men an toàn cho người thân.",
+      "en": ""
+    },
+    "focusKeyword": "checklist du lịch gia đình",
+    "canonicalUrl": "",
+    "robots": "index, follow",
+    "ogImage": "/uploads/blog/2_1785313527390.jpg",
+    "twitterCard": "summary_large_image",
+    "featuredImageAlt": "Checklist chuẩn bị cho chuyến du lịch gia đình có người già và trẻ nhỏ",
+    "imageCaption": "",
+    "faqSchema": false,
+    "breadcrumbSchema": true,
+    "jsonLdSchema": true
+  },
+  "createdAt": "2026-07-15T13:45:00.000Z",
+  "updatedAt": "2026-07-15T13:45:00.000Z"
+}

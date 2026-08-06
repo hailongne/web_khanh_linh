@@ -31,7 +31,7 @@ function ensureDataDirs() {
   }
 }
 
-export function readDb(): Record<string, any> {
+export function readDb(): Record<string, unknown> {
   if (!fs.existsSync(DB_PATH)) return {};
   try {
     const raw = fs.readFileSync(DB_PATH, "utf-8");
@@ -41,7 +41,7 @@ export function readDb(): Record<string, any> {
   }
 }
 
-export function writeDb(data: Record<string, any>): void {
+export function writeDb(data: Record<string, unknown>): void {
   fs.writeFileSync(DB_PATH, JSON.stringify(data, null, 2), "utf-8");
 }
 
@@ -51,7 +51,7 @@ export function readAccounts(): Account[] {
     // Migration helper: migrate legacy admin from db.json if exists
     const db = readDb();
     const now = new Date().toISOString();
-    const legacyAdmin = db.admin;
+    const legacyAdmin = db.admin as { passwordHash?: string; username?: string; createdAt?: string; updatedAt?: string } | undefined;
     const defaultPasswordHash = legacyAdmin?.passwordHash || bcrypt.hashSync(DEFAULT_ADMIN_PASSWORD, 10);
     const initialAccount: Account = {
       id: "acc_001",

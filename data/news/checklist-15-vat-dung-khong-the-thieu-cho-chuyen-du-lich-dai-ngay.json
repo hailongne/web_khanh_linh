@@ -1,0 +1,75 @@
+{
+  "slug": "checklist-15-vat-dung-khong-the-thieu-cho-chuyen-du-lich-dai-ngay",
+  "blocks": {
+    "vi": [
+      {
+        "id": "h_ki36yl2",
+        "type": "heading",
+        "level": 2,
+        "text": "1. Tổng quan & Tầm quan trọng"
+      },
+      {
+        "id": "p_73c7rwr",
+        "type": "paragraph",
+        "text": "Quên đồ dùng quan trọng có thể ảnh hưởng lớn tới tâm lý chuyến đi. Tham khảo ngay checklist khoa học dưới đây để xếp hành lý nhanh chóng. Lựa chọn đơn vị đồng hành uy tín như Khánh Linh Trans giúp bạn an tâm tuyệt đối trên từng cung đường."
+      },
+      {
+        "id": "h_o9tqb35",
+        "type": "heading",
+        "level": 2,
+        "text": "2. Danh sách kiểm tra chi tiết (Checklist)"
+      },
+      {
+        "id": "p_ompfyoj",
+        "type": "paragraph",
+        "text": "Hãy tích chọn từng mục dưới đây trước khi khởi hành để đảm bảo không bỏ sót bất kỳ yếu tố quan trọng nào:"
+      },
+      {
+        "id": "list_n1zcqep",
+        "type": "bullet",
+        "items": [
+          "✓ Kiểm tra giấy tờ tùy thân (CCCD, Bằng lái xe, Đăng ký xe).",
+          "✓ Chuẩn bị thuốc cá nhân và hộp y tế du lịch cơ bản.",
+          "✓ Sạc đầy pin điện thoại, thiết bị dẫn đường & mang pin dự phòng.",
+          "✓ Chuẩn bị nước uống đóng chai và đồ ăn nhẹ trên xe.",
+          "✓ Kiểm tra áp suất lốp, dầu máy và nước làm mát ô tô.",
+          "✓ Xác nhận lại thời gian và điểm đón với nhà xe Khánh Linh Trans."
+        ]
+      },
+      {
+        "id": "h_zabl22x",
+        "type": "heading",
+        "level": 2,
+        "text": "3. Liên hệ đặt xe du lịch uy tín"
+      },
+      {
+        "id": "p_v2dc23r",
+        "type": "paragraph",
+        "text": "Khánh Linh Trans tự hào mang đến dịch vụ cho thuê xe du lịch từ 4 đến 45 chỗ chuyên nghiệp, uy tín hàng đầu. Quý khách có nhu cầu tư vấn báo giá vui lòng liên hệ hotline để nhận nhiều ưu đãi hấp dẫn!"
+      }
+    ],
+    "en": []
+  },
+  "seo": {
+    "metaTitle": {
+      "vi": "Checklist 15 món đồ cần chuẩn bị trước chuyến đi xa",
+      "en": ""
+    },
+    "metaDescription": {
+      "vi": "Danh sách đầy đủ các vật dụng thiết yếu như giấy tờ, đồ y tế, phụ kiện điện tử giúp chuyến đi của bạn luôn chu đáo và trọn vẹn.",
+      "en": ""
+    },
+    "focusKeyword": "checklist vật dụng du lịch",
+    "canonicalUrl": "",
+    "robots": "index, follow",
+    "ogImage": "/uploads/blog/2_1785313527390.jpg",
+    "twitterCard": "summary_large_image",
+    "featuredImageAlt": "Checklist 15 vật dụng không thể thiếu cho chuyến du lịch dài ngày",
+    "imageCaption": "",
+    "faqSchema": false,
+    "breadcrumbSchema": true,
+    "jsonLdSchema": true
+  },
+  "createdAt": "2026-07-28T09:30:00.000Z",
+  "updatedAt": "2026-07-28T09:30:00.000Z"
+}

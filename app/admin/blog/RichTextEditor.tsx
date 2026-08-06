@@ -12,6 +12,12 @@ export default function RichTextEditor({ value, onChange, placeholder }: RichTex
   const editorRef = useRef<HTMLDivElement>(null);
   const [isRawMode, setIsRawMode] = useState(false);
   const [rawText, setRawText] = useState(value || "");
+  const [prevValue, setPrevValue] = useState(value);
+
+  if (value !== prevValue) {
+    setPrevValue(value);
+    setRawText(value || "");
+  }
 
   useEffect(() => {
     if (editorRef.current && !isRawMode) {
@@ -19,7 +25,6 @@ export default function RichTextEditor({ value, onChange, placeholder }: RichTex
         editorRef.current.innerHTML = value || "";
       }
     }
-    setRawText(value || "");
   }, [value, isRawMode]);
 
   function handleEditorInput() {
@@ -174,7 +179,7 @@ export default function RichTextEditor({ value, onChange, placeholder }: RichTex
           className="rte-raw-textarea"
           value={rawText}
           onChange={handleRawTextChange}
-          placeholder="Nhập hoặc chỉnh sửa trực tiếp mã HTML..."
+          placeholder={placeholder || "Nhập hoặc chỉnh sửa trực tiếp mã HTML..."}
         />
       ) : (
         <div

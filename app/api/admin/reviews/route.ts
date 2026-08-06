@@ -16,7 +16,7 @@ export type Review = {
   createdAt: string;
 };
 
-type DbShape = Record<string, any> & {
+type DbShape = Record<string, unknown> & {
   reviews?: Review[];
 };
 
@@ -59,7 +59,7 @@ export async function PUT(req: Request) {
     return unauthorizedResponse();
   }
 
-  let body: any;
+  let body: Record<string, unknown>;
   try {
     body = await req.json();
   } catch {

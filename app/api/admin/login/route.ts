@@ -84,9 +84,10 @@ export async function POST(req: Request) {
     });
 
     return response;
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const errorMsg = error instanceof Error ? error.message : "Lỗi hệ thống khi đăng nhập.";
     return NextResponse.json(
-      { success: false, error: error.message || "Lỗi hệ thống khi đăng nhập." },
+      { success: false, error: errorMsg },
       { status: 500 }
     );
   }

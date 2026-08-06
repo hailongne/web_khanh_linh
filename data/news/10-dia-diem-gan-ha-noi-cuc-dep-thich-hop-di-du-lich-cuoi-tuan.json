@@ -1,0 +1,84 @@
+{
+  "slug": "10-dia-diem-gan-ha-noi-cuc-dep-thich-hop-di-du-lich-cuoi-tuan",
+  "blocks": {
+    "vi": [
+      {
+        "id": "h_diw1oxn",
+        "type": "heading",
+        "level": 2,
+        "text": "1. Tổng quan & Tầm quan trọng"
+      },
+      {
+        "id": "p_lb2yt6y",
+        "type": "paragraph",
+        "text": "Những ngày cuối tuần là khoảng thời gian tuyệt vời để tạm gác lại công việc bận rộn và tận hưởng không khí trong lành tại các điểm du lịch quanh Hà Nội. Lựa chọn đơn vị đồng hành uy tín như Khánh Linh Trans giúp bạn an tâm tuyệt đối trên từng cung đường."
+      },
+      {
+        "id": "h_vro9k3f",
+        "type": "heading",
+        "level": 2,
+        "text": "2. Khám phá những trải nghiệm ấn tượng"
+      },
+      {
+        "id": "p_sn2qp98",
+        "type": "paragraph",
+        "text": "Cảnh quan thiên nhiên tươi đẹp cùng cơ sở hạ tầng giao thông thuận tiện tạo điều kiện lý tưởng cho các chuyến tham quan di chuyển bằng xe ô tô."
+      },
+      {
+        "id": "img_2r7xofd",
+        "type": "image",
+        "src": "/uploads/blog/3_1786003882179.jpg",
+        "alt": "10 địa điểm gần Hà Nội cực đẹp thích hợp đi du lịch cuối tuần",
+        "caption": "Hình ảnh thực tế trong chuyến hành trình du lịch cùng Khánh Linh Trans",
+        "align": "center"
+      },
+      {
+        "id": "p_izc7qaq",
+        "type": "paragraph",
+        "text": "Khách hàng luôn đánh giá cao sự êm ái của dòng xe đời mới và sự niềm nở, chu đáo của đội ngũ bác tài."
+      },
+      {
+        "id": "img_6bnhplp",
+        "type": "image",
+        "src": "/uploads/blog/g_u_kh_nh_linh_1785294925737.jpg",
+        "alt": "10 địa điểm gần Hà Nội cực đẹp thích hợp đi du lịch cuối tuần",
+        "caption": "Đội xe hiện đại phục vụ di chuyển an toàn",
+        "align": "center"
+      },
+      {
+        "id": "h_ebtoyhu",
+        "type": "heading",
+        "level": 2,
+        "text": "3. Liên hệ đặt xe du lịch uy tín"
+      },
+      {
+        "id": "p_3frkrxk",
+        "type": "paragraph",
+        "text": "Khánh Linh Trans tự hào mang đến dịch vụ cho thuê xe du lịch từ 4 đến 45 chỗ chuyên nghiệp, uy tín hàng đầu. Quý khách có nhu cầu tư vấn báo giá vui lòng liên hệ hotline để nhận nhiều ưu đãi hấp dẫn!"
+      }
+    ],
+    "en": []
+  },
+  "seo": {
+    "metaTitle": {
+      "vi": "Top 10 địa điểm du lịch gần Hà Nội đẹp mê ly đi cuối tuần",
+      "en": ""
+    },
+    "metaDescription": {
+      "vi": "Gợi ý 10 tọa độ du lịch lý tưởng quanh Hà Nội như Tam Đảo, Ba Vì, Ninh Bình, Hồ Đại Lải... phù hợp cho chuyến đi 1-2 ngày nghỉ ngơi.",
+      "en": ""
+    },
+    "focusKeyword": "địa điểm du lịch gần Hà Nội",
+    "canonicalUrl": "",
+    "robots": "index, follow",
+    "ogImage": "/uploads/blog/2_1786003882217.jpg",
+    "twitterCard": "summary_large_image",
+    "featuredImageAlt": "10 địa điểm gần Hà Nội cực đẹp thích hợp đi du lịch cuối tuần",
+    "imageCaption": "",
+    "faqSchema": false,
+    "breadcrumbSchema": true,
+    "jsonLdSchema": true
+  },
+  "createdAt": "2026-08-02T16:00:00.000Z",
+  "updatedAt": "2026-08-02T16:00:00.000Z"
+}

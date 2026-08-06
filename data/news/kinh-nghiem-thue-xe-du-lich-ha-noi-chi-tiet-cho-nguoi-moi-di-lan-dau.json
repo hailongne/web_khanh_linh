@@ -1,0 +1,79 @@
+{
+  "slug": "kinh-nghiem-thue-xe-du-lich-ha-noi-chi-tiet-cho-nguoi-moi-di-lan-dau",
+  "blocks": {
+    "vi": [
+      {
+        "id": "h_k0ao75z",
+        "type": "heading",
+        "level": 2,
+        "text": "1. Tổng quan & Tầm quan trọng"
+      },
+      {
+        "id": "p_4x1jw01",
+        "type": "paragraph",
+        "text": "Thuê xe du lịch tại Hà Nội cho gia đình hoặc doanh nghiệp đòi hỏi sự chuẩn bị kỹ lưỡng về hợp đồng, dòng xe và chi phí. Dưới đây là những lưu ý quan trọng giúp bạn an tâm chuyến đi. Lựa chọn đơn vị đồng hành uy tín như Khánh Linh Trans giúp bạn an tâm tuyệt đối trên từng cung đường."
+      },
+      {
+        "id": "h_ncrdz01",
+        "type": "heading",
+        "level": 2,
+        "text": "2. Chi tiết các kinh nghiệm cốt lõi"
+      },
+      {
+        "id": "p_s6n2sf2",
+        "type": "paragraph",
+        "text": "Việc nắm rõ các nguyên tắc an toàn, thời gian di chuyển và chọn dòng xe phù hợp sẽ giúp giảm thiểu rủi ro và tăng tính thoải mái cho toàn bộ hành khách."
+      },
+      {
+        "id": "list_0jpjamq",
+        "type": "bullet",
+        "items": [
+          "Lựa chọn thời điểm xuất phát tránh giờ cao điểm ô nhiễm.",
+          "Liên hệ nhà xe đặt trước từ 3-5 ngày đối với dịp nghỉ lễ.",
+          "Yêu cầu thống nhất hợp đồng minh bạch về phụ phí phát sinh.",
+          "Đảm bảo tài xế có đầy đủ bằng lái và kinh nghiệm đường đèo dốc."
+        ]
+      },
+      {
+        "id": "q_xnoszls",
+        "type": "quote",
+        "text": "Một chuyến đi trọn vẹn bắt đầu từ sự chuẩn bị kỹ lưỡng và một đối tác vận chuyển tận tâm.",
+        "author": "Khánh Linh Trans Editorial"
+      },
+      {
+        "id": "h_31fncwi",
+        "type": "heading",
+        "level": 2,
+        "text": "3. Liên hệ đặt xe du lịch uy tín"
+      },
+      {
+        "id": "p_fjpsvb3",
+        "type": "paragraph",
+        "text": "Khánh Linh Trans tự hào mang đến dịch vụ cho thuê xe du lịch từ 4 đến 45 chỗ chuyên nghiệp, uy tín hàng đầu. Quý khách có nhu cầu tư vấn báo giá vui lòng liên hệ hotline để nhận nhiều ưu đãi hấp dẫn!"
+      }
+    ],
+    "en": []
+  },
+  "seo": {
+    "metaTitle": {
+      "vi": "Kinh nghiệm thuê xe du lịch Hà Nội chi tiết từ A đến Z",
+      "en": ""
+    },
+    "metaDescription": {
+      "vi": "Chia sẻ kinh nghiệm thuê xe du lịch Hà Nội uy tín, hợp đồng rõ ràng, chọn dòng xe phù hợp và các lưu ý giá cả tránh phát sinh chi phí.",
+      "en": ""
+    },
+    "focusKeyword": "thuê xe du lịch Hà Nội",
+    "canonicalUrl": "",
+    "robots": "index, follow",
+    "ogImage": "/uploads/blog/1_1785313522909.jpg",
+    "twitterCard": "summary_large_image",
+    "featuredImageAlt": "Kinh nghiệm thuê xe du lịch Hà Nội chi tiết cho người mới đi lần đầu",
+    "imageCaption": "",
+    "faqSchema": false,
+    "breadcrumbSchema": true,
+    "jsonLdSchema": true
+  },
+  "createdAt": "2026-08-05T09:00:00.000Z",
+  "updatedAt": "2026-08-05T09:00:00.000Z"
+}

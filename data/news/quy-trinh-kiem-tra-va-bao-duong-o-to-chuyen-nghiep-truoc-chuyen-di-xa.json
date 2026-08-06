@@ -1,0 +1,84 @@
+{
+  "slug": "quy-trinh-kiem-tra-va-bao-duong-o-to-chuyen-nghiep-truoc-chuyen-di-xa",
+  "blocks": {
+    "vi": [
+      {
+        "id": "h_dv1s5hu",
+        "type": "heading",
+        "level": 2,
+        "text": "1. Tổng quan & Tầm quan trọng"
+      },
+      {
+        "id": "p_fhgb23j",
+        "type": "paragraph",
+        "text": "Để có chuyến đi an toàn tuyệt đối, việc kiểm tra kỹ thuật xe ô tô định kỳ và trước mỗi chặng đường xa là nguyên tắc bắt buộc của các bác tài. Lựa chọn đơn vị đồng hành uy tín như Khánh Linh Trans giúp bạn an tâm tuyệt đối trên từng cung đường."
+      },
+      {
+        "id": "h_z7wgx5x",
+        "type": "heading",
+        "level": 2,
+        "text": "2. Khám phá những trải nghiệm ấn tượng"
+      },
+      {
+        "id": "p_rn9r2uc",
+        "type": "paragraph",
+        "text": "Cảnh quan thiên nhiên tươi đẹp cùng cơ sở hạ tầng giao thông thuận tiện tạo điều kiện lý tưởng cho các chuyến tham quan di chuyển bằng xe ô tô."
+      },
+      {
+        "id": "img_2ccoxpy",
+        "type": "image",
+        "src": "/uploads/blog/2_1785313527390.jpg",
+        "alt": "Quy trình kiểm tra và bảo dưỡng ô tô chuyên nghiệp trước chuyến đi xa",
+        "caption": "Hình ảnh thực tế trong chuyến hành trình du lịch cùng Khánh Linh Trans",
+        "align": "center"
+      },
+      {
+        "id": "p_idkewd4",
+        "type": "paragraph",
+        "text": "Khách hàng luôn đánh giá cao sự êm ái của dòng xe đời mới và sự niềm nở, chu đáo của đội ngũ bác tài."
+      },
+      {
+        "id": "img_6090q8r",
+        "type": "image",
+        "src": "/uploads/blog/1_1786003882256.jpg",
+        "alt": "Quy trình kiểm tra và bảo dưỡng ô tô chuyên nghiệp trước chuyến đi xa",
+        "caption": "Đội xe hiện đại phục vụ di chuyển an toàn",
+        "align": "center"
+      },
+      {
+        "id": "h_yp9nfpm",
+        "type": "heading",
+        "level": 2,
+        "text": "3. Liên hệ đặt xe du lịch uy tín"
+      },
+      {
+        "id": "p_w0yz6is",
+        "type": "paragraph",
+        "text": "Khánh Linh Trans tự hào mang đến dịch vụ cho thuê xe du lịch từ 4 đến 45 chỗ chuyên nghiệp, uy tín hàng đầu. Quý khách có nhu cầu tư vấn báo giá vui lòng liên hệ hotline để nhận nhiều ưu đãi hấp dẫn!"
+      }
+    ],
+    "en": []
+  },
+  "seo": {
+    "metaTitle": {
+      "vi": "Hướng dẫn bảo dưỡng xe ô tô an toàn trước chuyến đi xa",
+      "en": ""
+    },
+    "metaDescription": {
+      "vi": "Các bước kiểm tra phanh, lốp xe, dầu động cơ và hệ thống chiếu sáng giúp ô tô hoạt động bền bỉ, an toàn trên mọi nẻo đường.",
+      "en": ""
+    },
+    "focusKeyword": "bảo dưỡng xe trước chuyến đi",
+    "canonicalUrl": "",
+    "robots": "index, follow",
+    "ogImage": "/uploads/blog/1_1785313522909.jpg",
+    "twitterCard": "summary_large_image",
+    "featuredImageAlt": "Quy trình kiểm tra và bảo dưỡng ô tô chuyên nghiệp trước chuyến đi xa",
+    "imageCaption": "",
+    "faqSchema": false,
+    "breadcrumbSchema": true,
+    "jsonLdSchema": true
+  },
+  "createdAt": "2026-07-30T15:10:00.000Z",
+  "updatedAt": "2026-07-30T15:10:00.000Z"
+}

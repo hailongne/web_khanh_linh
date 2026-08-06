@@ -1,0 +1,79 @@
+{
+  "slug": "nen-thue-xe-tu-lai-hay-thue-xe-co-tai-xe-rieng-cho-hanh-trinh-xa",
+  "blocks": {
+    "vi": [
+      {
+        "id": "h_xh04ek5",
+        "type": "heading",
+        "level": 2,
+        "text": "1. Giới thiệu & Định hướng hành trình"
+      },
+      {
+        "id": "p_nxowbrd",
+        "type": "paragraph",
+        "text": "Nhiều du khách băn khoăn giữa tự cầm lái hay giao vô-lăng cho bác tài chuyên nghiệp. Cùng phân tích chi tiết ưu nhược điểm của từng hình thức. Đồng hành cùng Khánh Linh Trans, quý khách luôn được đảm bảo tiêu chuẩn xe chất lượng cao và phong cách phục vụ tận tâm."
+      },
+      {
+        "id": "h_031sb7i",
+        "type": "heading",
+        "level": 2,
+        "text": "2. Phân tích kinh nghiệm & Giải pháp tối ưu"
+      },
+      {
+        "id": "p_86q0x1i",
+        "type": "paragraph",
+        "text": "Để tối ưu chi phí và tránh các phát sinh không đáng có, khách hàng nên tìm hiểu kỹ hợp đồng, chính sách cầu đường và chuẩn bị lịch trình rõ ràng trước khi xuất phát."
+      },
+      {
+        "id": "list_4ipkuxq",
+        "type": "bullet",
+        "items": [
+          "Xác định chính xác số lượng thành viên tham gia để chọn xe 7, 16 hay 29 chỗ.",
+          "Trao đổi kỹ với nhà xe về điểm đón trả, chi phí bến bãi và dịch vụ đi kèm.",
+          "Ưu tiên nhà xe có đội ngũ tài xế thông thuộc đường xá miền Bắc.",
+          "Ký hợp đồng thuê xe minh bạch có điều khoản bảo vệ quyền lợi du khách."
+        ]
+      },
+      {
+        "id": "q_zcyopb3",
+        "type": "quote",
+        "text": "Sự an toàn và trải nghiệm thoải mái của du khách luôn là thước đo thành công hàng đầu của Khánh Linh Trans.",
+        "author": "Khánh Linh Trans Editorial"
+      },
+      {
+        "id": "h_7tywy55",
+        "type": "heading",
+        "level": 2,
+        "text": "3. Đặt xe du lịch Khánh Linh Trans nhanh chóng"
+      },
+      {
+        "id": "p_zrjqa9g",
+        "type": "paragraph",
+        "text": "Khánh Linh Trans cung cấp giải pháp cho thuê xe du lịch 4-45 chỗ, xe cưới hỏi, xe đưa đón chuyên gia chất lượng cao. Quý khách vui lòng liên hệ hotline để nhận báo giá ưu đãi nhất!"
+      }
+    ],
+    "en": []
+  },
+  "seo": {
+    "metaTitle": {
+      "vi": "So sánh thuê xe tự lái và thuê xe có lái chuyên nghiệp",
+      "en": ""
+    },
+    "metaDescription": {
+      "vi": "Phân tích bài toán chi phí, độ an toàn và sự thoải mái giữa dịch vụ tự lái và thuê xe có tài xế riêng kinh nghiệm đưa đón.",
+      "en": ""
+    },
+    "focusKeyword": "thuê xe tự lái hay có lái",
+    "canonicalUrl": "",
+    "robots": "index, follow",
+    "ogImage": "/uploads/blog/3_1786003882179.jpg",
+    "twitterCard": "summary_large_image",
+    "featuredImageAlt": "Nên thuê xe tự lái hay thuê xe có tài xế riêng cho hành trình xa?",
+    "imageCaption": "",
+    "faqSchema": false,
+    "breadcrumbSchema": true,
+    "jsonLdSchema": true
+  },
+  "createdAt": "2026-08-02T15:40:00.000Z",
+  "updatedAt": "2026-08-02T15:40:00.000Z"
+}

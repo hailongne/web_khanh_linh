@@ -10,7 +10,7 @@ type SalesContact = {
   avatar: string;
 };
 
-const salesContacts = (db as any).sales as SalesContact[];
+const salesContacts = ((db as unknown) as { sales?: SalesContact[] }).sales || [];
 
 type PanelType = "call" | "zalo" | null;
 

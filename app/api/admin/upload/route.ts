@@ -51,7 +51,7 @@ export async function POST(req: Request) {
   try {
     const buffer = Buffer.from(await file.arrayBuffer());
     await fs.writeFile(targetPath, buffer);
-  } catch (error) {
+  } catch {
     return NextResponse.json({ success: false, error: "Unable to save uploaded file" }, { status: 500 });
   }
 
@@ -91,8 +91,9 @@ export async function DELETE(req: Request) {
 
   try {
     await fs.unlink(absolutePath);
-  } catch (error: any) {
-    if (error?.code !== "ENOENT") {
+  } catch (error: unknown) {
+    const errCode = (error as { code?: string })?.code;
+    if (errCode !== "ENOENT") {
       return NextResponse.json({ success: false, error: "Unable to delete image file" }, { status: 500 });
     }
   }

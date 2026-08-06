@@ -19,16 +19,13 @@
         "text": "Một trong những điểm nhấn của Khánh Linh Trans là việc liên tục bổ sung các dòng xe khách thế hệ mới nhằm nâng cao chất lượng phục vụ. Trong năm 2025, doanh nghiệp đã tiếp nhận lô 10 xe khách 47 chỗ thế hệ mới từ KIM LONG MOTOR, đánh dấu bước mở rộng quy mô đội xe phục vụ các tuyến du lịch, sự kiện và hợp đồng dài hạn.\n\nCác phương tiện được trang bị khoang hành khách rộng rãi, ghế ngồi tiêu chuẩn, hệ thống điều hòa, khoang hành lý lớn cùng nhiều tiện ích nhằm mang đến sự thoải mái cho hành khách trên các hành trình dài."
       },
       {
-        "id": "b_1784883700732_316tb",
-        "type": "gallery",
-        "images": [
-          {
-            "src": "/uploads/blog/g_u_kh_nh_linh_1785294925737.jpg",
-            "alt": "",
-            "caption": ""
-          }
-        ],
-        "columns": 1
+        "id": "b_1786002337850_yp6ol",
+        "type": "image",
+        "src": "/uploads/blog/g_u_kh_nh_linh_1785294925737.jpg",
+        "alt": "",
+        "caption": "Gấu Khánh Linh Trans",
+        "align": "center",
+        "width": "100%"
       },
       {
         "id": "b_1784883549108_jsyk2",
@@ -67,5 +64,5 @@
     "keywords": []
   },
   "createdAt": "2026-07-24T09:02:16.884Z",
-  "updatedAt": "2026-07-29T03:52:25.786Z"
+  "updatedAt": "2026-08-06T07:46:01.722Z"
 }

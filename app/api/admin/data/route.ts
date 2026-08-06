@@ -5,7 +5,7 @@ import { isAuthorized } from "../_lib/adminAuth";
 
 const DB_PATH = path.join(process.cwd(), "db.json");
 
-type DbShape = Record<string, any>;
+type DbShape = Record<string, unknown>;
 
 const VALID_TYPES = ["vehicles", "pricing", "sales", "testimonials", "faq"] as const;
 type DataType = (typeof VALID_TYPES)[number];
@@ -32,55 +32,51 @@ function getLang(url: URL): string {
   return url.searchParams.get("lang")?.trim() || "vi";
 }
 
-function generateId(items: any[]): string {
+function generateId(items: Record<string, unknown>[]): string {
   const maxId = items.reduce((max, item) => {
-    const numericId = Number.parseInt(item?.id, 10);
+    const numericId = Number.parseInt(String(item?.id ?? ""), 10);
     return Number.isFinite(numericId) ? Math.max(max, numericId) : max;
   }, 0);
   return String(maxId + 1);
 }
 
-function getArraySection(db: DbShape, type: DataType, lang?: string): any[] | null {
+function getArraySection(db: DbShape, type: DataType, lang?: string): Record<string, unknown>[] | null {
   if (type === "sales") {
     if (Array.isArray(db.sales)) {
       let modified = false;
-      db.sales.forEach((item: any) => {
+      (db.sales as Record<string, unknown>[]).forEach((item: Record<string, unknown>) => {
         if (!item.id) {
           item.id = crypto.randomUUID();
           modified = true;
         }
       });
       if (modified) writeDb(db);
-      return db.sales;
+      return db.sales as Record<string, unknown>[];
     }
     return null;
   }
   if (type === "vehicles") {
-    return db.vehicles?.[lang || "vi"];
+    const vehicles = db.vehicles as Record<string, Record<string, unknown>[]> | undefined;
+    return vehicles?.[lang || "vi"] || null;
   }
   return null;
 }
 
-function setArraySection(db: DbShape, type: DataType, items: any[], lang?: string): void {
+function setArraySection(db: DbShape, type: DataType, items: Record<string, unknown>[], lang?: string): void {
   if (type === "sales") {
     db.sales = items;
   } else if (type === "vehicles") {
-    db.vehicles = db.vehicles ?? {};
-    db.vehicles[lang || "vi"] = items;
+    const vehicles = (db.vehicles ?? {}) as Record<string, Record<string, unknown>[]>;
+    vehicles[lang || "vi"] = items;
+    db.vehicles = vehicles;
   }
 }
 
-function getObjectSection(db: DbShape, type: DataType, lang: string): any | null {
+function setObjectSection(db: DbShape, type: DataType, lang: string, value: unknown): void {
   if (type === "pricing" || type === "testimonials" || type === "faq") {
-    return db[type]?.[lang];
-  }
-  return null;
-}
-
-function setObjectSection(db: DbShape, type: DataType, lang: string, value: any): void {
-  if (type === "pricing" || type === "testimonials" || type === "faq") {
-    db[type] = db[type] ?? {};
-    db[type][lang] = value;
+    const section = (db[type] ?? {}) as Record<string, unknown>;
+    section[lang] = value;
+    db[type] = section;
   }
 }
 
@@ -104,11 +100,13 @@ export async function GET(req: Request) {
 
   if (type === "vehicles") {
     const lang = getLang(url);
-    return NextResponse.json({ success: true, items: db.vehicles?.[lang] ?? [] });
+    const vehicles = db.vehicles as Record<string, unknown[]> | undefined;
+    return NextResponse.json({ success: true, items: vehicles?.[lang] ?? [] });
   }
 
   const lang = getLang(url);
-  return NextResponse.json({ success: true, data: db[type]?.[lang] ?? null });
+  const section = db[type] as Record<string, unknown> | undefined;
+  return NextResponse.json({ success: true, data: section?.[lang] ?? null });
 }
 
 export async function POST(req: Request) {
@@ -122,9 +120,9 @@ export async function POST(req: Request) {
     return NextResponse.json({ success: false, error: "Invalid or missing type" }, { status: 400 });
   }
 
-  let payload: any;
+  let payload: Record<string, unknown>;
   try {
-    payload = await req.json();
+    payload = (await req.json()) as Record<string, unknown>;
   } catch {
     return NextResponse.json({ success: false, error: "Invalid JSON body" }, { status: 400 });
   }
@@ -134,7 +132,7 @@ export async function POST(req: Request) {
   if (type === "sales" || type === "vehicles") {
     const lang = type === "vehicles" ? getLang(url) : undefined;
     const items = getArraySection(db, type, lang) ?? [];
-    const newItem = { ...payload, id: payload?.id ?? (type === "sales" ? crypto.randomUUID() : generateId(items)) };
+    const newItem = { ...payload, id: (payload?.id as string) ?? (type === "sales" ? crypto.randomUUID() : generateId(items)) };
     setArraySection(db, type, [...items, newItem], lang);
     writeDb(db);
     return NextResponse.json({ success: true, item: newItem }, { status: 201 });
@@ -154,9 +152,9 @@ export async function PUT(req: Request) {
     return NextResponse.json({ success: false, error: "Invalid or missing type" }, { status: 400 });
   }
 
-  let payload: any;
+  let payload: Record<string, unknown>;
   try {
-    payload = await req.json();
+    payload = (await req.json()) as Record<string, unknown>;
   } catch {
     return NextResponse.json({ success: false, error: "Invalid JSON body" }, { status: 400 });
   }

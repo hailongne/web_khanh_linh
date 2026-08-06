@@ -1,4 +1,4 @@
-export const translations: Record<string, any> = {
+export const translations = {
   vi: {
     header: {
       brand: "Khánh Linh Trans",

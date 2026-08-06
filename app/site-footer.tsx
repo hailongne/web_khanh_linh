@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { translations } from "./translations";
 
 type SiteFooterProps = {
@@ -20,7 +21,7 @@ export function SiteFooter({ lang = "vi" }: SiteFooterProps) {
     <footer className="site-footer" id="contact">
       <div className="section-shell site-footer__inner">
         <div className="site-footer__logo-top">
-          <a href="/" aria-label={t.header?.brand || "Khánh Linh Trans"}>
+          <Link href="/" aria-label={t.header?.brand || "Khánh Linh Trans"}>
             <Image
               className="site-footer__brand-logo"
               src="/images/logoKhanhLinhFull.png"
@@ -29,7 +30,7 @@ export function SiteFooter({ lang = "vi" }: SiteFooterProps) {
               height={144}
               priority
             />
-          </a>
+          </Link>
         </div>
 
         <div className="site-footer__grid">
@@ -40,7 +41,7 @@ export function SiteFooter({ lang = "vi" }: SiteFooterProps) {
           <div className="site-footer__column">
             <h2 className="site-footer__heading">{t.footer?.servicesHeading}</h2>
             <nav className="site-footer__nav" aria-label="Dịch vụ footer">
-              {t.footer?.services?.map((item: any) => (
+              {t.footer?.services?.map((item: { label: string; href: string }) => (
                 <a key={item.label} href={item.href}>
                   {item.label}
                 </a>
@@ -51,7 +52,7 @@ export function SiteFooter({ lang = "vi" }: SiteFooterProps) {
           <div className="site-footer__column">
             <h2 className="site-footer__heading">{t.footer?.supportHeading}</h2>
             <nav className="site-footer__nav" aria-label="Hỗ trợ footer">
-              {t.footer?.supportLinks?.map((item: any) => (
+              {t.footer?.supportLinks?.map((item: { label: string; href: string }) => (
                 <a key={item.label} href={item.href}>
                   {item.label}
                 </a>

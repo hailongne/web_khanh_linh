@@ -63,8 +63,9 @@ export default function AdminMediaPage() {
       }
       showToast("success", "Tải tệp ảnh lên thư viện thành công.");
       fetchMedia();
-    } catch (err: any) {
-      showToast("error", err.message || "Lỗi khi tải ảnh.");
+    } catch (err: unknown) {
+      const errorMsg = err instanceof Error ? err.message : "Lỗi khi tải ảnh.";
+      showToast("error", errorMsg);
     } finally {
       setIsUploading(false);
       e.target.value = "";
@@ -112,20 +113,6 @@ export default function AdminMediaPage() {
       title="Media"
       subtitle="Quản lý thư viện ảnh"
       tag="Nội dung media"
-      actions={
-        <label className="admin-button" style={{ cursor: "pointer", display: "inline-flex", alignItems: "center", gap: "6px" }}>
-          <i className={`fas ${isUploading ? "fa-spinner fa-spin" : "fa-upload"}`} aria-hidden="true" />
-          {isUploading ? "Đang tải ảnh..." : "Tải ảnh mới"}
-          <input
-            type="file"
-            accept="image/*"
-            multiple
-            onChange={handleFileUpload}
-            style={{ display: "none" }}
-            disabled={isUploading}
-          />
-        </label>
-      }
     >
       <ToastContainer />
 
@@ -160,6 +147,19 @@ export default function AdminMediaPage() {
               <option value="newest">Mới nhất trước</option>
               <option value="oldest">Cũ nhất trước</option>
             </select>
+
+            <label className="admin-button" style={{ cursor: "pointer", display: "inline-flex", alignItems: "center", gap: "6px", marginLeft: "auto" }}>
+              <i className={`fas ${isUploading ? "fa-spinner fa-spin" : "fa-upload"}`} aria-hidden="true" />
+              {isUploading ? "Đang tải ảnh..." : "Tải ảnh mới"}
+              <input
+                type="file"
+                accept="image/*"
+                multiple
+                onChange={handleFileUpload}
+                style={{ display: "none" }}
+                disabled={isUploading}
+              />
+            </label>
           </div>
         </div>
 
@@ -183,21 +183,25 @@ export default function AdminMediaPage() {
                     <div className="admin-media-card__info">
                       {(media.size / 1024).toFixed(1)} KB &bull; {media.folder}
                     </div>
-                    <div className="admin-media-card__actions">
+                    <div className="admin-media-card__actions" style={{ display: "flex", gap: "6px" }}>
                       <button
                         type="button"
                         onClick={() => handleCopyUrl(media.url)}
                         className="admin-button admin-button--ghost"
-                        style={{ padding: "3px 8px", fontSize: "0.75rem", flex: 1 }}
+                        style={{ padding: "4px 10px", fontSize: "0.76rem", flex: 1, display: "inline-flex", alignItems: "center", justifyContent: "center", gap: "4px" }}
+                        title="Sao chép đường dẫn"
                       >
-                        Copy
+                        <i className="fas fa-copy" style={{ fontSize: "0.78rem" }} aria-hidden="true" />
+                        Sao chép
                       </button>
                       <button
                         type="button"
                         onClick={() => handleDeleteMedia(media)}
                         className="admin-button admin-button--danger"
-                        style={{ padding: "3px 8px", fontSize: "0.75rem" }}
+                        style={{ padding: "4px 10px", fontSize: "0.76rem", display: "inline-flex", alignItems: "center", justifyContent: "center", gap: "4px" }}
+                        title="Xóa tệp ảnh"
                       >
+                        <i className="fas fa-trash-alt" style={{ fontSize: "0.78rem" }} aria-hidden="true" />
                         Xóa
                       </button>
                     </div>

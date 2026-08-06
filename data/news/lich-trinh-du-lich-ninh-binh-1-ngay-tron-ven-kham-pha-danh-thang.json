@@ -1,0 +1,84 @@
+{
+  "slug": "lich-trinh-du-lich-ninh-binh-1-ngay-tron-ven-kham-pha-danh-thang",
+  "blocks": {
+    "vi": [
+      {
+        "id": "h_yj090xf",
+        "type": "heading",
+        "level": 2,
+        "text": "1. Tổng quan & Tầm quan trọng"
+      },
+      {
+        "id": "p_1y47b6y",
+        "type": "paragraph",
+        "text": "Ninh Bình chỉ cách Hà Nội khoảng 90km, là lựa chọn hàng đầu cho các chuyến tham quan 1 ngày với quần thể di sản thiên nhiên thế giới độc đáo. Lựa chọn đơn vị đồng hành uy tín như Khánh Linh Trans giúp bạn an tâm tuyệt đối trên từng cung đường."
+      },
+      {
+        "id": "h_gju4gn9",
+        "type": "heading",
+        "level": 2,
+        "text": "2. Khám phá những trải nghiệm ấn tượng"
+      },
+      {
+        "id": "p_17x3vx7",
+        "type": "paragraph",
+        "text": "Cảnh quan thiên nhiên tươi đẹp cùng cơ sở hạ tầng giao thông thuận tiện tạo điều kiện lý tưởng cho các chuyến tham quan di chuyển bằng xe ô tô."
+      },
+      {
+        "id": "img_ydavwo1",
+        "type": "image",
+        "src": "/uploads/blog/1_1785313522909.jpg",
+        "alt": "Lịch trình du lịch Ninh Bình 1 ngày trọn vẹn khám phá danh thắng",
+        "caption": "Hình ảnh thực tế trong chuyến hành trình du lịch cùng Khánh Linh Trans",
+        "align": "center"
+      },
+      {
+        "id": "p_0bceky4",
+        "type": "paragraph",
+        "text": "Khách hàng luôn đánh giá cao sự êm ái của dòng xe đời mới và sự niềm nở, chu đáo của đội ngũ bác tài."
+      },
+      {
+        "id": "img_vvl32p6",
+        "type": "image",
+        "src": "/uploads/blog/2_1785313527390.jpg",
+        "alt": "Lịch trình du lịch Ninh Bình 1 ngày trọn vẹn khám phá danh thắng",
+        "caption": "Đội xe hiện đại phục vụ di chuyển an toàn",
+        "align": "center"
+      },
+      {
+        "id": "h_c5unk9j",
+        "type": "heading",
+        "level": 2,
+        "text": "3. Liên hệ đặt xe du lịch uy tín"
+      },
+      {
+        "id": "p_41a7p35",
+        "type": "paragraph",
+        "text": "Khánh Linh Trans tự hào mang đến dịch vụ cho thuê xe du lịch từ 4 đến 45 chỗ chuyên nghiệp, uy tín hàng đầu. Quý khách có nhu cầu tư vấn báo giá vui lòng liên hệ hotline để nhận nhiều ưu đãi hấp dẫn!"
+      }
+    ],
+    "en": []
+  },
+  "seo": {
+    "metaTitle": {
+      "vi": "Lịch trình du lịch Ninh Bình 1 ngày tự túc ngắm cảnh cực chill",
+      "en": ""
+    },
+    "metaDescription": {
+      "vi": "Hướng dẫn du lịch Ninh Bình 1 ngày ghé thăm Tràng An, Hang Múa, Chùa Bái Đính và thưởng thức đặc sản thịt dê cơm cháy.",
+      "en": ""
+    },
+    "focusKeyword": "du lịch Ninh Bình 1 ngày",
+    "canonicalUrl": "",
+    "robots": "index, follow",
+    "ogImage": "/uploads/blog/g_u_kh_nh_linh_1785294925737.jpg",
+    "twitterCard": "summary_large_image",
+    "featuredImageAlt": "Lịch trình du lịch Ninh Bình 1 ngày trọn vẹn khám phá danh thắng",
+    "imageCaption": "",
+    "faqSchema": false,
+    "breadcrumbSchema": true,
+    "jsonLdSchema": true
+  },
+  "createdAt": "2026-07-31T11:45:00.000Z",
+  "updatedAt": "2026-07-31T11:45:00.000Z"
+}

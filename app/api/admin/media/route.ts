@@ -74,8 +74,9 @@ export async function GET(req: Request) {
     mediaList.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 
     return NextResponse.json({ success: true, data: mediaList });
-  } catch (error: any) {
-    return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+  } catch (error: unknown) {
+    const errorMsg = error instanceof Error ? error.message : "Internal error";
+    return NextResponse.json({ success: false, error: errorMsg }, { status: 500 });
   }
 }
 
@@ -119,8 +120,9 @@ export async function POST(req: Request) {
       url: publicUrl,
       fileName: uniqueFileName
     });
-  } catch (error: any) {
-    return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+  } catch (error: unknown) {
+    const errorMsg = error instanceof Error ? error.message : "Internal error";
+    return NextResponse.json({ success: false, error: errorMsg }, { status: 500 });
   }
 }
 
@@ -151,7 +153,8 @@ export async function DELETE(req: Request) {
     } else {
       return NextResponse.json({ success: false, error: "Tệp không tồn tại." }, { status: 404 });
     }
-  } catch (error: any) {
-    return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+  } catch (error: unknown) {
+    const errorMsg = error instanceof Error ? error.message : "Internal error";
+    return NextResponse.json({ success: false, error: errorMsg }, { status: 500 });
   }
 }

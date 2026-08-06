@@ -1,0 +1,84 @@
+{
+  "slug": "kinh-nghiem-du-lich-moc-chau-mua-hoa-cai-va-mua-hai-dau-tay",
+  "blocks": {
+    "vi": [
+      {
+        "id": "h_8iigzvr",
+        "type": "heading",
+        "level": 2,
+        "text": "1. Giới thiệu & Định hướng hành trình"
+      },
+      {
+        "id": "p_sj7pi7o",
+        "type": "paragraph",
+        "text": "Mộc Châu quanh năm mát mẻ với những đồi chè xanh ngút ngàn và thiên đường hoa cải trắng. Khám phá ngay lịch trình di chuyển thuận tiện nhất. Đồng hành cùng Khánh Linh Trans, quý khách luôn được đảm bảo tiêu chuẩn xe chất lượng cao và phong cách phục vụ tận tâm."
+      },
+      {
+        "id": "h_iwxfmcv",
+        "type": "heading",
+        "level": 2,
+        "text": "2. Trải nghiệm không gian & Cảnh sắc thực tế"
+      },
+      {
+        "id": "p_ys9s0zb",
+        "type": "paragraph",
+        "text": "Hành trình di chuyển trên xe ô tô du lịch đời mới mang đến cảm giác êm ái, giúp các thành viên trong đoàn giữ trọn năng lượng khám phá thiên nhiên."
+      },
+      {
+        "id": "img_a70qxgx",
+        "type": "image",
+        "src": "/uploads/blog/1_1785313522909.jpg",
+        "alt": "Kinh nghiệm du lịch Mộc Châu mùa hoa cải và mùa hái dâu tây",
+        "caption": "Hình ảnh xe ô tô du lịch Khánh Linh Trans phục vụ đoàn khách",
+        "align": "center"
+      },
+      {
+        "id": "p_0g5t64z",
+        "type": "paragraph",
+        "text": "Nội thất xe rộng rãi, máy lạnh hiện đại cùng khoang chứa hành lý lớn đáp ứng trọn vẹn nhu cầu của những chuyến du lịch kéo dài nhiều ngày."
+      },
+      {
+        "id": "img_46227la",
+        "type": "image",
+        "src": "/uploads/blog/2_1785313527390.jpg",
+        "alt": "Kinh nghiệm du lịch Mộc Châu mùa hoa cải và mùa hái dâu tây",
+        "caption": "Đội xe đa dạng chủng loại đáp ứng mọi hành trình",
+        "align": "center"
+      },
+      {
+        "id": "h_wgnuv0f",
+        "type": "heading",
+        "level": 2,
+        "text": "3. Đặt xe du lịch Khánh Linh Trans nhanh chóng"
+      },
+      {
+        "id": "p_etgu3ka",
+        "type": "paragraph",
+        "text": "Khánh Linh Trans cung cấp giải pháp cho thuê xe du lịch 4-45 chỗ, xe cưới hỏi, xe đưa đón chuyên gia chất lượng cao. Quý khách vui lòng liên hệ hotline để nhận báo giá ưu đãi nhất!"
+      }
+    ],
+    "en": []
+  },
+  "seo": {
+    "metaTitle": {
+      "vi": "Cẩm nang du lịch Mộc Châu các mùa trong năm tự túc",
+      "en": ""
+    },
+    "metaDescription": {
+      "vi": "Thời điểm lý tưởng đi Mộc Châu ngắm hoa đồi chè, đồi hoa cải trắng và thưởng thức đặc sản sữa tươi, bê chao nổi tiếng.",
+      "en": ""
+    },
+    "focusKeyword": "du lịch Mộc Châu mùa nào đẹp",
+    "canonicalUrl": "",
+    "robots": "index, follow",
+    "ogImage": "/uploads/blog/g_u_kh_nh_linh_1785294925737.jpg",
+    "twitterCard": "summary_large_image",
+    "featuredImageAlt": "Kinh nghiệm du lịch Mộc Châu mùa hoa cải và mùa hái dâu tây",
+    "imageCaption": "",
+    "faqSchema": false,
+    "breadcrumbSchema": true,
+    "jsonLdSchema": true
+  },
+  "createdAt": "2026-07-25T10:30:00.000Z",
+  "updatedAt": "2026-07-25T10:30:00.000Z"
+}

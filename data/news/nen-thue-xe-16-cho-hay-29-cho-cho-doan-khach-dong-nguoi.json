@@ -1,0 +1,79 @@
+{
+  "slug": "nen-thue-xe-16-cho-hay-29-cho-cho-doan-khach-dong-nguoi",
+  "blocks": {
+    "vi": [
+      {
+        "id": "h_3tzrago",
+        "type": "heading",
+        "level": 2,
+        "text": "1. Tổng quan & Tầm quan trọng"
+      },
+      {
+        "id": "p_wz89oxf",
+        "type": "paragraph",
+        "text": "Lựa chọn dòng xe phù hợp với số lượng thành viên trong đoàn vừa giúp đảm bảo không gian di chuyển thoải mái, vừa tối ưu chi phí cho hành trình. Lựa chọn đơn vị đồng hành uy tín như Khánh Linh Trans giúp bạn an tâm tuyệt đối trên từng cung đường."
+      },
+      {
+        "id": "h_nc727cu",
+        "type": "heading",
+        "level": 2,
+        "text": "2. Chi tiết các kinh nghiệm cốt lõi"
+      },
+      {
+        "id": "p_zh596hz",
+        "type": "paragraph",
+        "text": "Việc nắm rõ các nguyên tắc an toàn, thời gian di chuyển và chọn dòng xe phù hợp sẽ giúp giảm thiểu rủi ro và tăng tính thoải mái cho toàn bộ hành khách."
+      },
+      {
+        "id": "list_e0jb524",
+        "type": "bullet",
+        "items": [
+          "Lựa chọn thời điểm xuất phát tránh giờ cao điểm ô nhiễm.",
+          "Liên hệ nhà xe đặt trước từ 3-5 ngày đối với dịp nghỉ lễ.",
+          "Yêu cầu thống nhất hợp đồng minh bạch về phụ phí phát sinh.",
+          "Đảm bảo tài xế có đầy đủ bằng lái và kinh nghiệm đường đèo dốc."
+        ]
+      },
+      {
+        "id": "q_59bna9r",
+        "type": "quote",
+        "text": "Một chuyến đi trọn vẹn bắt đầu từ sự chuẩn bị kỹ lưỡng và một đối tác vận chuyển tận tâm.",
+        "author": "Khánh Linh Trans Editorial"
+      },
+      {
+        "id": "h_t5uziod",
+        "type": "heading",
+        "level": 2,
+        "text": "3. Liên hệ đặt xe du lịch uy tín"
+      },
+      {
+        "id": "p_te1q0vz",
+        "type": "paragraph",
+        "text": "Khánh Linh Trans tự hào mang đến dịch vụ cho thuê xe du lịch từ 4 đến 45 chỗ chuyên nghiệp, uy tín hàng đầu. Quý khách có nhu cầu tư vấn báo giá vui lòng liên hệ hotline để nhận nhiều ưu đãi hấp dẫn!"
+      }
+    ],
+    "en": []
+  },
+  "seo": {
+    "metaTitle": {
+      "vi": "So sánh chọn thuê xe 16 chỗ hay 29 chỗ tối ưu chi phí",
+      "en": ""
+    },
+    "metaDescription": {
+      "vi": "Phân tích ưu nhược điểm của xe 16 chỗ Ford Transit, Hyundai Solati và xe 29 chỗ Hyundai County để quý khách dễ dàng lựa chọn.",
+      "en": ""
+    },
+    "focusKeyword": "thuê xe 16 chỗ hay 29 chỗ",
+    "canonicalUrl": "",
+    "robots": "index, follow",
+    "ogImage": "/uploads/blog/2_1785313527390.jpg",
+    "twitterCard": "summary_large_image",
+    "featuredImageAlt": "Nên thuê xe 16 chỗ hay 29 chỗ cho đoàn khách đông người?",
+    "imageCaption": "",
+    "faqSchema": false,
+    "breadcrumbSchema": true,
+    "jsonLdSchema": true
+  },
+  "createdAt": "2026-08-04T14:30:00.000Z",
+  "updatedAt": "2026-08-06T09:11:36.159Z"
+}

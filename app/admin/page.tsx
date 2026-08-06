@@ -1,13 +1,13 @@
 "use client";
 
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import "./admin.css";
 import AdminHeader from "./AdminHeader";
 import ToastContainer from "../components/toast/ToastContainer";
 import { showToast } from "../components/toast/toastService";
-import { getAccessibleMenuItems, Role } from "./adminConfig";
+import { getAccessibleMenuItems, Role, Account } from "./adminConfig";
 
 const TAB_MENU_ITEMS: { key: MenuKey; label: string; icon: string; permission: Role[] }[] = [
   { key: "vehicles", label: "Đội xe", icon: "fas fa-car-side", permission: ["SUPER_ADMIN", "ADMIN"] },
@@ -73,7 +73,7 @@ type AccountInfo = {
   updatedAt: string | null;
 };
 
-function buildHeaders(currentUsername?: string, currentPassword?: string) {
+function buildHeaders(..._args: unknown[]) {
   return {
     "Content-Type": "application/json"
   };
@@ -189,21 +189,24 @@ function AdminPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const tabParam = searchParams.get("tab");
-  const [currentUser, setCurrentUser] = useState<any>(null);
+  const [currentUser, setCurrentUser] = useState<Account | null>(null);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [authorized, setAuthorized] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const [_loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
-  const [menu, setMenu] = useState<MenuKey>("vehicles");
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
 
-  useEffect(() => {
+  const targetMenu = (tabParam && ["vehicles", "pricing", "sales", "reviews", "faq"].includes(tabParam)) ? (tabParam as MenuKey) : "vehicles";
+  const [menu, setMenu] = useState<MenuKey>(targetMenu);
+  const [prevTabParam, setPrevTabParam] = useState(tabParam);
+  if (tabParam !== prevTabParam) {
+    setPrevTabParam(tabParam);
     if (tabParam && ["vehicles", "pricing", "sales", "reviews", "faq"].includes(tabParam)) {
       setMenu(tabParam as MenuKey);
     }
-  }, [tabParam]);
+  }
   const [confirm, setConfirm] = useState<{
     isOpen: boolean;
     title: string;
@@ -531,26 +534,13 @@ function AccountPanel({
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  useEffect(() => {
+  const [prevUsername, setPrevUsername] = useState(username);
+  if (username !== prevUsername) {
+    setPrevUsername(username);
     setNewUsername(username);
-  }, [username]);
-
-  useEffect(() => {
-    loadAccountInfo();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [username, password]);
-
-  function formatDate(value: string | null) {
-    if (!value) return "Chưa có";
-    const date = new Date(value);
-    if (Number.isNaN(date.getTime())) return "Chưa có";
-    return new Intl.DateTimeFormat("vi-VN", {
-      dateStyle: "medium",
-      timeStyle: "short"
-    }).format(date);
   }
 
-  async function loadAccountInfo() {
+  const loadAccountInfo = useCallback(async () => {
     setLoading(true);
     try {
       const response = await fetch("/api/admin/account", {
@@ -568,7 +558,21 @@ function AccountPanel({
     } finally {
       setLoading(false);
     }
+  }, [username, password, onError, setLoading]);
+
+  function formatDate(value: string | null) {
+    if (!value) return "Chưa có";
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return "Chưa có";
+    return new Intl.DateTimeFormat("vi-VN", {
+      dateStyle: "medium",
+      timeStyle: "short"
+    }).format(date);
   }
+
+  useEffect(() => {
+    Promise.resolve().then(loadAccountInfo);
+  }, [loadAccountInfo]);
 
   async function submitUsername(event: React.FormEvent) {
     event.preventDefault();
@@ -820,10 +824,27 @@ function VehiclesPanel({
   const [editingId, setEditingId] = useState<string | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [warning, setWarning] = useState<string | null>(null);
+  const [initialViForm, setInitialViForm] = useState<{ name: string; badge: string; price: string; image: string; specs: string } | null>(null);
+  const [initialEnForm, setInitialEnForm] = useState<{ name: string; badge: string; price: string; image: string; specs: string } | null>(null);
 
   useEffect(() => {
     if (warning) showToast("warning", warning);
   }, [warning]);
+
+  const resetForm = useCallback(() => {
+    setViForm({ name: "", badge: "", price: "", image: "", specs: "" });
+    setEnForm({ name: "", badge: "", price: "", image: "", specs: "" });
+    setSharedImageFile(null);
+    setSharedImagePreview("");
+    setEditingId(null);
+    setInitialViForm(null);
+    setInitialEnForm(null);
+  }, []);
+
+  const closeModal = useCallback(() => {
+    setModalOpen(false);
+    resetForm();
+  }, [resetForm]);
 
   useEffect(() => {
     if (!modalOpen) return;
@@ -834,21 +855,7 @@ function VehiclesPanel({
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [modalOpen]);
-
-  useEffect(() => {
-    if (warning) showToast("warning", warning);
-  }, [warning]);
-
-  useEffect(() => {
-    if (warning) showToast("warning", warning);
-  }, [warning]);
-  const [initialViForm, setInitialViForm] = useState<{ name: string; badge: string; price: string; image: string; specs: string } | null>(null);
-  const [initialEnForm, setInitialEnForm] = useState<{ name: string; badge: string; price: string; image: string; specs: string } | null>(null);
-
-  useEffect(() => {
-    if (warning) showToast("warning", warning);
-  }, [warning]);
+  }, [modalOpen, closeModal]);
 
   function openCreate() {
     resetForm();
@@ -858,11 +865,6 @@ function VehiclesPanel({
   function openEdit(item: LocalizedVehicle) {
     fillForm(item);
     setModalOpen(true);
-  }
-
-  function closeModal() {
-    setModalOpen(false);
-    resetForm();
   }
 
   function handleDeleteInModal() {
@@ -918,16 +920,7 @@ function VehiclesPanel({
     }
   }
 
-  function resetForm() {
-    setViForm({ name: "", badge: "", price: "", image: "", specs: "" });
-    setEnForm({ name: "", badge: "", price: "", image: "", specs: "" });
-    setSharedImageFile(null);
-    setSharedImagePreview("");
-    setEditingId(null);
-    setWarning(null);
-    setInitialViForm(null);
-    setInitialEnForm(null);
-  }
+
 
   function fillForm(item: LocalizedVehicle) {
     setEditingId(item.id);
@@ -1119,30 +1112,6 @@ function VehiclesPanel({
     } finally {
       setLoading(false);
     }
-  }
-
-  function deleteItem(id: string) {
-    openConfirm(
-      "Bạn có chắc chắn không?",
-      async () => {
-        setLoading(true);
-        try {
-          await Promise.all([
-            api.del(`/api/admin/data?type=vehicles&lang=vi&id=${id}`),
-            api.del(`/api/admin/data?type=vehicles&lang=en&id=${id}`)
-          ]);
-          onSuccess("Xóa xe thành công.");
-          await loadItems();
-          if (editingId === id) closeModal();
-        } catch (err) {
-          onError(err instanceof Error ? err.message : "Lỗi xóa dữ liệu");
-        } finally {
-          setLoading(false);
-        }
-      },
-      "Xóa",
-      "Hủy"
-    );
   }
 
   return (
@@ -1369,12 +1338,7 @@ function PricingPanel({
   });
   const [warning, setWarning] = useState<string | null>(null);
 
-  useEffect(() => {
-    loadData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  async function loadData() {
+  const loadData = useCallback(async () => {
     setLoading(true);
     try {
       const [viResult, enResult] = await Promise.all([
@@ -1388,7 +1352,11 @@ function PricingPanel({
     } finally {
       setLoading(false);
     }
-  }
+  }, [api, setLoading, onError]);
+
+  useEffect(() => {
+    Promise.resolve().then(loadData);
+  }, [loadData]);
 
   async function saveData(event: React.FormEvent) {
     event.preventDefault();
@@ -1408,11 +1376,6 @@ function PricingPanel({
 
   function triggerVietnameseWarning() {
     setWarning("Cảnh báo: bạn vừa chỉnh sửa tiếng Việt. Vui lòng kiểm tra và cập nhật đúng cả hai ngôn ngữ trước khi lưu.");
-  }
-
-  function validateRowCount() {
-    const msg = "⚠️ Cảnh báo: số lượng hàng không khớp! Tiếng Việt: " + viData.rows.length + " hàng, Tiếng Anh: " + enData.rows.length + " hàng. Vui lòng thêm/xóa hàng để khớp cả hai ngôn ngữ.";
-    return msg;
   }
 
   function updateRow(language: "vi" | "en", index: number, field: keyof PricingRow, value: string) {
@@ -1697,6 +1660,18 @@ function SalesPanel({
   const [editingId, setEditingId] = useState<string | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
 
+  const resetForm = useCallback(() => {
+    setForm({ id: "", name: "", phone: "", zalo: "", avatar: "" });
+    setImageFile(null);
+    setImagePreview("");
+    setEditingId(null);
+  }, []);
+
+  const closeModal = useCallback(() => {
+    setModalOpen(false);
+    resetForm();
+  }, [resetForm]);
+
   function openCreate() {
     resetForm();
     setModalOpen(true);
@@ -1705,11 +1680,6 @@ function SalesPanel({
   function openEdit(item: SalesPerson) {
     fillForm(item);
     setModalOpen(true);
-  }
-
-  function closeModal() {
-    setModalOpen(false);
-    resetForm();
   }
 
   useEffect(() => {
@@ -1721,7 +1691,7 @@ function SalesPanel({
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [modalOpen]);
+  }, [modalOpen, closeModal]);
 
   function handleDeleteInModal() {
     if (!editingId) return;
@@ -1764,12 +1734,7 @@ function SalesPanel({
     }
   }
 
-  function resetForm() {
-    setForm({ id: "", name: "", phone: "", zalo: "", avatar: "" });
-    setImageFile(null);
-    setImagePreview("");
-    setEditingId(null);
-  }
+
 
   function fillForm(item: SalesPerson) {
     setEditingId(String(item.id));
@@ -1884,7 +1849,7 @@ function SalesPanel({
     }
   }
 
-  function deleteItem(id: string) {
+  function _deleteItem(id: string) {
     openConfirm(
       "Bạn có chắc chắn không?",
       async () => {
@@ -2066,12 +2031,7 @@ function FaqPanel({
   const [enData, setEnData] = useState<FaqData>({ heading: "", lead: "", items: [] });
   const [warning, setWarning] = useState<string | null>(null);
 
-  useEffect(() => {
-    loadData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  async function loadData() {
+  const loadData = useCallback(async () => {
     setLoading(true);
     try {
       const [viResult, enResult] = await Promise.all([
@@ -2085,7 +2045,11 @@ function FaqPanel({
     } finally {
       setLoading(false);
     }
-  }
+  }, [api, setLoading, onError]);
+
+  useEffect(() => {
+    Promise.resolve().then(loadData);
+  }, [loadData]);
 
   async function saveData(event: React.FormEvent) {
     event.preventDefault();

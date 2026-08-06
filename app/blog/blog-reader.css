@@ -1,0 +1,1497 @@
+/* ==========================================================================
+   100% ISOLATED USER BLOG SYSTEM - SAMSUNG NEWS DESIGN LANGUAGE
+   Namespace: .sn-* & .blog-reader-*
+   Desktop (≥1200px) | Tablet (768px–1199px) | Mobile (<768px)
+   ========================================================================== */
+
+/* Blog Root Reset & Isolation */
+.blog-reader-root {
+  min-height: 100vh;
+  background-color: #FFFFFF !important;
+  color: #111827 !important;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
+  font-size: 16px;
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+.blog-reader-root *,
+.blog-reader-root *::before,
+.blog-reader-root *::after {
+  box-sizing: border-box;
+}
+
+/* Minimal Clean Blog Header (Unbreakable Single Line) */
+.blog-reader-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(255, 255, 255, 0.95) !important;
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid #E5E7EB;
+  padding: 12px 20px;
+}
+
+.blog-reader-header-inner {
+  max-width: 1560px;
+  width: 100%;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: nowrap;
+}
+
+.blog-reader-brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+  color: #111827 !important;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.blog-reader-brand-logo {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.blog-reader-brand-title {
+  font-size: 1.05rem;
+  font-weight: 700 !important;
+  letter-spacing: -0.01em;
+  color: #111827 !important;
+  white-space: nowrap;
+  display: inline-block;
+}
+
+.blog-reader-brand-badge {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #0E5CAB !important;
+  background: #EBF4FC;
+  padding: 2px 8px;
+  border-radius: 99px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.blog-reader-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.blog-reader-back-site {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #4B5563 !important;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: color 0.2s ease;
+}
+
+.blog-reader-back-site:hover {
+  color: #0E5CAB !important;
+}
+
+/* Category Filters & Search Bar */
+.blog-reader-filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
+.blog-reader-categories {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.blog-reader-cat-pill {
+  padding: 6px 16px;
+  border-radius: 99px;
+  border: 1px solid #E5E7EB;
+  background: #FFFFFF;
+  color: #374151 !important;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.blog-reader-cat-pill:hover,
+.blog-reader-cat-pill--active {
+  background: #0E5CAB !important;
+  color: #FFFFFF !important;
+  border-color: #0E5CAB !important;
+}
+
+.blog-reader-search {
+  position: relative;
+  min-width: 260px;
+}
+
+.blog-reader-search-input {
+  width: 100%;
+  padding: 8px 14px 8px 36px;
+  border-radius: 99px;
+  border: 1px solid #E5E7EB;
+  background: #FFFFFF;
+  font-size: 0.85rem;
+  color: #111827;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.blog-reader-search-input:focus {
+  border-color: #0E5CAB;
+  box-shadow: 0 0 0 3px rgba(14, 92, 171, 0.1);
+}
+
+.blog-reader-search-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #9CA3AF;
+  pointer-events: none;
+}
+
+/* Main Portal Container */
+.sn-portal-container {
+  width: 95%;
+  max-width: 1560px;
+  margin: 0 auto;
+  padding: 32px 24px 80px 24px;
+}
+
+.sn-portal-body {
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
+}
+
+/* Section Titles */
+.sn-section-title-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  border-bottom: 2px solid #E5E7EB;
+  padding-bottom: 12px;
+}
+
+.sn-section-title {
+  font-size: 1.5rem;
+  font-weight: 800 !important;
+  color: #111827 !important;
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+.sn-section-badge {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #0E5CAB !important;
+  background: #EBF4FC;
+  padding: 4px 12px;
+  border-radius: 99px;
+  letter-spacing: 0.5px;
+}
+
+.sn-section-arrow {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #0E5CAB !important;
+  cursor: pointer;
+}
+
+/* Source Badge */
+.sn-source-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #5C6B7A;
+  margin-bottom: 10px;
+}
+
+.sn-source-badge img {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  object-fit: contain;
+}
+
+.sn-portal-cat-tag {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  background: #0E5CAB;
+  color: #FFFFFF !important;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 4px 12px;
+  border-radius: 99px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  box-shadow: 0 4px 12px rgba(14, 92, 171, 0.25);
+}
+
+.sn-portal-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.82rem;
+  color: #6B7280;
+}
+
+/* ==========================================================================
+   DESKTOP LAYOUT (≥1200px) - SAMSUNG NEWS DESKTOP PORTAL
+   ========================================================================== */
+
+/* Hero Banner Card on Desktop */
+.sn-portal-hero-card {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 36px;
+  background: #FFFFFF;
+  border-radius: 20px;
+  overflow: hidden;
+  border: 1px solid #E8EEF5;
+  box-shadow: 0 6px 20px rgba(14, 92, 171, 0.04);
+  text-decoration: none;
+  color: inherit;
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s ease, border-color 0.35s ease;
+}
+
+.sn-portal-hero-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 36px rgba(14, 92, 171, 0.09), 0 2px 6px rgba(14, 92, 171, 0.03);
+  border-color: rgba(14, 92, 171, 0.4);
+}
+
+.sn-portal-hero-card:hover .sn-portal-hero-title {
+  color: #0E5CAB !important;
+  transition: color 0.3s ease;
+}
+
+.sn-portal-hero-thumb-wrap {
+  position: relative;
+  width: 100%;
+  height: 400px;
+  background: #F3F4F6;
+  overflow: hidden;
+}
+
+.sn-portal-hero-thumb-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.sn-portal-hero-card:hover .sn-portal-hero-thumb-wrap img {
+  transform: scale(1.03);
+}
+
+.sn-portal-hero-info {
+  padding: 36px 36px 36px 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.sn-portal-hero-title {
+  font-size: 2.1rem;
+  font-weight: 800 !important;
+  line-height: 1.3;
+  color: #111827 !important;
+  margin: 12px 0 16px 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  transition: color 0.3s ease;
+}
+
+.sn-portal-hero-excerpt {
+  font-size: 1.05rem;
+  color: #4B5563 !important;
+  line-height: 1.65;
+  margin: 0 0 24px 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* 2. Dành Cho Bạn (Recommended Desktop Grid: 2 Columns) */
+.sn-recommended-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
+}
+
+.sn-recommended-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background: #FFFFFF;
+  border-radius: 18px;
+  padding: 18px;
+  border: 1px solid #E8EEF5;
+  box-shadow: 0 4px 14px rgba(14, 92, 171, 0.03);
+  text-decoration: none;
+  color: inherit;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.sn-recommended-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(14, 92, 171, 0.35);
+  box-shadow: 0 10px 28px rgba(14, 92, 171, 0.08);
+}
+
+.sn-recommended-card:hover .sn-recommended-title {
+  color: #0E5CAB !important;
+  transition: color 0.3s ease;
+}
+
+.sn-recommended-card:hover .sn-recommended-thumb {
+  transform: scale(1.03);
+}
+
+.sn-recommended-body {
+  display: grid;
+  grid-template-columns: 1fr 90px;
+  gap: 12px;
+  align-items: flex-start;
+  margin: 8px 0 12px 0;
+}
+
+.sn-recommended-content {
+  display: flex;
+  align-items: flex-start;
+}
+
+.sn-recommended-title {
+  font-size: 1.02rem;
+  font-weight: 700 !important;
+  line-height: 1.35;
+  color: #111827 !important;
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.sn-recommended-thumb-wrap {
+  width: 90px;
+  height: 90px;
+  border-radius: 14px;
+  overflow: hidden;
+  background: #F3F4F6;
+  flex-shrink: 0;
+}
+
+.sn-recommended-thumb {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* 3. Được Quan Tâm (Trending Ranked Desktop Grid: 2 Columns - Matching Image 3 Layout) */
+.sn-trending-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
+}
+
+.sn-trending-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background: #FFFFFF;
+  border-radius: 18px;
+  padding: 18px;
+  border: 1px solid #E8EEF5;
+  box-shadow: 0 4px 14px rgba(14, 92, 171, 0.03);
+  text-decoration: none;
+  color: inherit;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.sn-trending-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(14, 92, 171, 0.35);
+  box-shadow: 0 10px 28px rgba(14, 92, 171, 0.08);
+}
+
+.sn-trending-card:hover .sn-trending-title {
+  color: #0E5CAB !important;
+  transition: color 0.3s ease;
+}
+
+.sn-trending-card:hover .sn-trending-thumb {
+  transform: scale(1.03);
+}
+
+.sn-trending-thumb {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.sn-trending-body {
+  display: grid;
+  grid-template-columns: 1fr 90px;
+  gap: 12px;
+  align-items: flex-start;
+  margin: 8px 0 12px 0;
+}
+
+.sn-trending-content {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.sn-trending-rank {
+  font-size: 1.6rem;
+  font-weight: 900 !important;
+  color: #0E5CAB !important;
+  line-height: 1;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.sn-trending-title {
+  font-size: 1.02rem;
+  font-weight: 700 !important;
+  line-height: 1.35;
+  color: #111827 !important;
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.sn-trending-thumb-wrap {
+  width: 90px;
+  height: 90px;
+  border-radius: 14px;
+  overflow: hidden;
+  background: #F3F4F6;
+  flex-shrink: 0;
+}
+
+.sn-trending-thumb {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* 4. Mới Đăng Cards (Exact Match with Trending Cards) */
+.sn-latest-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
+}
+
+.sn-category-feed-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 24px;
+}
+
+.sn-latest-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background: #FFFFFF;
+  border-radius: 18px;
+  padding: 18px;
+  border: 1px solid #E8EEF5;
+  box-shadow: 0 4px 14px rgba(14, 92, 171, 0.03);
+  text-decoration: none;
+  color: inherit;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.sn-latest-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(14, 92, 171, 0.35);
+  box-shadow: 0 10px 28px rgba(14, 92, 171, 0.08);
+}
+
+.sn-latest-card:hover .sn-latest-title {
+  color: #0E5CAB !important;
+  transition: color 0.3s ease;
+}
+
+.sn-latest-card:hover .sn-latest-thumb {
+  transform: scale(1.03);
+}
+
+.sn-latest-body {
+  display: grid;
+  grid-template-columns: 1fr 90px;
+  gap: 12px;
+  align-items: flex-start;
+  margin: 8px 0 12px 0;
+}
+
+.sn-latest-content {
+  display: flex;
+  align-items: flex-start;
+}
+
+.sn-latest-title {
+  font-size: 1.02rem;
+  font-weight: 700 !important;
+  line-height: 1.35;
+  color: #111827 !important;
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.sn-latest-thumb-wrap {
+  width: 90px;
+  height: 90px;
+  border-radius: 14px;
+  overflow: hidden;
+  background: #F3F4F6;
+  flex-shrink: 0;
+}
+
+.sn-latest-thumb {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ==========================================================================
+   TABLET LAYOUT (768px – 1199px) - OPTIMIZED TABLET SAMSUNG NEWS
+   ========================================================================== */
+
+@media (max-width: 1199px) and (min-width: 768px) {
+  .sn-portal-hero-card {
+    grid-template-columns: 1fr;
+  }
+  .sn-portal-hero-thumb-wrap {
+    height: 320px;
+  }
+  .sn-portal-hero-info {
+    padding: 24px;
+  }
+  .sn-portal-hero-title {
+    font-size: 1.6rem;
+  }
+
+  .sn-recommended-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+  }
+
+  .sn-recommended-card {
+    grid-template-columns: 140px 1fr;
+    gap: 14px;
+    padding: 14px;
+  }
+
+  .sn-recommended-thumb-wrap {
+    height: 110px;
+  }
+
+  .sn-trending-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+  }
+
+  .sn-trending-card {
+    grid-template-columns: 32px 1fr 90px;
+    gap: 12px;
+    padding: 14px;
+  }
+
+  .sn-trending-thumb {
+    width: 90px;
+    height: 72px;
+  }
+
+  .sn-latest-grid,
+  .sn-category-feed-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+  }
+}
+
+/* ==========================================================================
+   MOBILE LAYOUT (<768px) - SAMSUNG NEWS MOBILE APP
+   ========================================================================== */
+
+@media (max-width: 767px) {
+  .sn-portal-container {
+    padding: 16px 12px 80px 12px;
+  }
+
+  .sn-portal-hero-card {
+    grid-template-columns: 1fr;
+  }
+
+  .sn-portal-hero-thumb-wrap {
+    height: 220px;
+  }
+
+  .sn-portal-hero-info {
+    padding: 16px;
+  }
+
+  .sn-portal-hero-title {
+    font-size: 1.3rem;
+  }
+
+  .sn-recommended-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .sn-recommended-card {
+    grid-template-columns: 100px 1fr;
+    gap: 12px;
+    padding: 12px;
+  }
+
+  .sn-recommended-thumb-wrap {
+    height: 85px;
+  }
+
+  .sn-trending-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .sn-trending-card {
+    padding: 14px;
+  }
+
+  .sn-trending-body {
+    grid-template-columns: 1fr 75px;
+    gap: 10px;
+  }
+
+  .sn-trending-thumb-wrap {
+    width: 75px;
+    height: 75px;
+  }
+
+  .sn-latest-grid,
+  .sn-category-feed-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+}
+
+/* Single Article Detail Page (Full Desktop Width Reading View) */
+.blog-reader-container {
+  width: 95%;
+  max-width: 1560px;
+  margin: 0 auto;
+  padding: 40px 24px 80px 24px;
+}
+
+.blog-reader-article-wrap {
+  width: 100%;
+  max-width: 1560px;
+  margin: 0 auto;
+}
+
+.blog-reader-back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #4B5563 !important;
+  text-decoration: none;
+  margin-bottom: 24px;
+  transition: color 0.2s ease;
+}
+
+.blog-reader-back-btn:hover {
+  color: #0E5CAB !important;
+}
+
+.blog-reader-article-title {
+  font-size: clamp(2rem, 4vw, 2.6rem);
+  font-weight: 800 !important;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+  color: #111827 !important;
+  margin: 0 0 16px 0;
+}
+
+.blog-reader-article-sapo {
+  font-size: 1.15rem;
+  line-height: 1.65;
+  color: #4B5563 !important;
+  font-style: italic;
+  margin-bottom: 28px;
+  border-left: 3px solid #0E5CAB;
+  padding-left: 16px;
+}
+
+.blog-reader-meta-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 0;
+  border-top: 1px solid #E5E7EB;
+  border-bottom: 1px solid #E5E7EB;
+  margin-bottom: 36px;
+  font-size: 0.85rem;
+  color: #6B7280;
+}
+
+.blog-reader-author-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.blog-reader-author-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: #E5E7EB;
+}
+
+.blog-reader-author-name {
+  font-weight: 700;
+  color: #111827 !important;
+}
+
+.blog-reader-cover-photo {
+  width: 100%;
+  max-height: 520px;
+  object-fit: cover;
+  border-radius: 14px;
+  margin-bottom: 40px;
+}
+
+/* Article Body Typography */
+.blog-reader-body {
+  font-size: 1.18rem;
+  line-height: 1.85;
+  color: #1F2937 !important;
+}
+
+.blog-reader-body p {
+  margin-bottom: 24px;
+}
+
+.blog-reader-body h1,
+.blog-reader-body h2,
+.blog-reader-body h3,
+.blog-reader-body h4 {
+  color: #111827 !important;
+  font-weight: 800 !important;
+  line-height: 1.3;
+  margin-top: 40px;
+  margin-bottom: 16px;
+}
+
+.blog-reader-body h2 {
+  font-size: 1.65rem;
+  border-bottom: 1px solid #F3F4F6;
+  padding-bottom: 8px;
+}
+
+.blog-reader-body h3 {
+  font-size: 1.35rem;
+}
+
+.blog-reader-body blockquote {
+  border-left: 3px solid #0E5CAB;
+  background: #FFFFFF;
+  border: 1px solid #E8EEF5;
+  padding: 20px 24px;
+  border-radius: 0 12px 12px 0;
+  margin: 32px 0;
+  font-size: 1.1rem;
+  font-style: italic;
+  color: #334155;
+}
+
+.blog-reader-body img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 12px;
+  margin: 32px 0;
+}
+
+.blog-reader-body code {
+  background: #F3F4F6;
+  color: #0E5CAB;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 0.9em;
+  font-family: monospace;
+}
+
+.blog-reader-body pre {
+  background: #0F172A;
+  color: #F8FAFC;
+  padding: 20px;
+  border-radius: 12px;
+  overflow-x: auto;
+  margin: 32px 0;
+}
+
+.blog-reader-body pre code {
+  background: transparent;
+  color: inherit;
+  padding: 0;
+}
+
+.blog-reader-body ul,
+.blog-reader-body ol {
+  padding-left: 24px;
+  margin-bottom: 24px;
+}
+
+.blog-reader-body li {
+  margin-bottom: 8px;
+}
+
+/* Recommended Articles Section at Bottom of Post */
+.blog-reader-related-section {
+  margin-top: 60px;
+  padding-top: 36px;
+  border-top: 1px solid #E5E7EB;
+}
+
+.blog-reader-related-header {
+  font-size: 1.4rem;
+  font-weight: 800 !important;
+  color: #111827 !important;
+  margin-bottom: 24px;
+}
+
+.blog-reader-related-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.blog-reader-related-card {
+  display: flex;
+  flex-direction: column;
+  text-decoration: none;
+  color: inherit;
+  background: #FFFFFF;
+  border-radius: 14px;
+  padding: 16px;
+  border: 1px solid #E8EEF5;
+  box-shadow: 0 4px 14px rgba(14, 92, 171, 0.03);
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.blog-reader-related-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(14, 92, 171, 0.35);
+  box-shadow: 0 10px 28px rgba(14, 92, 171, 0.08);
+}
+
+.blog-reader-related-card:hover .blog-reader-related-title {
+  color: #0E5CAB !important;
+  transition: color 0.3s ease;
+}
+
+.blog-reader-related-card:hover .blog-reader-related-thumb {
+  transform: scale(1.03);
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.blog-reader-related-card:hover {
+  transform: translateY(-4px);
+  border-color: #0E5CAB;
+}
+
+.blog-reader-related-thumb-wrap {
+  width: 100%;
+  height: 140px;
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 12px;
+  background: #F3F4F6;
+}
+
+.blog-reader-related-thumb {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.blog-reader-related-cat {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #0E5CAB !important;
+  margin-bottom: 6px;
+}
+
+.blog-reader-related-title {
+  font-size: 0.95rem;
+  font-weight: 700 !important;
+  line-height: 1.35;
+  color: #111827 !important;
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Minimal Footer */
+.blog-reader-footer {
+  border-top: 1px solid #E5E7EB;
+  padding: 32px 24px;
+  text-align: center;
+  font-size: 0.85rem;
+  color: #6B7280;
+  margin-top: 60px;
+}
+
+.blog-reader-empty {
+  text-align: center;
+  padding: 60px 20px;
+  color: #6B7280;
+}
+
+/* Mobile Fixed Bottom Navigation Bar */
+.sn-bottom-nav {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .sn-bottom-nav {
+    display: flex;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 58px;
+    background: rgba(255, 255, 255, 0.98);
+    backdrop-filter: blur(12px);
+    border-top: 1px solid #E5E7EB;
+    z-index: 999;
+    justify-content: space-around;
+    align-items: center;
+    box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.06);
+  }
+
+  .sn-nav-btn {
+    background: transparent;
+    border: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    color: #6B7280;
+    font-size: 0.72rem;
+    font-weight: 600;
+    cursor: pointer;
+    flex: 1;
+    height: 100%;
+    transition: color 0.15s ease;
+  }
+
+  .sn-nav-btn--active {
+    color: #0E5CAB !important;
+    font-weight: 800;
+  }
+
+  .sn-nav-icon {
+    font-size: 1.2rem;
+    line-height: 1;
+  }
+
+  .blog-reader-related-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ==========================================================================
+   GRANULAR MOBILE FLUID SCALING SYSTEM (≤767px, ≤576px, ≤430px, ≤390px, ≤360px, ≤320px)
+   Proportional Mobile Scaling for Samsung News UI & Article Reader
+   NOTE: DESKTOP (≥1200px) AND TABLET (768px-1199px) REMAIN 100% UNCHANGED (0px DIFF)
+   ========================================================================== */
+
+@media (max-width: 767px) {
+  /* Fluid Container & Layout Spacing */
+  .sn-portal-container,
+  .blog-reader-container {
+    width: 100%;
+    padding: clamp(12px, 3.5vw, 20px) clamp(10px, 3vw, 16px) clamp(60px, 15vw, 80px);
+  }
+
+  .sn-portal-body {
+    gap: clamp(20px, 5.5vw, 32px);
+  }
+
+  .sn-section-title-wrap {
+    margin-bottom: clamp(10px, 2.5vw, 14px);
+    padding-bottom: clamp(6px, 1.8vw, 10px);
+  }
+
+  .sn-section-title {
+    font-size: clamp(1.1rem, 4.2vw, 1.35rem);
+  }
+
+  /* 1. Hero Card Fluid Scaling */
+  .sn-portal-hero-card {
+    grid-template-columns: 1fr;
+    border-radius: clamp(10px, 3vw, 16px);
+  }
+
+  .sn-portal-hero-thumb-wrap {
+    height: clamp(140px, 42vw, 210px);
+  }
+
+  .sn-portal-hero-info {
+    padding: clamp(10px, 3vw, 16px);
+  }
+
+  .sn-portal-hero-title {
+    font-size: clamp(1.02rem, 3.8vw, 1.25rem);
+    margin: clamp(4px, 1.2vw, 8px) 0;
+  }
+
+  .sn-portal-hero-excerpt {
+    font-size: clamp(0.78rem, 2.8vw, 0.9rem);
+    margin-bottom: clamp(6px, 1.8vw, 12px);
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+  }
+
+  /* 2. Recommended Cards Fluid Scaling */
+  .sn-recommended-grid {
+    grid-template-columns: 1fr;
+    gap: clamp(8px, 2.2vw, 12px);
+  }
+
+  .sn-recommended-card {
+    grid-template-columns: clamp(80px, 24vw, 110px) 1fr;
+    gap: clamp(8px, 2.2vw, 12px);
+    padding: clamp(8px, 2.2vw, 12px);
+    border-radius: clamp(10px, 2.5vw, 14px);
+  }
+
+  .sn-recommended-thumb-wrap {
+    height: clamp(70px, 20vw, 92px);
+    border-radius: clamp(8px, 2vw, 10px);
+  }
+
+  .sn-recommended-title {
+    font-size: clamp(0.8rem, 3vw, 0.92rem);
+    margin-bottom: 3px;
+  }
+
+  .sn-recommended-excerpt {
+    font-size: clamp(0.72rem, 2.6vw, 0.82rem);
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    line-clamp: 1;
+    margin-bottom: 4px;
+  }
+
+  /* 3. Trending Ranked Cards Fluid Scaling */
+  .sn-trending-grid {
+    grid-template-columns: 1fr;
+    gap: clamp(8px, 2.2vw, 12px);
+  }
+
+  .sn-trending-card {
+    padding: clamp(10px, 2.8vw, 14px);
+    border-radius: clamp(10px, 2.5vw, 14px);
+  }
+
+  .sn-trending-body {
+    grid-template-columns: 1fr clamp(60px, 18vw, 75px);
+    gap: 10px;
+  }
+
+  .sn-trending-thumb-wrap {
+    width: clamp(60px, 18vw, 75px);
+    height: clamp(60px, 18vw, 75px);
+  }
+
+  .sn-trending-rank {
+    font-size: clamp(1.2rem, 4.5vw, 1.5rem);
+  }
+
+  .sn-trending-title {
+    font-size: clamp(0.82rem, 3vw, 0.92rem);
+  }
+
+  /* 4. Latest Grid Fluid Scaling */
+  .sn-latest-grid,
+  .sn-category-feed-grid {
+    grid-template-columns: 1fr;
+    gap: clamp(10px, 2.8vw, 16px);
+  }
+
+  .sn-latest-card {
+    border-radius: clamp(10px, 2.5vw, 14px);
+  }
+
+  .sn-latest-thumb-wrap {
+    height: clamp(125px, 35vw, 175px);
+  }
+
+  .sn-latest-info {
+    padding: clamp(10px, 2.8vw, 16px);
+  }
+
+  .sn-latest-title {
+    font-size: clamp(0.92rem, 3.5vw, 1.08rem);
+  }
+
+  .sn-latest-excerpt {
+    font-size: clamp(0.78rem, 2.8vw, 0.86rem);
+  }
+
+  /* Article Detail Mobile Fluid Reader */
+  .blog-reader-article-title {
+    font-size: clamp(1.35rem, 5vw, 1.85rem);
+    margin-bottom: clamp(8px, 2.5vw, 14px);
+  }
+
+  .blog-reader-article-sapo {
+    font-size: clamp(0.92rem, 3.2vw, 1.05rem);
+    margin-bottom: clamp(14px, 3.5vw, 22px);
+    padding-left: clamp(8px, 2.5vw, 12px);
+  }
+
+  .blog-reader-meta-bar {
+    padding: clamp(8px, 2vw, 12px) 0;
+    margin-bottom: clamp(16px, 4vw, 28px);
+    font-size: clamp(0.72rem, 2.6vw, 0.8rem);
+  }
+
+  .blog-reader-author-avatar {
+    width: clamp(26px, 7.5vw, 34px);
+    height: clamp(26px, 7.5vw, 34px);
+  }
+
+  .blog-reader-cover-photo {
+    max-height: clamp(160px, 45vw, 300px);
+    border-radius: clamp(8px, 2.2vw, 12px);
+    margin-bottom: clamp(18px, 4.5vw, 28px);
+  }
+
+  .blog-reader-body {
+    font-size: clamp(0.92rem, 3.4vw, 1.05rem);
+    line-height: 1.7;
+  }
+
+  .blog-reader-body p {
+    margin-bottom: clamp(12px, 3.5vw, 18px);
+  }
+
+  .blog-reader-body h2 {
+    font-size: clamp(1.15rem, 4vw, 1.4rem);
+    margin-top: clamp(20px, 5vw, 28px);
+  }
+
+  .blog-reader-body h3 {
+    font-size: clamp(1.02rem, 3.6vw, 1.2rem);
+    margin-top: clamp(16px, 4.5vw, 24px);
+  }
+
+  .blog-reader-body blockquote {
+    padding: clamp(10px, 2.5vw, 14px) clamp(12px, 3vw, 18px);
+    margin: clamp(16px, 4.5vw, 24px) 0;
+    font-size: clamp(0.88rem, 3.2vw, 0.98rem);
+  }
+}
+
+/* Granular Breakpoints for Mobile Screens */
+
+/* Breakpoint ≤576px */
+@media (max-width: 576px) {
+  .sn-source-badge {
+    font-size: 0.72rem;
+    gap: 4px;
+  }
+  .sn-source-badge img {
+    width: 14px;
+    height: 14px;
+  }
+  .sn-portal-meta {
+    font-size: 0.74rem;
+    gap: 4px;
+  }
+}
+
+/* Breakpoint ≤430px (iPhone 14/15/16 Pro Max, Galaxy S24 Ultra) */
+@media (max-width: 430px) {
+  .sn-portal-hero-thumb-wrap {
+    height: 155px;
+  }
+  .sn-recommended-card {
+    grid-template-columns: 92px 1fr;
+  }
+  .sn-recommended-thumb-wrap {
+    height: 78px;
+  }
+}
+
+/* Breakpoint ≤390px (iPhone 13/14/15, Galaxy S23) */
+@media (max-width: 390px) {
+  .sn-portal-hero-thumb-wrap {
+    height: 145px;
+  }
+  .sn-recommended-card {
+    grid-template-columns: 82px 1fr;
+  }
+  .sn-recommended-thumb-wrap {
+    height: 70px;
+  }
+  .sn-trending-rank {
+    font-size: 1.25rem;
+  }
+}
+
+/* Breakpoint ≤360px (Galaxy A Series) */
+@media (max-width: 360px) {
+  .sn-portal-hero-thumb-wrap {
+    height: 130px;
+  }
+  .sn-recommended-card {
+    grid-template-columns: 75px 1fr;
+    padding: 7px;
+  }
+  .sn-recommended-thumb-wrap {
+    height: 62px;
+  }
+}
+
+/* Breakpoint ≤320px (iPhone SE, Galaxy Fold outer screen) */
+@media (max-width: 320px) {
+  .sn-portal-container,
+  .blog-reader-container {
+    padding-left: 6px;
+    padding-right: 6px;
+  }
+  .sn-portal-hero-thumb-wrap {
+    height: 115px;
+  }
+  .sn-recommended-card {
+    grid-template-columns: 66px 1fr;
+    gap: 5px;
+    padding: 5px;
+  }
+  .sn-recommended-thumb-wrap {
+    height: 54px;
+  }
+  .sn-trending-card {
+    padding: 6px;
+  }
+}
+
+/* ==========================================================================
+   ULTRA-RESPONSIVE DEDICATED OPTIMIZATION FOR SCREEN WIDTHS ≤ 385PX
+   ========================================================================== */
+@media (max-width: 385px) {
+  /* Header Tight Fit */
+  .blog-reader-header {
+    padding: 10px 10px;
+  }
+  .blog-reader-brand {
+    gap: 6px;
+  }
+  .blog-reader-brand-logo {
+    width: 22px;
+    height: 22px;
+  }
+  .blog-reader-brand-title {
+    font-size: 0.85rem;
+  }
+  .blog-reader-brand-badge {
+    font-size: 0.68rem;
+    padding: 1px 6px;
+  }
+  .blog-reader-back-site {
+    font-size: 0.76rem;
+  }
+
+  /* Filter & Search Bar */
+  .blog-reader-filter-bar {
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  .blog-reader-cat-pill {
+    padding: 4px 10px;
+    font-size: 0.78rem;
+  }
+  .blog-reader-search {
+    min-width: 100%;
+  }
+
+  /* Portal Containers */
+  .sn-portal-container,
+  .blog-reader-container {
+    padding: 12px 8px 60px 8px;
+  }
+
+  /* Hero Featured Section */
+  .sn-portal-hero-thumb-wrap {
+    height: 140px;
+  }
+  .sn-portal-hero-info {
+    padding: 10px;
+  }
+  .sn-portal-hero-title {
+    font-size: 0.98rem;
+    margin: 4px 0 6px 0;
+  }
+  .sn-portal-hero-excerpt {
+    font-size: 0.78rem;
+    margin-bottom: 8px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+  }
+
+  /* Recommended Cards (Dành Cho Bạn - Exact Match with Trending Mobile) */
+  .sn-recommended-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  .sn-recommended-card {
+    padding: 12px;
+    border-radius: 14px;
+  }
+  .sn-recommended-body {
+    grid-template-columns: 1fr 76px;
+    gap: 10px;
+    margin: 6px 0 8px 0;
+  }
+  .sn-recommended-title {
+    font-size: 0.84rem;
+    line-height: 1.3;
+  }
+  .sn-recommended-thumb-wrap {
+    width: 76px;
+    height: 76px;
+    border-radius: 10px;
+  }
+
+  /* 3. Được Quan Tâm (Trending Cards 1-Column Fit on ≤385px) */
+  .sn-trending-grid {
+    grid-template-columns: 1fr; /* Full width 1-column on ≤385px to avoid squishing! */
+    gap: 10px;
+  }
+  .sn-trending-card {
+    padding: 12px;
+    border-radius: 14px;
+  }
+  .sn-trending-body {
+    grid-template-columns: 1fr 76px;
+    gap: 10px;
+    margin: 6px 0 8px 0;
+  }
+  .sn-trending-rank {
+    font-size: 1.4rem;
+  }
+  .sn-trending-title {
+    font-size: 0.88rem;
+    line-height: 1.3;
+  }
+  .sn-trending-thumb-wrap {
+    width: 76px;
+    height: 76px;
+    border-radius: 10px;
+  }
+
+  /* 4. Latest Grid Mobile Override (Exact Match with Trending Cards) */
+  .sn-latest-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  .sn-latest-card {
+    padding: 12px;
+    border-radius: 14px;
+  }
+  .sn-latest-body {
+    grid-template-columns: 1fr 76px;
+    gap: 10px;
+    margin: 6px 0 8px 0;
+  }
+  .sn-latest-title {
+    font-size: 0.84rem;
+    line-height: 1.3;
+  }
+  .sn-latest-thumb-wrap {
+    width: 76px;
+    height: 76px;
+    border-radius: 10px;
+  }
+
+  /* Article Detail Reading Page */
+  .blog-reader-article-title {
+    font-size: 1.35rem;
+    line-height: 1.3;
+  }
+  .blog-reader-article-sapo {
+    font-size: 0.9rem;
+    line-height: 1.5;
+    margin-bottom: 16px;
+  }
+  .blog-reader-cover-photo {
+    max-height: 180px;
+    border-radius: 10px;
+  }
+  .blog-reader-body {
+    font-size: 0.92rem;
+    line-height: 1.65;
+  }
+}
+
+

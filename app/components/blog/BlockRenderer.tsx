@@ -38,7 +38,7 @@ export default function BlockRenderer({ blocks }: Props) {
           case "youtube":
             return <YoutubeBlock key={block.id} block={block} />;
           default:
-            console.warn(`Unsupported block type: ${(block as any).type}`);
+            console.warn(`Unsupported block type: ${(block as { type: string }).type}`);
             return null;
         }
       })}

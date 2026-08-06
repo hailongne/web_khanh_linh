@@ -23,13 +23,17 @@ export async function GET(req: Request, { params }: { params: Promise<{ slug: st
     let authorInfo = { displayName: "Khánh Linh Trans", avatar: "" };
     const authorId = detail.authorId || meta.authorId;
     if (authorId) {
-      const accounts = readAccounts();
-      const authorAcc = accounts.find((a) => a.id === authorId);
-      if (authorAcc) {
-        authorInfo = {
-          displayName: authorAcc.displayName || authorAcc.username,
-          avatar: authorAcc.avatar || ""
-        };
+      try {
+        const accounts = readAccounts();
+        const authorAcc = accounts.find((a) => a.id === authorId);
+        if (authorAcc) {
+          authorInfo = {
+            displayName: authorAcc.displayName || authorAcc.username,
+            avatar: authorAcc.avatar || ""
+          };
+        }
+      } catch {
+        // Fallback silently if accounts file is inaccessible
       }
     }
 

@@ -26,14 +26,18 @@ export async function GET(req: Request) {
 
     if (search) {
       items = items.filter((item) => {
-        const titleText = (item.title[lang] || item.title.vi || "").toLowerCase();
-        const excerptText = (item.excerpt[lang] || item.excerpt.vi || "").toLowerCase();
+        const titleText = (item.title?.[lang] || item.title?.vi || "").toLowerCase();
+        const excerptText = (item.excerpt?.[lang] || item.excerpt?.vi || "").toLowerCase();
         return titleText.includes(search) || excerptText.includes(search);
       });
     }
 
     // Sort by publishedAt descending
-    items.sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime());
+    items.sort((a, b) => {
+      const timeA = a.publishedAt ? new Date(a.publishedAt).getTime() : 0;
+      const timeB = b.publishedAt ? new Date(b.publishedAt).getTime() : 0;
+      return timeB - timeA;
+    });
 
     return NextResponse.json({
       success: true,

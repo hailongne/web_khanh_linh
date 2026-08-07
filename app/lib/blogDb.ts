@@ -23,6 +23,7 @@ export type NewsIndexItem = {
   category: string;
   status: NewsStatus;
   featured: boolean;
+  viewCount?: number;
   authorId?: string;
   publishedAt: string;
   updatedAt: string;
@@ -165,7 +166,6 @@ export function migrateLegacyHtmlToBlocks(htmlStr: string): BlogBlock[] {
 export function readNewsIndex(): NewsIndexItem[] {
   ensureDirs();
   if (!fs.existsSync(INDEX_PATH)) {
-    fs.writeFileSync(INDEX_PATH, JSON.stringify([], null, 2), "utf-8");
     return [];
   }
   try {
@@ -179,7 +179,23 @@ export function readNewsIndex(): NewsIndexItem[] {
 
 export function writeNewsIndex(items: NewsIndexItem[]): void {
   ensureDirs();
-  fs.writeFileSync(INDEX_PATH, JSON.stringify(items, null, 2), "utf-8");
+  try {
+    fs.writeFileSync(INDEX_PATH, JSON.stringify(items, null, 2), "utf-8");
+  } catch (err) {
+    console.error("Error writing news-index.json:", err);
+  }
+}
+
+export function incrementNewsViews(slug: string): number {
+  const items = readNewsIndex();
+  const indexIdx = items.findIndex((item) => item.slug === slug);
+  if (indexIdx === -1) return 0;
+
+  const currentCount = typeof items[indexIdx].viewCount === "number" ? items[indexIdx].viewCount : 0;
+  const newCount = currentCount + 1;
+  items[indexIdx].viewCount = newCount;
+  writeNewsIndex(items);
+  return newCount;
 }
 
 export function readNewsDetail(slug: string): NewsDetail | null {

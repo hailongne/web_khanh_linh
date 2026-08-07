@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { readNewsDetail, readNewsIndex } from "../../../lib/blogDb";
+import { incrementNewsViews, readNewsDetail, readNewsIndex } from "../../../lib/blogDb";
 import { readAccounts } from "../../admin/_lib/adminAuth";
 
 export const dynamic = "force-dynamic";
@@ -18,6 +18,9 @@ export async function GET(req: Request, { params }: { params: Promise<{ slug: st
     if (!detail) {
       return NextResponse.json({ success: false, error: "Nội dung bài viết không tìm thấy." }, { status: 404 });
     }
+
+    // Auto-increment view count
+    const updatedViewCount = incrementNewsViews(slug);
 
     // Resolve author info from authorId
     let authorInfo = { displayName: "Khánh Linh Trans", avatar: "" };
@@ -41,6 +44,7 @@ export async function GET(req: Request, { params }: { params: Promise<{ slug: st
       success: true,
       data: {
         ...meta,
+        viewCount: updatedViewCount,
         blocks: detail.blocks || { vi: [], en: [] },
         content: detail.content,
         seo: detail.seo,

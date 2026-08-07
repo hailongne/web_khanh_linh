@@ -95,6 +95,11 @@ export function SiteHeader({ links, lang = "vi", onToggleLang }: SiteHeaderProps
     const observerCallback: IntersectionObserverCallback = (entries) => {
       if (isClickingRef.current) return;
 
+      if (window.scrollY < 120) {
+        setActiveHref("/");
+        return;
+      }
+
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
           intersectingMap.set(entry.target.id, entry.intersectionRatio);
@@ -140,7 +145,7 @@ export function SiteHeader({ links, lang = "vi", onToggleLang }: SiteHeaderProps
       const windowHeight = window.innerHeight;
       const docHeight = document.documentElement.scrollHeight;
 
-      if (scrollY < 50) {
+      if (scrollY < 120) {
         setActiveHref("/");
       } else if (scrollY + windowHeight >= docHeight - 30) {
         const lastLink = hashLinks[hashLinks.length - 1];
@@ -150,6 +155,7 @@ export function SiteHeader({ links, lang = "vi", onToggleLang }: SiteHeaderProps
       }
     };
 
+    handleScroll();
     window.addEventListener("scroll", handleScroll, { passive: true });
 
     return () => {

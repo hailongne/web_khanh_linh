@@ -26,8 +26,12 @@ export interface SessionEntry {
 export type SessionsMap = Record<string, SessionEntry>;
 
 function ensureDataDirs() {
-  if (!fs.existsSync(DATA_DIR)) {
-    fs.mkdirSync(DATA_DIR, { recursive: true });
+  try {
+    if (!fs.existsSync(DATA_DIR)) {
+      fs.mkdirSync(DATA_DIR, { recursive: true });
+    }
+  } catch (err) {
+    console.warn("Notice: Cannot create data dir on read-only filesystem:", err);
   }
 }
 

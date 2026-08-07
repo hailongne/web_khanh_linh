@@ -46,14 +46,18 @@ export type NewsDetail = {
 };
 
 function ensureDirs() {
-  if (!fs.existsSync(DATA_DIR)) {
-    fs.mkdirSync(DATA_DIR, { recursive: true });
-  }
-  if (!fs.existsSync(NEWS_DIR)) {
-    fs.mkdirSync(NEWS_DIR, { recursive: true });
-  }
-  if (!fs.existsSync(IMAGES_DIR)) {
-    fs.mkdirSync(IMAGES_DIR, { recursive: true });
+  try {
+    if (!fs.existsSync(DATA_DIR)) {
+      fs.mkdirSync(DATA_DIR, { recursive: true });
+    }
+    if (!fs.existsSync(NEWS_DIR)) {
+      fs.mkdirSync(NEWS_DIR, { recursive: true });
+    }
+    if (!fs.existsSync(IMAGES_DIR)) {
+      fs.mkdirSync(IMAGES_DIR, { recursive: true });
+    }
+  } catch (err) {
+    console.warn("Notice: Cannot create directories on read-only filesystem:", err);
   }
 }
 

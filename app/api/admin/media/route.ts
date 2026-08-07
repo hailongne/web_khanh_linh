@@ -9,15 +9,19 @@ const UPLOADS_DIR = path.join(process.cwd(), "public", "uploads");
 const NEWS_IMAGES_DIR = path.join(process.cwd(), "public", "images", "news");
 
 function ensureMediaDirs() {
-  if (!fs.existsSync(UPLOADS_DIR)) {
-    fs.mkdirSync(UPLOADS_DIR, { recursive: true });
-  }
-  const blogUploads = path.join(UPLOADS_DIR, "blog");
-  if (!fs.existsSync(blogUploads)) {
-    fs.mkdirSync(blogUploads, { recursive: true });
-  }
-  if (!fs.existsSync(NEWS_IMAGES_DIR)) {
-    fs.mkdirSync(NEWS_IMAGES_DIR, { recursive: true });
+  try {
+    if (!fs.existsSync(UPLOADS_DIR)) {
+      fs.mkdirSync(UPLOADS_DIR, { recursive: true });
+    }
+    const blogUploads = path.join(UPLOADS_DIR, "blog");
+    if (!fs.existsSync(blogUploads)) {
+      fs.mkdirSync(blogUploads, { recursive: true });
+    }
+    if (!fs.existsSync(NEWS_IMAGES_DIR)) {
+      fs.mkdirSync(NEWS_IMAGES_DIR, { recursive: true });
+    }
+  } catch (err) {
+    console.warn("Notice: Cannot create media dirs on read-only filesystem:", err);
   }
 }
 

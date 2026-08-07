@@ -50,8 +50,14 @@ export default function RootLayout({
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/images/logoKhanhLinh.png" type="image/png" />
         <link rel="apple-touch-icon" href="/images/logoKhanhLinh.png" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500;700&display=swap"
+          rel="stylesheet"
+          precedence="default"
+        />
         <link rel="stylesheet" href="/icon/font-awesome/css/all.css" precedence="default" />
-        <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=DM+Sans:wght@300;400&display=swap" rel="stylesheet" precedence="default" />
       </head>
       <body>{children}</body>
     </html>

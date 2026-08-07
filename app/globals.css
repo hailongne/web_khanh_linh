@@ -4,7 +4,7 @@
 
 :root {
   --container: 1240px;
-  --font-family: 'Inter', 'Noto Sans', Arial, Helvetica, sans-serif;
+  --font-family: 'Inter', 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --brand: #198ac6;
   --brand-deep: #0f6d9d;
   --ink: #10212b;
@@ -79,7 +79,7 @@ a { color: inherit; text-decoration: none; }
   --radius-lg: 24px;
   --radius-md: 16px;
   --container: 1240px;
-  --font-family-base: 'Inter', 'Noto Sans', Arial, Helvetica, sans-serif;
+  --font-family-base: 'Inter', 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --ease-out-smooth: cubic-bezier(0.22, 1, 0.36, 1);
 }
 

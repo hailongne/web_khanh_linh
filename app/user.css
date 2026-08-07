@@ -376,9 +376,9 @@
   }
 }
 
-@media (max-width: 900px) {
+@media (max-width: 1024px) {
   .hero-banner__slider {
-    aspect-ratio: 16 / 3.4;
+    aspect-ratio: 16 / 6.5;
     max-height: none;
   }
   .hero-banner__img {
@@ -389,7 +389,7 @@
 
 @media (max-width: 640px) {
   .hero-banner__slider {
-    aspect-ratio: 16 / 3.5;
+    aspect-ratio: 16 / 7.5;
     max-height: none !important;
   }
   .hero-banner__img {

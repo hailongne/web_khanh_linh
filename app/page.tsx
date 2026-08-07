@@ -1,5 +1,5 @@
 "use client";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
 import Image from "next/image";
 import "./user.css";
 import db from "../db.json";
@@ -131,38 +131,45 @@ function FontAwesomeIcon({ type, className = "fa-fw" }: { type: string; classNam
 }
 
 function useMediaQuery(query: string) {
-  const [matches, setMatches] = useState(() => {
+  const subscribe = useCallback(
+    (callback: () => void) => {
+      if (typeof window === "undefined") return () => {};
+      const mq = window.matchMedia(query);
+      if (mq.addEventListener) mq.addEventListener("change", callback);
+      else mq.addListener(callback);
+      return () => {
+        if (mq.removeEventListener) mq.removeEventListener("change", callback);
+        else mq.removeListener(callback);
+      };
+    },
+    [query]
+  );
+
+  const getSnapshot = useCallback(() => {
     if (typeof window !== "undefined") {
       return window.matchMedia(query).matches;
     }
     return false;
-  });
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    const mq = window.matchMedia(query);
-    const handleChange = (e: MediaQueryListEvent) => setMatches(e.matches);
-    if (mq.addEventListener) mq.addEventListener("change", handleChange);
-    else mq.addListener(handleChange as (e: Event) => void);
-    return () => {
-      if (mq.removeEventListener) mq.removeEventListener("change", handleChange);
-      else mq.removeListener(handleChange as (e: Event) => void);
-    };
   }, [query]);
-  return matches;
+
+  const getServerSnapshot = useCallback(() => false, []);
+
+  return useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
 }
 
 export default function HomePage() {
-  const [lang, setLang] = useState<"vi" | "en">(() => {
-    if (typeof window !== "undefined") {
-      try {
-        const savedLang = localStorage.getItem("site_lang") as "vi" | "en";
-        if (savedLang === "vi" || savedLang === "en") return savedLang;
-      } catch {
-        // noop
+  const [lang, setLang] = useState<"vi" | "en">("vi");
+
+  useEffect(() => {
+    try {
+      const savedLang = localStorage.getItem("site_lang") as "vi" | "en";
+      if (savedLang === "vi" || savedLang === "en") {
+        queueMicrotask(() => setLang(savedLang));
       }
+    } catch {
+      // noop
     }
-    return "vi";
-  });
+  }, []);
 
   useEffect(() => {
     try {
@@ -294,8 +301,8 @@ export default function HomePage() {
   };
 
   const heroBannerSlides = [
-    { desktopSrc: "/images/banner.png", mobileSrc: "/images/banner.png", alt: "" },
-    { desktopSrc: "/images/banner+.png", mobileSrc: "/images/banner+.png", alt: "" },
+    { desktopSrc: "/images/banner.png", mobileSrc: "/images/mobile.png", alt: "Khánh Linh Trans Banner 1" },
+    { desktopSrc: "/images/banner+.png", mobileSrc: "/images/_mobile.jpg", alt: "Khánh Linh Trans Banner 2" },
   ];
 
   const [bannerIndex, setBannerIndex] = useState(0);
@@ -912,7 +919,7 @@ export default function HomePage() {
         onClick={scrollToTop}
         aria-label="Lên đầu trang"
       >
-        <img src="/icon/muiTen.png" alt="" />
+        <Image src="/icon/muiTen.png" alt="Lên đầu trang" width={20} height={20} />
       </button>
     </main>
             

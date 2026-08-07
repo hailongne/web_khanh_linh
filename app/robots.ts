@@ -5,9 +5,8 @@ export default function robots(): MetadataRoute.Robots {
     rules: {
       userAgent: "*",
       allow: "/",
-      disallow: ["/admin", "/admin/", "/api/"]
+      disallow: ["/admin", "/admin/*", "/login", "/api/admin/*"],
     },
-    sitemap: "https://khanhlinhtrans.vn/sitemap.xml"
+    sitemap: "https://khanhlinhtrans.vn/sitemap.xml",
   };
 }
-

@@ -1,0 +1,21 @@
+{
+  "name": "Khánh Linh Trans",
+  "short_name": "Khánh Linh",
+  "description": "Dịch vụ cho thuê xe cao cấp cho doanh nghiệp, sự kiện và du lịch.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#198ac6",
+  "icons": [
+    {
+      "src": "/images/logoKhanhLinh.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/images/logoKhanhLinh.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

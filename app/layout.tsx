@@ -34,6 +34,7 @@ export const metadata: Metadata = {
     description:
       "Đặt xe nhanh cho doanh nghiệp và đoàn khách với đội xe hiện đại, tài xế chuyên nghiệp."
   },
+  manifest: "/site.webmanifest",
   alternates: {
     canonical: "/"
   }
@@ -48,8 +49,10 @@ export default function RootLayout({
     <html lang="vi">
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="theme-color" content="#198ac6" />
         <link rel="icon" href="/images/logoKhanhLinh.png" type="image/png" />
         <link rel="apple-touch-icon" href="/images/logoKhanhLinh.png" />
+        <link rel="manifest" href="/site.webmanifest" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link

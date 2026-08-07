@@ -100,23 +100,54 @@ export async function POST(req: Request) {
       return NextResponse.json({ success: false, error: "Vui lòng chọn tệp hình ảnh." }, { status: 400 });
     }
 
+    const ALLOWED_EXTENSIONS = [".jpg", ".jpeg", ".png", ".webp"];
+    const ALLOWED_MIME_TYPES = ["image/jpeg", "image/png", "image/webp"];
+    const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB limit
+
+    const ext = path.extname(file.name).toLowerCase();
+    if (!ALLOWED_EXTENSIONS.includes(ext) || !ALLOWED_MIME_TYPES.includes(file.type.toLowerCase())) {
+      return NextResponse.json(
+        { success: false, error: "Định dạng tệp không được hỗ trợ. Chỉ chấp nhận JPG, JPEG, PNG, WEBP." },
+        { status: 400 }
+      );
+    }
+
+    if (file.size > MAX_FILE_SIZE) {
+      return NextResponse.json(
+        { success: false, error: "Dung lượng file vượt quá giới hạn 10MB." },
+        { status: 400 }
+      );
+    }
+
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
 
     // Clean file name
-    const ext = path.extname(file.name) || ".jpg";
     const baseName = path.basename(file.name, ext).replace(/[^a-zA-Z0-9_-]/g, "_");
     const uniqueFileName = `${baseName}_${Date.now()}${ext}`;
 
-    const targetDir = category === "news" ? NEWS_IMAGES_DIR : path.join(UPLOADS_DIR, category);
-    if (!fs.existsSync(targetDir)) {
-      fs.mkdirSync(targetDir, { recursive: true });
+    const sanitizedCategory = category.replace(/[^a-zA-Z0-9_-]/g, "");
+    const targetDir = sanitizedCategory === "news" ? NEWS_IMAGES_DIR : path.join(UPLOADS_DIR, sanitizedCategory);
+    
+    try {
+      if (!fs.existsSync(targetDir)) {
+        fs.mkdirSync(targetDir, { recursive: true });
+      }
+    } catch {
+      // Safe fallback for read-only filesystem
     }
 
-    const savePath = path.join(targetDir, uniqueFileName);
+    const savePath = path.resolve(targetDir, uniqueFileName);
+
+    // Path Traversal Security Check
+    const publicRoot = path.resolve(process.cwd(), "public");
+    if (!savePath.startsWith(publicRoot)) {
+      return NextResponse.json({ success: false, error: "Đường dẫn lưu file không an toàn." }, { status: 400 });
+    }
+
     fs.writeFileSync(savePath, buffer);
 
-    const publicUrl = category === "news" ? `/images/news/${uniqueFileName}` : `/uploads/${category}/${uniqueFileName}`;
+    const publicUrl = sanitizedCategory === "news" ? `/images/news/${uniqueFileName}` : `/uploads/${sanitizedCategory}/${uniqueFileName}`;
 
     return NextResponse.json({
       success: true,
@@ -144,13 +175,20 @@ export async function DELETE(req: Request) {
       return NextResponse.json({ success: false, error: "Thiếu đường dẫn tệp ảnh (url)." }, { status: 400 });
     }
 
-    // Safety check path
-    const normalizedUrl = path.normalize(urlPath).replace(/\\/g, "/");
-    if (!normalizedUrl.startsWith("/uploads/") && !normalizedUrl.startsWith("/images/news/")) {
+    // Safety check path traversal
+    const cleanUrlPath = urlPath.replace(/\\/g, "/").replace(/^\/+/, "");
+    const publicRoot = path.resolve(process.cwd(), "public");
+    const fullPath = path.resolve(publicRoot, cleanUrlPath);
+
+    if (!fullPath.startsWith(publicRoot)) {
       return NextResponse.json({ success: false, error: "Đường dẫn tệp không hợp lệ." }, { status: 400 });
     }
 
-    const fullPath = path.join(process.cwd(), "public", normalizedUrl);
+    const relativePath = path.relative(publicRoot, fullPath).replace(/\\/g, "/");
+    if (!relativePath.startsWith("uploads/") && !relativePath.startsWith("images/news/")) {
+      return NextResponse.json({ success: false, error: "Chỉ được phép xóa file trong thư mục media." }, { status: 400 });
+    }
+
     if (fs.existsSync(fullPath)) {
       fs.unlinkSync(fullPath);
       return NextResponse.json({ success: true, message: "Đã xóa tệp media thành công." });

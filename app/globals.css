@@ -61,7 +61,7 @@ a { color: inherit; text-decoration: none; }
 .page-shell {
   width: 100%;
   overflow-x: clip;
-  padding-top: calc(88px + env(safe-area-inset-top));
+  padding-top: calc(78px + env(safe-area-inset-top));
 }
 
 

@@ -186,8 +186,8 @@
 /* Slightly compact header for widths < 1215px */
 @media (max-width: 1215px) {
   .page-shell {
-      padding-top: 40px;
-    }
+    padding-top: 68px;
+  }
 
   .site-header__inner {
     padding: 10px 36px;
@@ -336,12 +336,15 @@
   left: 50%;
   transform: translateX(-50%);
   overflow: hidden;
+  margin: 0;
+  padding: 0;
+  background: #ffffff;
 }
 
 .hero-banner__slider {
   position: relative;
   width: 100%;
-  aspect-ratio: 16 / 3;
+  aspect-ratio: 16 / 3.35;
 }
 
 .hero-banner__slide {
@@ -363,20 +366,20 @@
 }
 
 .hero-banner__img {
-  object-fit: contain;
+  object-fit: cover;
   object-position: center;
 }
 
 @media (max-width: 1200px) {
   .hero-banner__slider {
-    aspect-ratio: 16 / 3;
+    aspect-ratio: 16 / 3.35;
   }
 }
 
 @media (max-width: 900px) {
   .hero-banner__slider {
-    aspect-ratio: 16 / 2.8;
-    max-height: 420px;
+    aspect-ratio: 16 / 3.4;
+    max-height: none;
   }
   .hero-banner__img {
     object-fit: cover;
@@ -386,8 +389,8 @@
 
 @media (max-width: 640px) {
   .hero-banner__slider {
-    aspect-ratio: 16 / 5;
-    max-height: 440px !important;
+    aspect-ratio: 16 / 3.5;
+    max-height: none !important;
   }
   .hero-banner__img {
     object-fit: cover;

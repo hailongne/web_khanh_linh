@@ -1,5 +1,6 @@
 import React from "react";
 import { YoutubeBlockData } from "./types";
+import { getYouTubeVideoId } from "../../lib/youtubeUtils";
 
 type Props = {
   block: YoutubeBlockData;
@@ -9,16 +10,15 @@ export default function YoutubeBlock({ block }: Props) {
   const url = block.url || block.src || "";
   if (!url) return null;
 
-  // Extract Youtube Embed Video ID
-  let videoId = "";
-  const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
-  const match = url.match(regExp);
+  const videoId = getYouTubeVideoId(url);
 
-  if (match && match[2].length === 11) {
-    videoId = match[2];
+  if (!videoId) {
+    return (
+      <div className="blog-block-youtube" style={{ padding: "20px", background: "#fef2f2", border: "1px dashed #fca5a5", borderRadius: "12px", color: "#991b1b", fontSize: "0.88rem" }}>
+        ⚠️ Đường dẫn Video Youtube không hợp lệ: <code>{url}</code>
+      </div>
+    );
   }
-
-  if (!videoId) return null;
 
   return (
     <div className="blog-block-youtube">

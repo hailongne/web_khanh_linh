@@ -29,7 +29,7 @@ type PostSummary = {
   excerpt?: { vi: string; en: string };
   thumbnail: string;
   category: string;
-  viewCount?: number;
+  featured?: boolean;
   publishedAt: string;
 };
 
@@ -39,33 +39,25 @@ export default function ArticleDetailPage({ params }: { params: Promise<{ slug: 
 
   const [lang] = useState<"vi" | "en">("vi");
   const [article, setArticle] = useState<ArticleDetail | null>(null);
-  const [latestPosts, setLatestPosts] = useState<PostSummary[]>([]);
-  const [trendingPosts, setTrendingPosts] = useState<PostSummary[]>([]);
+  const [relatedPosts, setRelatedPosts] = useState<PostSummary[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
-  const [nowMs, setNowMs] = useState<number>(0);
-
-  useEffect(() => {
-    Promise.resolve().then(() => setNowMs(Date.now()));
-  }, []);
 
   const fetchEndArticleRecommendations = useCallback(async (currentSlug: string) => {
     try {
       const res = await fetch(`/api/blog?lang=${lang}`);
       const json = await res.json();
       if (json.success && Array.isArray(json.data)) {
-        const allPosts: PostSummary[] = json.data.filter((item: PostSummary) => item.slug !== currentSlug);
+        // Only posts with featured === true, excluding current article
+        const featuredPosts: PostSummary[] = json.data.filter(
+          (item: PostSummary) => item.featured === true && item.slug !== currentSlug
+        );
 
-        // 1. Latest Articles (First 3)
-        setLatestPosts(allPosts.slice(0, 3));
-
-        // 2. Top Trending Ranked Articles (Sorted by viewCount descending)
-        const sortedTrending = [...allPosts].sort((a, b) => (b.viewCount || 0) - (a.viewCount || 0));
-        setTrendingPosts(sortedTrending.slice(0, 3));
+        // Maximum 6 posts
+        setRelatedPosts(featuredPosts.slice(0, 6));
       }
     } catch (err) {
-      console.error("Error fetching recommendations:", err);
+      console.error("Error fetching related posts:", err);
     }
   }, [lang]);
 
@@ -93,14 +85,15 @@ export default function ArticleDetailPage({ params }: { params: Promise<{ slug: 
     Promise.resolve().then(fetchArticle);
   }, [fetchArticle]);
 
-  function getTimeAgo(dateString?: string) {
-    if (!dateString) return "Mới đăng";
+  function formatPublishDate(dateString?: string) {
+    if (!dateString) return "";
     const d = new Date(dateString);
-    if (isNaN(d.getTime())) return "Mới đăng";
-    const diffHours = Math.max(1, Math.floor((nowMs - d.getTime()) / (1000 * 60 * 60)));
-    if (diffHours < 24) return `${diffHours} giờ trước`;
-    const diffDays = Math.floor(diffHours / 24);
-    return `${diffDays} ngày trước`;
+    if (isNaN(d.getTime())) return "";
+    const day = d.getDate();
+    const month = d.getMonth() + 1;
+    const monthStr = month < 10 ? `0${month}` : `${month}`;
+    const year = d.getFullYear();
+    return `${day}/Th${monthStr}/${year}`;
   }
 
   if (loading) {
@@ -212,82 +205,38 @@ export default function ArticleDetailPage({ params }: { params: Promise<{ slug: 
           </div>
         </article>
 
-        {/* END OF ARTICLE RECOMMENDATIONS (BÀI VIẾT MỚI & ĐƯỢC QUAN TÂM NHIỀU) */}
-        <div className="blog-reader-article-wrap" style={{ marginTop: 60, paddingTop: 40, borderTop: "2px solid #F1F5F9" }}>
-
-          {/* 1. GỢI Ý BÀI VIẾT MỚI NHẤT */}
-          {latestPosts.length > 0 && (
-            <section style={{ marginBottom: 48 }}>
-              <div className="sn-section-title-wrap">
-                <h3 className="sn-section-title" style={{ fontSize: "1.2rem" }}>
-                  Bài Viết Mới Nhất
-                </h3>
-                <Link href="/blog" className="sn-section-arrow">
-                  Xem tất cả ›
-                </Link>
+        {/* NỘI DUNG LIÊN QUAN SECTION (Only featured === true posts, max 6, 3 columns desktop) */}
+        {relatedPosts.length > 0 && (
+          <div className="blog-reader-article-wrap">
+            <section className="related-posts-section">
+              <div className="related-posts-header">
+                <h3 className="related-posts-title">Nội dung liên quan</h3>
               </div>
 
-              <div className="sn-latest-grid">
-                {latestPosts.map((post) => (
-                  <Link key={`lat-${post.id}`} href={`/blog/${post.slug}`} className="sn-latest-card">
-                    <div className="sn-latest-thumb-wrap" style={{ height: 140 }}>
-                      <img src={post.thumbnail || "/images/news/default.jpg"} alt="" />
-                    </div>
-                    <div className="sn-latest-info" style={{ padding: 14 }}>
-                      <h4 className="sn-latest-title" style={{ fontSize: "0.95rem" }}>
-                        {post.title[lang] || post.title.vi}
-                      </h4>
-                      <div className="sn-portal-meta" style={{ fontSize: "0.78rem" }}>
-                        <span>{getTimeAgo(post.publishedAt)}</span>
+              <div className="related-posts-grid">
+                {relatedPosts.map((post) => {
+                  const postTitle = post.title[lang] || post.title.vi || "";
+                  const postExcerpt = post.excerpt?.[lang] || post.excerpt?.vi || "";
+                  return (
+                    <Link key={`rel-${post.id}`} href={`/blog/${post.slug}`} className="related-post-card">
+                      <div className="related-post-thumb-wrap">
+                        <img
+                          src={post.thumbnail || "/images/news/default.jpg"}
+                          alt={postTitle}
+                          loading="lazy"
+                        />
                       </div>
-                    </div>
-                  </Link>
-                ))}
+                      <span className="related-post-cat">{post.category}</span>
+                      <h4 className="related-post-title">{postTitle}</h4>
+                      {postExcerpt && <p className="related-post-excerpt">{postExcerpt}</p>}
+                      <div className="related-post-date">{formatPublishDate(post.publishedAt)}</div>
+                    </Link>
+                  );
+                })}
               </div>
             </section>
-          )}
-
-          {/* 2. GỢI Ý ĐƯỢC QUAN TÂM NHIỀU */}
-          {trendingPosts.length > 0 && (
-            <section>
-              <div className="sn-section-title-wrap">
-                <h3 className="sn-section-title" style={{ fontSize: "1.2rem" }}>
-                  Được Quan Tâm Nhiều
-                </h3>
-                <span className="sn-section-badge">HOT</span>
-              </div>
-
-              <div className="sn-trending-grid">
-                {trendingPosts.map((post, idx) => (
-                  <Link key={`tr-${post.id}`} href={`/blog/${post.slug}`} className="sn-trending-card">
-                    <div className="sn-source-badge">
-                      <img src="/images/logoKhanhLinh.png" alt="" />
-                      <span>{post.category}</span>
-                    </div>
-
-                    <div className="sn-trending-body">
-                      <div className="sn-trending-content">
-                        <span className="sn-trending-rank">
-                          {idx + 1}
-                        </span>
-                        <h4 className="sn-trending-title">
-                          {post.title[lang] || post.title.vi}
-                        </h4>
-                      </div>
-                      <div className="sn-trending-thumb-wrap">
-                        <img src={post.thumbnail || "/images/news/default.jpg"} alt="" className="sn-trending-thumb" />
-                      </div>
-                    </div>
-
-                    <div className="sn-portal-meta">
-                      <span>👁 {post.viewCount || 1} lượt xem</span>
-                    </div>
-                  </Link>
-                ))}
-              </div>
-            </section>
-          )}
-        </div>
+          </div>
+        )}
       </main>
     </>
   );

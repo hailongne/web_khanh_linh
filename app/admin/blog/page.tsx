@@ -52,6 +52,18 @@ export default function AdminBlogPage() {
   const [selectedStatus, setSelectedStatus] = useState("all");
   const [selectedFeatured, setSelectedFeatured] = useState("all");
   const [sortOrder, setSortOrder] = useState<"newest" | "oldest">("newest");
+  const [categories, setCategories] = useState<{ id: string; name: string; slug: string; visible?: boolean }[]>([]);
+
+  useEffect(() => {
+    fetch("/api/categories?includeHidden=true")
+      .then((res) => res.json())
+      .then((json) => {
+        if (json.success && Array.isArray(json.data)) {
+          setCategories(json.data);
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   const fetchAdminPosts = useCallback(async () => {
     setLoading(true);
@@ -166,10 +178,11 @@ export default function AdminBlogPage() {
                 onChange={(e) => setSelectedCategory(e.target.value)}
               >
                 <option value="all">Tất cả danh mục</option>
-                <option value="Kinh nghiệm du lịch">Kinh nghiệm du lịch</option>
-                <option value="Tin tức Khánh Linh">Tin tức Khánh Linh</option>
-                <option value="Cẩm nang thuê xe">Cẩm nang thuê xe</option>
-                <option value="Khuyến mãi">Khuyến mãi & Ưu đãi</option>
+                {categories.map((cat) => (
+                  <option key={cat.id || cat.slug} value={cat.name}>
+                    {cat.name}{cat.visible === false ? " (Đã ẩn)" : ""}
+                  </option>
+                ))}
               </select>
             </div>
 

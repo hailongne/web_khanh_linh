@@ -20,7 +20,11 @@ export async function GET(req: Request) {
   try {
     const accounts = readAccounts();
     // Return sanitized accounts without passwordHash
-    const sanitized = accounts.map(({ passwordHash: _hash, ...rest }) => rest);
+    const sanitized = accounts.map((acc) => {
+      const item = { ...acc };
+      delete (item as { passwordHash?: string }).passwordHash;
+      return item;
+    });
     return NextResponse.json({ success: true, data: sanitized });
   } catch (error: unknown) {
     const errorMsg = error instanceof Error ? error.message : "Internal Error";
@@ -80,7 +84,8 @@ export async function POST(req: Request) {
     accounts.push(newAccount);
     writeAccounts(accounts);
 
-    const { passwordHash: _hash, ...result } = newAccount;
+    const result = { ...newAccount };
+    delete (result as { passwordHash?: string }).passwordHash;
     return NextResponse.json({
       success: true,
       message: "Tạo tài khoản thành công.",
@@ -141,7 +146,8 @@ export async function PUT(req: Request) {
     accounts[idx] = existingAcc;
     writeAccounts(accounts);
 
-    const { passwordHash: _hash, ...result } = existingAcc;
+    const result = { ...existingAcc };
+    delete (result as { passwordHash?: string }).passwordHash;
     return NextResponse.json({
       success: true,
       message: "Cập nhật tài khoản thành công.",

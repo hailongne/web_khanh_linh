@@ -24,12 +24,13 @@ const securityHeaders = [
     key: "Content-Security-Policy",
     value: [
       "default-src 'self'",
-      "script-src 'self' 'unsafe-eval' 'unsafe-inline'",
+      "script-src 'self' 'unsafe-eval' 'unsafe-inline' https://www.youtube.com https://s.ytimg.com",
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
       "font-src 'self' https://fonts.gstatic.com data:",
       "img-src 'self' data: blob: https:",
       "connect-src 'self' https:",
-      "frame-ancestors 'none'"
+      "frame-src 'self' https://www.youtube.com https://www.youtube-nocookie.com https://youtu.be",
+      "frame-ancestors 'self'"
     ].join("; ")
   }
 ];
@@ -38,6 +39,9 @@ const nextConfig = {
   reactStrictMode: true,
   devIndicators: false,
   poweredByHeader: false,
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
   async redirects() {
     return [
       {

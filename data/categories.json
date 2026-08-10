@@ -1,0 +1,56 @@
+[
+  {
+    "id": "cat_1",
+    "name": "Kinh nghiệm du lịch",
+    "slug": "kinh-nghiem-du-lich",
+    "description": "Kinh nghiệm và kinh nghiệm di chuyển du lịch",
+    "visible": true,
+    "createdAt": "2026-01-01T00:00:00.000Z",
+    "updatedAt": "2026-01-01T00:00:00.000Z"
+  },
+  {
+    "id": "cat_2",
+    "name": "Thuê xe",
+    "slug": "thue-xe",
+    "description": "Thông tin dịch vụ cho thuê xe du lịch",
+    "visible": true,
+    "createdAt": "2026-01-01T00:00:00.000Z",
+    "updatedAt": "2026-08-10T03:21:40.693Z"
+  },
+  {
+    "id": "cat_3",
+    "name": "Cẩm nang",
+    "slug": "cam-nang",
+    "description": "Cẩm nang hướng dẫn di chuyển",
+    "visible": true,
+    "createdAt": "2026-01-01T00:00:00.000Z",
+    "updatedAt": "2026-01-01T00:00:00.000Z"
+  },
+  {
+    "id": "cat_4",
+    "name": "Điểm đến",
+    "slug": "diem-den",
+    "description": "Địa điểm du lịch hấp dẫn",
+    "visible": true,
+    "createdAt": "2026-01-01T00:00:00.000Z",
+    "updatedAt": "2026-01-01T00:00:00.000Z"
+  },
+  {
+    "id": "cat_5",
+    "name": "Xe cộ",
+    "slug": "xe-co",
+    "description": "Thông tin các dòng xe và kinh nghiệm xe cộ",
+    "visible": true,
+    "createdAt": "2026-01-01T00:00:00.000Z",
+    "updatedAt": "2026-01-01T00:00:00.000Z"
+  },
+  {
+    "id": "cat_1786333507011",
+    "name": "Khánh Linh Trans",
+    "slug": "khanh-linh-trans",
+    "description": "",
+    "visible": true,
+    "createdAt": "2026-08-10T03:45:07.011Z",
+    "updatedAt": "2026-08-10T03:45:07.011Z"
+  }
+]

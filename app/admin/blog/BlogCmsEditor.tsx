@@ -17,7 +17,10 @@ import {
   ChevronDown,
   ChevronUp,
   Maximize2,
-  Minimize2
+  Minimize2,
+  Check,
+  X,
+  Search
 } from "lucide-react";
 import BlockEditor from "./BlockEditor";
 import BlockRenderer from "../../components/blog/BlockRenderer";
@@ -88,12 +91,117 @@ export default function BlogCmsEditor({ editingSlug, initialData }: BlogCmsEdito
   const [isThumbMediaPickerOpen, setIsThumbMediaPickerOpen] = useState(false);
   const [mediaList, setMediaList] = useState<MediaItem[]>([]);
   const [loadingMedia, setLoadingMedia] = useState(false);
+  const [mediaSearchFilter, setMediaSearchFilter] = useState("");
+
+  const filteredMedia = mediaList.filter((m) =>
+    (m.name || "").toLowerCase().includes(mediaSearchFilter.toLowerCase())
+  );
+
+  // Official Categories state
+  const [categories, setCategories] = useState<{ id: string; name: string; slug: string; visible?: boolean }[]>([]);
+  const [showAddCatForm, setShowAddCatForm] = useState(false);
+  const [showVisibilityManager, setShowVisibilityManager] = useState(false);
+  const [newCatName, setNewCatName] = useState("");
+  const [newCatDesc, setNewCatDesc] = useState("");
+  const [catErrorMsg, setCatErrorMsg] = useState("");
+  const [catSuccessMsg, setCatSuccessMsg] = useState("");
+  const [isAddingCat, setIsAddingCat] = useState(false);
+
+  const fetchCategories = useCallback(async () => {
+    try {
+      const res = await fetch("/api/categories?includeHidden=true");
+      const json = await res.json();
+      if (json.success && Array.isArray(json.data)) {
+        setCategories(json.data);
+        if (json.data.length > 0) {
+          setFormData((prev) => {
+            const hasCat = json.data.some((c: { name: string }) => c.name === prev.category);
+            if (hasCat) return prev;
+            // Pick first visible category by default
+            const firstVisible = json.data.find((c: { visible?: boolean }) => c.visible !== false);
+            return { ...prev, category: firstVisible ? firstVisible.name : json.data[0].name };
+          });
+        }
+      }
+    } catch (err) {
+      console.error("Error loading categories:", err);
+    }
+  }, []);
+
+  const handleToggleCategoryVisibility = async (id: string, nextVisible: boolean, catName: string) => {
+    try {
+      const res = await fetch("/api/categories", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id, visible: nextVisible }),
+      });
+      const json = await res.json();
+      if (json.success) {
+        await fetchCategories();
+        // If current form category was hidden and not editing an existing post, reset to first visible
+        if (!nextVisible && formData.category === catName && !editingSlug) {
+          const remainingVisible = categories.filter((c) => c.id !== id && c.visible !== false);
+          if (remainingVisible.length > 0) {
+            setFormData((prev) => ({ ...prev, category: remainingVisible[0].name }));
+          }
+        }
+      }
+    } catch (err) {
+      console.error("Error toggling category visibility:", err);
+    }
+  };
+
+  useEffect(() => {
+    fetchCategories();
+  }, [fetchCategories]);
 
   useEffect(() => {
     if (initialData) {
       Promise.resolve().then(() => setFormData(initialData));
     }
   }, [initialData]);
+
+  const handleAddCategorySubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newCatName.trim()) {
+      setCatErrorMsg("Vui lòng nhập tên danh mục.");
+      return;
+    }
+    setCatErrorMsg("");
+    setCatSuccessMsg("");
+    setIsAddingCat(true);
+
+    try {
+      const res = await fetch("/api/categories", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: newCatName.trim(), description: newCatDesc.trim() }),
+      });
+      const json = await res.json();
+      if (json.success && json.data) {
+        const createdCat = json.data;
+        if (json.isDuplicate) {
+          setCatSuccessMsg("Danh mục này đã tồn tại.");
+        } else {
+          setCatSuccessMsg("Đã thêm danh mục mới.");
+        }
+        await fetchCategories();
+        setFormData((prev) => ({ ...prev, category: createdCat.name }));
+        setNewCatName("");
+        setNewCatDesc("");
+        setTimeout(() => {
+          setShowAddCatForm(false);
+          setCatSuccessMsg("");
+        }, 1200);
+      } else {
+        setCatErrorMsg(json.error || "Không thể tạo danh mục.");
+      }
+    } catch {
+      setCatErrorMsg("Lỗi kết nối khi tạo danh mục.");
+    } finally {
+      setIsAddingCat(false);
+    }
+  };
 
   // Drag-to-resize: previewWidthRef tracks current width for use inside stable handler
   const previewWidthRef = useRef(380);
@@ -329,14 +437,20 @@ export default function BlogCmsEditor({ editingSlug, initialData }: BlogCmsEdito
                     <div className="cms-thumb-actions">
                       <button
                         type="button"
-                        className="admin-button admin-button--ghost cms-btn-sm"
+                        className="cms-thumb-btn cms-thumb-btn--media"
                         onClick={openThumbMediaPicker}
+                        title="Chọn ảnh từ Thư viện Media"
                       >
-                        <FolderOpen size={14} /> Media
+                        <FolderOpen size={14} />
+                        <span>Media</span>
                       </button>
-                      <label className="admin-button admin-button--ghost cms-btn-sm" style={{ cursor: "pointer", margin: 0 }}>
+
+                      <label
+                        className="cms-thumb-btn cms-thumb-btn--upload"
+                        title="Tải tệp ảnh mới lên hệ thống"
+                      >
                         <Upload size={14} />
-                        {isUploading ? "Đang tải..." : "Tải tệp"}
+                        <span>{isUploading ? "Đang tải..." : "Tải tệp"}</span>
                         <input
                           type="file"
                           accept="image/*"
@@ -344,13 +458,16 @@ export default function BlogCmsEditor({ editingSlug, initialData }: BlogCmsEdito
                           style={{ display: "none" }}
                         />
                       </label>
+
                       {formData.thumbnail && (
                         <button
                           type="button"
-                          className="admin-button admin-button--danger cms-btn-sm"
+                          className="cms-thumb-btn cms-thumb-btn--delete"
                           onClick={() => setFormData({ ...formData, thumbnail: "" })}
+                          title="Xóa ảnh đại diện"
                         >
-                          <Trash2 size={14} /> Xóa
+                          <Trash2 size={14} />
+                          <span>Xóa</span>
                         </button>
                       )}
                     </div>
@@ -386,18 +503,190 @@ export default function BlogCmsEditor({ editingSlug, initialData }: BlogCmsEdito
                   {/* Metadata Fields */}
                   <div className="cms-meta-fields">
                     <div className="cms-form-row-3">
-                      <div className="cms-field">
-                        <label className="cms-label">Danh mục bài viết</label>
+                      <div className="cms-field" style={{ position: "relative" }}>
+                        <div className="cms-label-row">
+                          <label className="cms-label">Danh mục bài viết</label>
+                          <div style={{ display: "flex", gap: "6px", alignItems: "center" }}>
+                            <button
+                              type="button"
+                              className={`cms-add-cat-btn ${showAddCatForm ? "cms-add-cat-btn--active" : ""}`}
+                              onClick={() => {
+                                setShowAddCatForm(!showAddCatForm);
+                                setShowVisibilityManager(false);
+                                setCatErrorMsg("");
+                                setCatSuccessMsg("");
+                              }}
+                              title="Thêm danh mục mới"
+                              aria-label="Thêm danh mục mới"
+                            >
+                              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.8" strokeLinecap="round">
+                                <line x1="12" y1="5" x2="12" y2="19" />
+                                <line x1="5" y1="12" x2="19" y2="12" />
+                              </svg>
+                              <span>Thêm</span>
+                            </button>
+
+                            <button
+                              type="button"
+                              className={`cms-add-cat-btn ${showVisibilityManager ? "cms-add-cat-btn--active" : ""}`}
+                              onClick={() => {
+                                setShowVisibilityManager(!showVisibilityManager);
+                                setShowAddCatForm(false);
+                              }}
+                              title="Quản lý ẩn/hiện danh mục"
+                              aria-label="Quản lý ẩn/hiện danh mục"
+                            >
+                              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                                <circle cx="12" cy="12" r="3" />
+                              </svg>
+                              <span>Ẩn/Hiện</span>
+                            </button>
+                          </div>
+                        </div>
+
                         <select
                           className="cms-select"
                           value={formData.category}
                           onChange={(e) => setFormData({ ...formData, category: e.target.value })}
                         >
-                          <option value="Kinh nghiệm du lịch">Kinh nghiệm du lịch</option>
-                          <option value="Tin tức Khánh Linh">Tin tức Khánh Linh</option>
-                          <option value="Cẩm nang thuê xe">Cẩm nang thuê xe</option>
-                          <option value="Khuyến mãi">Khuyến mãi & Ưu đãi</option>
+                          {/* DANH MỤC ĐANG HIỆN */}
+                          {categories
+                            .filter((c) => c.visible !== false)
+                            .map((cat) => (
+                              <option key={cat.id || cat.slug} value={cat.name}>
+                                {cat.name}
+                              </option>
+                            ))}
+
+                          {/* DANH MỤC ĐÃ ẨN */}
+                          {categories.some((c) => c.visible === false) && (
+                            <optgroup label="DANH MỤC ĐÃ ẨN">
+                              {categories
+                                .filter((c) => c.visible === false)
+                                .map((cat) => {
+                                  const isCurrentPostCat = formData.category === cat.name;
+                                  return (
+                                    <option
+                                      key={cat.id || cat.slug}
+                                      value={cat.name}
+                                      disabled={!isCurrentPostCat}
+                                    >
+                                      {cat.name} — Đã ẩn
+                                    </option>
+                                  );
+                                })}
+                            </optgroup>
+                          )}
                         </select>
+
+                        {/* Inline Add Category Form */}
+                        {showAddCatForm && (
+                          <div className="cms-inline-cat-card">
+                            <div className="cms-inline-cat-header">
+                              <span>Thêm danh mục mới</span>
+                              <button
+                                type="button"
+                                className="cms-inline-cat-close"
+                                onClick={() => setShowAddCatForm(false)}
+                              >
+                                ✕
+                              </button>
+                            </div>
+                            <div className="cms-inline-cat-body">
+                              <input
+                                type="text"
+                                className="cms-input"
+                                placeholder="Tên danh mục mới (ví dụ: Tin tức)"
+                                value={newCatName}
+                                onChange={(e) => setNewCatName(e.target.value)}
+                                autoFocus
+                              />
+                              <input
+                                type="text"
+                                className="cms-input"
+                                placeholder="Mô tả ngắn (tùy chọn)"
+                                value={newCatDesc}
+                                onChange={(e) => setNewCatDesc(e.target.value)}
+                                style={{ marginTop: "4px" }}
+                              />
+                              {catErrorMsg && <div className="cms-inline-cat-error">{catErrorMsg}</div>}
+                              {catSuccessMsg && <div className="cms-inline-cat-success">{catSuccessMsg}</div>}
+                              <div className="cms-inline-cat-actions">
+                                <button
+                                  type="button"
+                                  className="cms-btn-secondary-sm"
+                                  onClick={() => setShowAddCatForm(false)}
+                                >
+                                  Hủy
+                                </button>
+                                <button
+                                  type="button"
+                                  className="cms-btn-primary-sm"
+                                  disabled={isAddingCat}
+                                  onClick={handleAddCategorySubmit}
+                                >
+                                  {isAddingCat ? "Đang lưu..." : "Thêm danh mục"}
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Inline Category Visibility Manager */}
+                        {showVisibilityManager && (
+                          <div className="cms-inline-cat-card">
+                            <div className="cms-inline-cat-header">
+                              <span>Quản lý ẩn / hiện danh mục</span>
+                              <button
+                                type="button"
+                                className="cms-inline-cat-close"
+                                onClick={() => setShowVisibilityManager(false)}
+                              >
+                                ✕
+                              </button>
+                            </div>
+                            <div className="cms-inline-cat-list">
+                              {categories.map((cat) => {
+                                const isVisible = cat.visible !== false;
+                                return (
+                                  <div key={cat.id || cat.slug} className="cms-inline-cat-item">
+                                    <div className="cms-inline-cat-info">
+                                      <span className="cms-inline-cat-name">{cat.name}</span>
+                                      <span className={`cms-cat-badge ${isVisible ? "cms-cat-badge--visible" : "cms-cat-badge--hidden"}`}>
+                                        {isVisible ? "Đang hiện" : "Đã ẩn"}
+                                      </span>
+                                    </div>
+                                    <button
+                                      type="button"
+                                      className={`cms-cat-toggle-btn ${isVisible ? "cms-cat-toggle-btn--hide" : "cms-cat-toggle-btn--show"}`}
+                                      onClick={() => handleToggleCategoryVisibility(cat.id || cat.slug, !isVisible, cat.name)}
+                                      title={isVisible ? "Ẩn danh mục này" : "Hiện lại danh mục này"}
+                                    >
+                                      {isVisible ? (
+                                        <>
+                                          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                            <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24" />
+                                            <line x1="1" y1="1" x2="23" y2="23" />
+                                          </svg>
+                                          <span>Ẩn</span>
+                                        </>
+                                      ) : (
+                                        <>
+                                          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                                            <circle cx="12" cy="12" r="3" />
+                                          </svg>
+                                          <span>Hiện lại</span>
+                                        </>
+                                      )}
+                                    </button>
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          </div>
+                        )}
                       </div>
 
                       <div className="cms-field">
@@ -584,56 +873,102 @@ export default function BlogCmsEditor({ editingSlug, initialData }: BlogCmsEdito
         </button>
       )}
 
-      {/* Media Picker Modal */}
+      {/* Media Picker Modal Dialog */}
       {isThumbMediaPickerOpen && (
-        <div className="confirm-dialog__overlay" style={{ display: "flex", alignItems: "center", justifyContent: "center", zIndex: 10000 }}>
-          <div className="admin-card" style={{ maxWidth: "850px", width: "90%", maxHeight: "80vh", overflowY: "auto", padding: "1.5rem", position: "relative", zIndex: 10001 }}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1rem" }}>
-              <h3 style={{ margin: 0, fontSize: "1.15rem", fontWeight: 700 }}>Chọn ảnh đại diện từ Thư viện Media</h3>
+        <div className="cms-media-overlay" onClick={() => setIsThumbMediaPickerOpen(false)}>
+          <div
+            className="cms-media-modal"
+            onClick={(e) => e.stopPropagation()}
+            role="dialog"
+            aria-modal="true"
+          >
+            {/* Modal Header */}
+            <div className="cms-media-modal-header">
+              <div className="cms-media-modal-title">
+                <ImageIcon size={20} style={{ color: "#2563eb" }} />
+                <h3>Thư viện Media</h3>
+              </div>
               <button
                 type="button"
+                className="cms-media-modal-close"
                 onClick={() => setIsThumbMediaPickerOpen(false)}
-                style={{ background: "none", border: "none", fontSize: "1.5rem", cursor: "pointer", color: "#64748b" }}
+                title="Đóng"
               >
-                &times;
+                <X size={18} />
               </button>
             </div>
 
-            {loadingMedia ? (
-              <div style={{ padding: "2rem", textAlign: "center", color: "#64748b" }}>
-                <i className="fas fa-spinner fa-spin fa-2x"></i>
-                <p style={{ marginTop: "0.5rem" }}>Đang nạp ảnh...</p>
+            {/* Modal Toolbar with Search */}
+            <div className="cms-media-modal-toolbar">
+              <div className="cms-media-modal-search">
+                <Search size={14} style={{ color: "#94a3b8" }} />
+                <input
+                  type="text"
+                  placeholder="Tìm theo tên file..."
+                  value={mediaSearchFilter}
+                  onChange={(e) => setMediaSearchFilter(e.target.value)}
+                />
               </div>
-            ) : mediaList.length === 0 ? (
-              <div style={{ padding: "2rem", textAlign: "center", color: "#94a3b8" }}>
-                Chưa có ảnh nào trong thư viện Media.
-              </div>
-            ) : (
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(140px, 1fr))", gap: "0.85rem" }}>
-                {mediaList.map((media) => (
-                  <div
-                    key={media.url}
-                    onClick={() => {
-                      setFormData({ ...formData, thumbnail: media.url });
-                      setIsThumbMediaPickerOpen(false);
-                    }}
-                    style={{
-                      border: "2px solid #e2e8f0",
-                      borderRadius: "6px",
-                      overflow: "hidden",
-                      cursor: "pointer",
-                      backgroundColor: "#fff",
-                      transition: "all 0.2s ease"
-                    }}
-                  >
-                    <img src={media.url} alt={media.name} style={{ width: "100%", height: "100px", objectFit: "cover" }} />
-                    <div style={{ padding: "0.4rem", fontSize: "0.75rem", wordBreak: "break-all", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
-                      {media.name}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
+              <span style={{ fontSize: "0.78rem", color: "#64748b", fontWeight: 600 }}>
+                {filteredMedia.length} hình ảnh
+              </span>
+            </div>
+
+            {/* Modal Body */}
+            <div className="cms-media-modal-body">
+              {loadingMedia ? (
+                <div style={{ padding: "3rem", textAlign: "center", color: "#64748b" }}>
+                  <i className="fas fa-spinner fa-spin fa-2x" style={{ color: "#2563eb" }} />
+                  <p style={{ marginTop: "0.75rem", fontWeight: 600, fontSize: "0.88rem" }}>Đang nạp thư viện media...</p>
+                </div>
+              ) : filteredMedia.length === 0 ? (
+                <div style={{ padding: "3rem", textAlign: "center", color: "#94a3b8" }}>
+                  <FolderOpen size={36} style={{ margin: "0 auto 8px auto", opacity: 0.5 }} />
+                  <p style={{ fontWeight: 600, fontSize: "0.9rem" }}>Không tìm thấy hình ảnh nào.</p>
+                </div>
+              ) : (
+                <div className="cms-media-grid">
+                  {filteredMedia.map((media) => {
+                    const isSelected = formData.thumbnail === media.url;
+                    return (
+                      <div
+                        key={media.url}
+                        className={`cms-media-item ${isSelected ? "cms-media-item--active" : ""}`}
+                        onClick={() => {
+                          setFormData({ ...formData, thumbnail: media.url });
+                          setIsThumbMediaPickerOpen(false);
+                        }}
+                        title={`Chọn ảnh: ${media.name}`}
+                      >
+                        <div className="cms-media-thumb-wrap">
+                          <img src={media.url} alt={media.name} loading="lazy" />
+                          {isSelected && (
+                            <div className="cms-media-check-badge">
+                              <Check size={13} strokeWidth={3} />
+                            </div>
+                          )}
+                        </div>
+                        <div className="cms-media-name">{media.name}</div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+
+            {/* Modal Footer */}
+            <div className="cms-media-modal-footer">
+              <span style={{ fontSize: "0.78rem", color: "#64748b" }}>
+                Nhấn vào ảnh để gán làm Ảnh Đại Diện (Thumbnail).
+              </span>
+              <button
+                type="button"
+                className="cms-btn-secondary-sm"
+                onClick={() => setIsThumbMediaPickerOpen(false)}
+              >
+                Đóng
+              </button>
+            </div>
           </div>
         </div>
       )}

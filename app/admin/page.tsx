@@ -1849,27 +1849,7 @@ function SalesPanel({
     }
   }
 
-  function _deleteItem(id: string) {
-    openConfirm(
-      "Bạn có chắc chắn không?",
-      async () => {
-        setLoading(true);
-        try {
-          setItems((prev) => prev.filter((item) => String(item.id) !== String(id)));
-          await api.del(`/api/admin/data?type=sales&id=${id}`);
-          onSuccess("Xóa chuyên viên thành công.");
-          await loadItems();
-          if (editingId === id) closeModal();
-        } catch (err) {
-          onError(err instanceof Error ? err.message : "Lỗi xóa dữ liệu");
-        } finally {
-          setLoading(false);
-        }
-      },
-      "Xóa",
-      "Hủy"
-    );
-  }
+
 
   return (
     <>

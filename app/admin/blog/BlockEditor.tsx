@@ -1,7 +1,28 @@
 "use client";
 
 import React, { useState } from "react";
+import {
+  FileText,
+  Heading,
+  Image as ImageIcon,
+  Images,
+  Quote,
+  Minus,
+  Video,
+  ChevronUp,
+  ChevronDown,
+  Copy,
+  Trash2,
+  GripVertical,
+  Plus,
+  X,
+  Upload,
+  FolderOpen,
+  Search,
+  Check
+} from "lucide-react";
 import { BlogBlock, BlockType, ImageAlign, ImageWidth, HeadingBlockData, GalleryItem } from "../../components/blog/types";
+import { getYouTubeVideoId } from "../../lib/youtubeUtils";
 
 type BlockEditorProps = {
   blocks: BlogBlock[];
@@ -231,19 +252,19 @@ export default function BlockEditor({ blocks = [], onChange }: BlockEditorProps)
                   }}
                 >
                   <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                    <div className="notion-drag-handle" title="Kéo thả di chuyển Block" style={{ cursor: "grab", color: "#94a3b8", fontWeight: 700, fontSize: "1.1rem" }}>
-                      ⋮⋮
+                    <div className="notion-drag-handle" title="Kéo thả di chuyển Block" style={{ cursor: "grab", display: "flex", alignItems: "center", color: "#94a3b8" }}>
+                      <GripVertical size={16} />
                     </div>
 
                     <div className="notion-block-badge" style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "0.88rem", fontWeight: 700, color: "#1e293b" }}>
-                      <span className="notion-block-icon" style={{ fontSize: "1rem" }}>
-                        {block.type === "paragraph" && "📝"}
-                        {block.type === "heading" && "🔤"}
-                        {block.type === "image" && "🖼️"}
-                        {block.type === "gallery" && "🌄"}
-                        {block.type === "quote" && "💬"}
-                        {block.type === "divider" && "──"}
-                        {block.type === "youtube" && "▶️"}
+                      <span className="notion-block-icon" style={{ display: "flex", alignItems: "center" }}>
+                        {block.type === "paragraph" && <FileText size={16} style={{ color: "#2563eb" }} />}
+                        {block.type === "heading" && <Heading size={16} style={{ color: "#4f46e5" }} />}
+                        {block.type === "image" && <ImageIcon size={16} style={{ color: "#059669" }} />}
+                        {block.type === "gallery" && <Images size={16} style={{ color: "#9333ea" }} />}
+                        {block.type === "quote" && <Quote size={16} style={{ color: "#d97706" }} />}
+                        {block.type === "divider" && <Minus size={16} style={{ color: "#475569" }} />}
+                        {block.type === "youtube" && <Video size={16} style={{ color: "#dc2626" }} />}
                       </span>
                       <span className="notion-block-type-name">
                         {block.type === "paragraph" && "Đoạn văn (Paragraph)"}
@@ -257,44 +278,46 @@ export default function BlockEditor({ blocks = [], onChange }: BlockEditorProps)
                     </div>
                   </div>
 
-                  <div className="notion-block-tools" style={{ display: "flex", gap: "6px" }}>
+                  <div className="notion-block-tools" style={{ display: "flex", gap: "6px", alignItems: "center" }}>
                     <button
                       type="button"
-                      className="admin-button admin-button--ghost"
-                      style={{ padding: "4px 10px", fontSize: "0.78rem" }}
+                      className="cms-thumb-btn cms-thumb-btn--upload"
+                      style={{ padding: "0 8px", height: "30px", flex: "none" }}
                       disabled={index === 0}
                       onClick={() => moveBlock(index, "up")}
                       title="Chuyển lên trên"
                     >
-                      ▲
+                      <ChevronUp size={15} />
                     </button>
                     <button
                       type="button"
-                      className="admin-button admin-button--ghost"
-                      style={{ padding: "4px 10px", fontSize: "0.78rem" }}
+                      className="cms-thumb-btn cms-thumb-btn--upload"
+                      style={{ padding: "0 8px", height: "30px", flex: "none" }}
                       disabled={index === blocks.length - 1}
                       onClick={() => moveBlock(index, "down")}
                       title="Chuyển xuống dưới"
                     >
-                      ▼
+                      <ChevronDown size={15} />
                     </button>
                     <button
                       type="button"
-                      className="admin-button admin-button--ghost"
-                      style={{ padding: "4px 10px", fontSize: "0.78rem" }}
+                      className="cms-thumb-btn cms-thumb-btn--media"
+                      style={{ padding: "0 10px", height: "30px", flex: "none" }}
                       onClick={() => duplicateBlock(index)}
                       title="Nhân bản khối này"
                     >
-                      📋 Nhân bản
+                      <Copy size={13} />
+                      <span>Nhân bản</span>
                     </button>
                     <button
                       type="button"
-                      className="admin-button admin-button--danger"
-                      style={{ padding: "4px 10px", fontSize: "0.78rem" }}
+                      className="cms-thumb-btn cms-thumb-btn--delete"
+                      style={{ padding: "0 10px", height: "30px", flex: "none" }}
                       onClick={() => removeBlock(block.id)}
                       title="Xóa khối này"
                     >
-                      🗑️ Xóa
+                      <Trash2 size={13} />
+                      <span>Xóa</span>
                     </button>
                   </div>
                 </div>
@@ -365,21 +388,23 @@ export default function BlockEditor({ blocks = [], onChange }: BlockEditorProps)
                         </div>
                       ) : (
                         <div style={{ padding: "36px", border: "2px dashed #cbd5e1", borderRadius: "10px", background: "#f8fafc", textAlign: "center", color: "#64748b" }}>
-                          🖼️ Chưa có hình ảnh. Chọn từ Media hoặc tải ảnh lên.
+                          <ImageIcon size={32} style={{ margin: "0 auto 8px auto", color: "#94a3b8" }} />
+                          <p style={{ margin: 0, fontWeight: 600, fontSize: "0.9rem" }}>Chưa có hình ảnh. Chọn từ Media hoặc tải ảnh lên.</p>
                         </div>
                       )}
 
                       <div style={{ display: "flex", gap: "10px", flexWrap: "wrap", alignItems: "center" }}>
                         <button
                           type="button"
-                          className="admin-button"
-                          style={{ fontSize: "0.85rem", padding: "6px 14px" }}
+                          className="cms-thumb-btn cms-thumb-btn--media"
                           onClick={() => openMediaPicker((url) => updateBlockData(block.id, { src: url }))}
                         >
-                          🖼️ Chọn từ Media
+                          <FolderOpen size={14} />
+                          <span>Chọn từ Media</span>
                         </button>
-                        <label className="admin-button admin-button--ghost" style={{ cursor: "pointer", margin: 0, fontSize: "0.85rem", padding: "6px 14px" }}>
-                          {uploadingBlockId === block.id ? "Đang tải..." : "📁 Tải ảnh lên"}
+                        <label className="cms-thumb-btn cms-thumb-btn--upload">
+                          <Upload size={14} />
+                          <span>{uploadingBlockId === block.id ? "Đang tải..." : "Tải ảnh lên"}</span>
                           <input
                             type="file"
                             accept="image/*"
@@ -397,11 +422,11 @@ export default function BlockEditor({ blocks = [], onChange }: BlockEditorProps)
                         {block.src && (
                           <button
                             type="button"
-                            className="admin-button admin-button--danger"
-                            style={{ fontSize: "0.85rem", padding: "6px 14px" }}
+                            className="cms-thumb-btn cms-thumb-btn--delete"
                             onClick={() => updateBlockData(block.id, { src: "" })}
                           >
-                            ❌ Xóa ảnh
+                            <Trash2 size={14} />
+                            <span>Xóa ảnh</span>
                           </button>
                         )}
                       </div>
@@ -484,8 +509,7 @@ export default function BlockEditor({ blocks = [], onChange }: BlockEditorProps)
                         <div style={{ display: "flex", gap: "8px" }}>
                           <button
                             type="button"
-                            className="admin-button"
-                            style={{ fontSize: "0.82rem", padding: "5px 12px" }}
+                            className="cms-thumb-btn cms-thumb-btn--media"
                             onClick={() =>
                               openMediaPicker((url) => {
                                 const currentImgs = (block.images || []).filter((img: GalleryItem) => Boolean(img.src || img.url));
@@ -495,10 +519,12 @@ export default function BlockEditor({ blocks = [], onChange }: BlockEditorProps)
                               })
                             }
                           >
-                            🖼️ Chọn từ Media
+                            <FolderOpen size={14} />
+                            <span>Chọn từ Media</span>
                           </button>
-                          <label className="admin-button admin-button--ghost" style={{ cursor: "pointer", margin: 0, fontSize: "0.82rem", padding: "5px 12px" }}>
-                            ➕ Thêm ảnh mới
+                          <label className="cms-thumb-btn cms-thumb-btn--upload">
+                            <Plus size={14} />
+                            <span>Thêm ảnh mới</span>
                             <input
                               type="file"
                               accept="image/*"
@@ -544,11 +570,12 @@ export default function BlockEditor({ blocks = [], onChange }: BlockEditorProps)
                             color: "#64748b"
                           }}
                         >
-                          <p style={{ margin: "0 0 8px 0", fontWeight: 600, fontSize: "0.92rem" }}>
-                            🌄 Chưa có ảnh nào trong bộ sưu tập.
+                          <p style={{ margin: "0 0 8px 0", fontWeight: 600, fontSize: "0.92rem", display: "flex", alignItems: "center", justifyContent: "center", gap: "6px" }}>
+                            <Images size={20} style={{ color: "#9333ea" }} />
+                            <span>Chưa có ảnh nào trong bộ sưu tập.</span>
                           </p>
                           <p style={{ margin: 0, fontSize: "0.83rem", color: "#94a3b8" }}>
-                            Bấm nút <strong style={{ color: "#2563eb" }}>🖼️ Chọn từ Media</strong> hoặc <strong style={{ color: "#2563eb" }}>➕ Thêm ảnh mới</strong> ở trên để chèn ảnh!
+                            Bấm nút <strong style={{ color: "#2563eb" }}>Chọn từ Media</strong> hoặc <strong style={{ color: "#2563eb" }}>Thêm ảnh mới</strong> ở trên để chèn ảnh!
                           </p>
                         </div>
                       ) : (
@@ -647,17 +674,40 @@ export default function BlockEditor({ blocks = [], onChange }: BlockEditorProps)
                   )}
 
                   {/* 7. YOUTUBE */}
-                  {block.type === "youtube" && (
-                    <div style={{ width: "100%" }}>
-                      <input
-                        type="text"
-                        style={{ width: "100%", padding: "10px 14px", borderRadius: "8px", border: "1px solid #cbd5e1", font: "inherit", fontSize: "0.88rem" }}
-                        value={block.url}
-                        onChange={(e) => updateBlockData(block.id, { url: e.target.value })}
-                        placeholder="Dán đường dẫn video Youtube (URL hoặc Embed Link)..."
-                      />
-                    </div>
-                  )}
+                  {block.type === "youtube" && (() => {
+                    const videoId = getYouTubeVideoId(block.url || "");
+                    return (
+                      <div style={{ display: "flex", flexDirection: "column", gap: "12px", width: "100%" }}>
+                        <input
+                          type="text"
+                          style={{ width: "100%", padding: "10px 14px", borderRadius: "8px", border: "1px solid #cbd5e1", font: "inherit", fontSize: "0.88rem" }}
+                          value={block.url || ""}
+                          onChange={(e) => updateBlockData(block.id, { url: e.target.value })}
+                          placeholder="Dán đường dẫn Youtube (ví dụ: https://www.youtube.com/watch?v=... hoặc Shorts / Embed code)..."
+                        />
+
+                        {block.url && videoId ? (
+                          <div style={{ position: "relative", width: "100%", paddingTop: "56.25%", borderRadius: "12px", overflow: "hidden", background: "#000", border: "1px solid #e2e8f0" }}>
+                            <iframe
+                              src={`https://www.youtube.com/embed/${videoId}`}
+                              title="Youtube Live Preview"
+                              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                              allowFullScreen
+                              style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", border: "none" }}
+                            />
+                          </div>
+                        ) : block.url ? (
+                          <div style={{ padding: "12px 16px", borderRadius: "8px", background: "#fef2f2", border: "1px dashed #fca5a5", color: "#991b1b", fontSize: "0.83rem" }}>
+                            ⚠️ Không nhận diện được Video ID từ link này. Vui lòng kiểm tra lại link Youtube (ví dụ: https://www.youtube.com/watch?v=...).
+                          </div>
+                        ) : (
+                          <div style={{ padding: "12px 16px", borderRadius: "8px", background: "#f8fafc", border: "1px dashed #cbd5e1", color: "#64748b", fontSize: "0.83rem" }}>
+                            💡 Hỗ trợ dán link Youtube chuẩn (watch?v=...), Youtube Shorts, link rút gọn (youtu.be), link Live hoặc mã nhúng &lt;iframe&gt;.
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })()}
                 </div>
               </div>
 
@@ -676,51 +726,70 @@ export default function BlockEditor({ blocks = [], onChange }: BlockEditorProps)
 
       {/* Media Picker Modal */}
       {isMediaPickerOpen && (
-        <div className="confirm-dialog__overlay" style={{ display: "flex", alignItems: "center", justifyContent: "center", zIndex: 10000 }}>
-          <div className="admin-card" style={{ maxWidth: "900px", width: "92%", maxHeight: "85vh", overflowY: "auto", padding: "1.5rem" }}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1rem" }}>
-              <h3 style={{ margin: 0, fontSize: "1.25rem" }}>🖼️ Chọn ảnh từ Thư viện Media</h3>
+        <div className="cms-media-overlay" onClick={() => setIsMediaPickerOpen(false)}>
+          <div
+            className="cms-media-modal"
+            onClick={(e) => e.stopPropagation()}
+            role="dialog"
+            aria-modal="true"
+          >
+            <div className="cms-media-modal-header">
+              <div className="cms-media-modal-title">
+                <ImageIcon size={20} style={{ color: "#2563eb" }} />
+                <h3>Thư viện Media</h3>
+              </div>
               <button
                 type="button"
+                className="cms-media-modal-close"
                 onClick={() => setIsMediaPickerOpen(false)}
-                style={{ background: "none", border: "none", fontSize: "1.5rem", cursor: "pointer", color: "#64748b" }}
+                title="Đóng"
               >
-                &times;
+                <X size={18} />
               </button>
             </div>
 
-            {loadingMedia ? (
-              <div style={{ padding: "2rem", textAlign: "center", color: "#64748b" }}>
-                <i className="fas fa-spinner fa-spin fa-2x"></i>
-                <p style={{ marginTop: "0.5rem" }}>Đang nạp ảnh...</p>
-              </div>
-            ) : mediaList.length === 0 ? (
-              <div style={{ padding: "2rem", textAlign: "center", color: "#94a3b8" }}>
-                Chưa có ảnh nào trong thư viện Media.
-              </div>
-            ) : (
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(150px, 1fr))", gap: "1rem" }}>
-                {mediaList.map((media) => (
-                  <div
-                    key={media.url}
-                    onClick={() => selectMediaItem(media.url)}
-                    style={{
-                      border: "2px solid #e2e8f0",
-                      borderRadius: "6px",
-                      overflow: "hidden",
-                      cursor: "pointer",
-                      backgroundColor: "#fff",
-                      transition: "all 0.2s ease"
-                    }}
-                  >
-                    <img src={media.url} alt={media.name} style={{ width: "100%", height: "110px", objectFit: "cover" }} />
-                    <div style={{ padding: "0.4rem", fontSize: "0.75rem", wordBreak: "break-all", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
-                      {media.name}
+            <div className="cms-media-modal-body">
+              {loadingMedia ? (
+                <div style={{ padding: "3rem", textAlign: "center", color: "#64748b" }}>
+                  <i className="fas fa-spinner fa-spin fa-2x" style={{ color: "#2563eb" }} />
+                  <p style={{ marginTop: "0.75rem", fontWeight: 600, fontSize: "0.88rem" }}>Đang nạp thư viện media...</p>
+                </div>
+              ) : mediaList.length === 0 ? (
+                <div style={{ padding: "3rem", textAlign: "center", color: "#94a3b8" }}>
+                  <FolderOpen size={36} style={{ margin: "0 auto 8px auto", opacity: 0.5 }} />
+                  <p style={{ fontWeight: 600, fontSize: "0.9rem" }}>Chưa có ảnh nào trong thư viện Media.</p>
+                </div>
+              ) : (
+                <div className="cms-media-grid">
+                  {mediaList.map((media) => (
+                    <div
+                      key={media.url}
+                      className="cms-media-item"
+                      onClick={() => selectMediaItem(media.url)}
+                      title={`Chọn ảnh: ${media.name}`}
+                    >
+                      <div className="cms-media-thumb-wrap">
+                        <img src={media.url} alt={media.name} loading="lazy" />
+                      </div>
+                      <div className="cms-media-name">{media.name}</div>
                     </div>
-                  </div>
-                ))}
-              </div>
-            )}
+                  ))}
+                </div>
+              )}
+            </div>
+
+            <div className="cms-media-modal-footer">
+              <span style={{ fontSize: "0.78rem", color: "#64748b" }}>
+                Nhấn vào ảnh để chèn vào khối nội dung.
+              </span>
+              <button
+                type="button"
+                className="cms-btn-secondary-sm"
+                onClick={() => setIsMediaPickerOpen(false)}
+              >
+                Đóng
+              </button>
+            </div>
           </div>
         </div>
       )}
@@ -750,99 +819,107 @@ function InterBlockAdder({
           type="button"
           onClick={() => onOpen(index)}
           style={{
+            display: "inline-flex",
+            alignItems: "center",
+            gap: "6px",
             background: "#eff6ff",
             color: "#2563eb",
-            border: "1px dashed #bfdbfe",
+            border: "1px dashed #93c5fd",
             borderRadius: "20px",
-            padding: "6px 20px",
+            padding: "6px 18px",
             fontSize: "0.83rem",
             fontWeight: 600,
             cursor: "pointer",
             transition: "all 0.2s ease"
           }}
         >
-          ＋ Thêm Block tại đây
+          <Plus size={14} />
+          <span>Thêm Block tại đây</span>
         </button>
       ) : (
         <div
           style={{
             background: "#ffffff",
             border: "1px solid #cbd5e1",
-            borderRadius: "12px",
-            padding: "14px 18px",
-            boxShadow: "0 4px 20px rgba(0,0,0,0.1)",
+            borderRadius: "14px",
+            padding: "16px 20px",
+            boxShadow: "0 10px 30px rgba(0,0,0,0.12)",
             display: "inline-block",
             textAlign: "left",
-            zIndex: 5
+            zIndex: 5,
+            minWidth: "320px"
           }}
         >
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "10px", gap: "16px" }}>
-            <span style={{ fontSize: "0.85rem", fontWeight: 700, color: "#1e293b" }}>Chọn loại khối muốn chèn:</span>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px", gap: "16px" }}>
+            <span style={{ fontSize: "0.88rem", fontWeight: 700, color: "#0f172a" }}>Chọn loại khối muốn chèn:</span>
             <button
               type="button"
               onClick={onClose}
-              style={{ background: "none", border: "none", fontSize: "1.3rem", cursor: "pointer", color: "#64748b" }}
+              className="cms-media-modal-close"
+              style={{ width: "28px", height: "28px" }}
+              title="Đóng"
             >
-              &times;
+              <X size={16} />
             </button>
           </div>
 
           <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "8px" }}>
             <button
               type="button"
-              className="admin-button admin-button--ghost"
-              style={{ justifyContent: "flex-start", padding: "8px 12px", fontSize: "0.82rem" }}
+              className="cms-block-type-btn"
               onClick={() => onSelect("paragraph", index)}
             >
-              📝 Đoạn văn (Paragraph)
+              <FileText size={16} style={{ color: "#2563eb" }} />
+              <span>Đoạn văn (Paragraph)</span>
             </button>
             <button
               type="button"
-              className="admin-button admin-button--ghost"
-              style={{ justifyContent: "flex-start", padding: "8px 12px", fontSize: "0.82rem" }}
+              className="cms-block-type-btn"
               onClick={() => onSelect("heading", index)}
             >
-              🔤 Tiêu đề (Heading)
+              <Heading size={16} style={{ color: "#4f46e5" }} />
+              <span>Tiêu đề (Heading)</span>
             </button>
             <button
               type="button"
-              className="admin-button admin-button--ghost"
-              style={{ justifyContent: "flex-start", padding: "8px 12px", fontSize: "0.82rem" }}
+              className="cms-block-type-btn"
               onClick={() => onSelect("image", index)}
             >
-              🖼️ Hình ảnh (Image)
+              <ImageIcon size={16} style={{ color: "#059669" }} />
+              <span>Hình ảnh (Image)</span>
             </button>
             <button
               type="button"
-              className="admin-button admin-button--ghost"
-              style={{ justifyContent: "flex-start", padding: "8px 12px", fontSize: "0.82rem" }}
+              className="cms-block-type-btn"
               onClick={() => onSelect("gallery", index)}
             >
-              🌄 Bộ sưu tập (Gallery)
+              <Images size={16} style={{ color: "#9333ea" }} />
+              <span>Bộ sưu tập (Gallery)</span>
             </button>
             <button
               type="button"
-              className="admin-button admin-button--ghost"
-              style={{ justifyContent: "flex-start", padding: "8px 12px", fontSize: "0.82rem" }}
+              className="cms-block-type-btn"
               onClick={() => onSelect("quote", index)}
             >
-              💬 Trích dẫn (Quote)
+              <Quote size={16} style={{ color: "#d97706" }} />
+              <span>Trích dẫn (Quote)</span>
             </button>
             <button
               type="button"
-              className="admin-button admin-button--ghost"
-              style={{ justifyContent: "flex-start", padding: "8px 12px", fontSize: "0.82rem" }}
+              className="cms-block-type-btn"
               onClick={() => onSelect("divider", index)}
             >
-              ── Đường kẻ (Divider)
+              <Minus size={16} style={{ color: "#475569" }} />
+              <span>Đường kẻ (Divider)</span>
             </button>
             <button
               type="button"
-              className="admin-button admin-button--ghost"
-              style={{ justifyContent: "flex-start", padding: "8px 12px", fontSize: "0.82rem", gridColumn: "span 2" }}
+              className="cms-block-type-btn"
+              style={{ gridColumn: "span 2" }}
               onClick={() => onSelect("youtube", index)}
             >
-              ▶️ Video Youtube
+              <Video size={16} style={{ color: "#dc2626" }} />
+              <span>Video Youtube</span>
             </button>
           </div>
         </div>

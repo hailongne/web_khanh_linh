@@ -1,5 +1,25 @@
 [
   {
+    "id": "news_1786333581873",
+    "slug": "van-tai-khanh-linh-trans-huong-dan-an-toan",
+    "title": {
+      "vi": "Vận tải Khánh Linh Trans - Hướng dẫn an toàn",
+      "en": ""
+    },
+    "excerpt": {
+      "vi": "",
+      "en": ""
+    },
+    "thumbnail": "/images/news/A_nh_chu_p_ma_n_hi_nh_2026-08-10_104657_1786333629189.png",
+    "category": "Khánh Linh Trans",
+    "status": "published",
+    "featured": true,
+    "authorId": "acc_001",
+    "publishedAt": "2026-08-10T03:46:21.872Z",
+    "updatedAt": "2026-08-10T03:53:16.629Z",
+    "viewCount": 11
+  },
+  {
     "id": "news_1785314634934",
     "slug": "khanh-linh-trans-7-meo-lai-xe-tour-duong-dai-an-toan-do-met-va-chuyen-nghiep",
     "title": {
@@ -701,7 +721,7 @@
     "pinned": true,
     "recommended": false,
     "isTrending": true,
-    "viewCount": 2482,
+    "viewCount": 2490,
     "readingTime": "8 phút đọc",
     "author": {
       "name": "Khánh Linh Trans Editorial",
@@ -930,7 +950,7 @@
     "pinned": false,
     "recommended": false,
     "isTrending": true,
-    "viewCount": 1450,
+    "viewCount": 1451,
     "readingTime": "7 phút đọc",
     "author": {
       "name": "Khánh Linh Trans Editorial",

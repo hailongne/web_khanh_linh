@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { readNewsIndex } from "../../lib/blogDb";
+import { readNewsIndex, readCategories } from "../../lib/blogDb";
 
 export const dynamic = "force-dynamic";
 
@@ -13,15 +13,29 @@ export async function GET(req: Request) {
 
     let items = readNewsIndex();
 
-    // Filter published only for public user route
-    items = items.filter((item) => item.status === "published");
+    // Get list of hidden category names
+    const categories = readCategories();
+    const hiddenCategoryNames = new Set(
+      categories.filter((c) => c.visible === false).map((c) => c.name)
+    );
+
+    // Filter published only and exclude posts belonging to hidden categories for public API
+    items = items.filter(
+      (item) => item.status === "published" && !hiddenCategoryNames.has(item.category)
+    );
 
     if (featured === "true") {
       items = items.filter((item) => item.featured);
     }
 
     if (category) {
-      items = items.filter((item) => item.category === category);
+      const matchedCat = categories.find(
+        (c) => c.name === category || c.slug === category
+      );
+      const targetCatName = matchedCat ? matchedCat.name : category;
+      items = items.filter(
+        (item) => item.category === targetCatName || item.category === category
+      );
     }
 
     if (search) {

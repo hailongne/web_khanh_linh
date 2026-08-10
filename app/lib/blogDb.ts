@@ -4,8 +4,19 @@ import { BlogBlock, LocalizedBlocks } from "../components/blog/types";
 
 const DATA_DIR = path.join(process.cwd(), "data");
 const INDEX_PATH = path.join(DATA_DIR, "news-index.json");
+const CATEGORIES_PATH = path.join(DATA_DIR, "categories.json");
 const NEWS_DIR = path.join(DATA_DIR, "news");
 const IMAGES_DIR = path.join(process.cwd(), "public", "images", "news");
+
+export type BlogCategory = {
+  id: string;
+  name: string;
+  slug: string;
+  description?: string;
+  visible?: boolean;
+  createdAt: string;
+  updatedAt: string;
+};
 
 export type LocalizedText = {
   vi: string;
@@ -287,3 +298,121 @@ export function deleteOrphanImage(imagePath: string): void {
     }
   }
 }
+
+export function readCategories(): BlogCategory[] {
+  ensureDirs();
+  if (!fs.existsSync(CATEGORIES_PATH)) {
+    // Auto-seed from news index unique categories if file doesn't exist
+    const news = readNewsIndex();
+    const uniqueNames = Array.from(new Set(news.map((item) => item.category).filter(Boolean)));
+    const now = new Date().toISOString();
+    const initial: BlogCategory[] = uniqueNames.map((name, idx) => ({
+      id: `cat_${idx + 1}`,
+      name,
+      slug: slugify(name),
+      description: "",
+      createdAt: now,
+      updatedAt: now,
+    }));
+    try {
+      fs.writeFileSync(CATEGORIES_PATH, JSON.stringify(initial, null, 2), "utf-8");
+    } catch (err) {
+      console.error("Error creating initial categories.json:", err);
+    }
+    return initial;
+  }
+
+  try {
+    const raw = fs.readFileSync(CATEGORIES_PATH, "utf-8");
+    const parsed = JSON.parse(raw) as BlogCategory[];
+    return parsed.map((c) => ({
+      ...c,
+      visible: c.visible !== false,
+    }));
+  } catch (err) {
+    console.error("Error reading categories.json:", err);
+    return [];
+  }
+}
+
+export function writeCategories(items: BlogCategory[]): void {
+  ensureDirs();
+  try {
+    fs.writeFileSync(CATEGORIES_PATH, JSON.stringify(items, null, 2), "utf-8");
+  } catch (err) {
+    console.error("Error writing categories.json:", err);
+  }
+}
+
+export function createCategory(
+  nameStr: string,
+  descriptionStr?: string
+): { success: boolean; data: BlogCategory; isDuplicate?: boolean; message?: string } {
+  const cleanName = nameStr ? nameStr.trim().replace(/\s+/g, " ") : "";
+  if (!cleanName) {
+    throw new Error("Tên danh mục không được để trống.");
+  }
+
+  const normalizedInput = cleanName.toLowerCase();
+  const candidateSlug = slugify(cleanName);
+  const categories = readCategories();
+
+  // Case-insensitive & normalized duplicate check (Requirement 6)
+  const existing = categories.find(
+    (c) =>
+      c.name.trim().replace(/\s+/g, " ").toLowerCase() === normalizedInput ||
+      c.slug === candidateSlug
+  );
+
+  if (existing) {
+    return {
+      success: true,
+      data: existing,
+      isDuplicate: true,
+      message: "Danh mục này đã tồn tại.",
+    };
+  }
+
+  const now = new Date().toISOString();
+  const newCat: BlogCategory = {
+    id: `cat_${Date.now()}`,
+    name: cleanName,
+    slug: candidateSlug,
+    description: descriptionStr ? descriptionStr.trim() : "",
+    visible: true,
+    createdAt: now,
+    updatedAt: now,
+  };
+
+  categories.push(newCat);
+  writeCategories(categories);
+
+  return {
+    success: true,
+    data: newCat,
+  };
+}
+
+export function updateCategoryVisibility(
+  idOrSlug: string,
+  visible: boolean
+): { success: boolean; data?: BlogCategory; message?: string } {
+  const categories = readCategories();
+  const cat = categories.find(
+    (c) => c.id === idOrSlug || c.slug === idOrSlug || c.name === idOrSlug
+  );
+  if (!cat) {
+    return { success: false, message: "Không tìm thấy danh mục." };
+  }
+
+  cat.visible = Boolean(visible);
+  cat.updatedAt = new Date().toISOString();
+  writeCategories(categories);
+
+  return {
+    success: true,
+    data: cat,
+    message: visible ? "Đã bật hiển thị danh mục." : "Đã ẩn danh mục thành công.",
+  };
+}
+

@@ -214,9 +214,9 @@ export default function HomePage() {
   const [submitErrorMsg, setSubmitErrorMsg] = useState("");
   const [isSubmittingReview, setIsSubmittingReview] = useState(false);
 
-  // Pagination for public reviews (max 5 per page)
+  // Pagination for public reviews (max 6 per page)
   const [reviewPage, setReviewPage] = useState(1);
-  const REVIEWS_PER_PAGE = 5;
+  const REVIEWS_PER_PAGE = 6;
   const totalReviewPages = Math.ceil(publicReviews.length / REVIEWS_PER_PAGE);
   const paginatedReviews = publicReviews.slice((reviewPage - 1) * REVIEWS_PER_PAGE, reviewPage * REVIEWS_PER_PAGE);
 
@@ -733,7 +733,7 @@ export default function HomePage() {
                 </div>
               </div>
 
-              {/* 3. Danh sách Đánh giá (approved=true, max 5 per page) */}
+              {/* 3. Danh sách Đánh giá (approved=true, max 6 per page) */}
               {publicReviews.length > 0 && (
                 <div className="reviews-list-wrapper">
                   <div className="reviews-list-grid">
@@ -764,7 +764,7 @@ export default function HomePage() {
                     ))}
                   </div>
 
-                  {/* Phân trang đánh giá (tối đa 5 review / trang) */}
+                  {/* Phân trang đánh giá (tối đa 6 review / trang) */}
                   {totalReviewPages > 1 && (
                     <div className="reviews-pagination">
                       <button

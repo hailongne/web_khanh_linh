@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { incrementNewsViews, readNewsDetail, readNewsIndex } from "../../../lib/blogDb";
+import { incrementNewsViews, readNewsDetail, readNewsIndex, readCategories } from "../../../lib/blogDb";
 import { readAccounts } from "../../admin/_lib/adminAuth";
 
 export const dynamic = "force-dynamic";
@@ -12,6 +12,13 @@ export async function GET(req: Request, { params }: { params: Promise<{ slug: st
 
     if (!meta) {
       return NextResponse.json({ success: false, error: "Bài viết không tồn tại hoặc chưa xuất bản." }, { status: 404 });
+    }
+
+    // Check if category is hidden
+    const categories = readCategories();
+    const targetCategory = categories.find((c) => c.name === meta.category);
+    if (targetCategory && targetCategory.visible === false) {
+      return NextResponse.json({ success: false, error: "Bài viết thuộc danh mục đã bị ẩn." }, { status: 404 });
     }
 
     const detail = readNewsDetail(slug);

@@ -5,6 +5,6 @@ type Props = {
   block?: DividerBlockData;
 };
 
-export default function DividerBlock({ block: _block }: Props) {
+export default function DividerBlock(_props?: Props) {
   return <hr className="blog-block-divider" />;
 }

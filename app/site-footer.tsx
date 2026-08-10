@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import db from "../db.json";
 import { translations } from "./translations";
 
 type SiteFooterProps = {
@@ -11,10 +12,10 @@ type SiteFooterProps = {
 export function SiteFooter({ lang = "vi" }: SiteFooterProps) {
   const t = translations[lang] || translations.vi;
 
-  const siteContacts = {
+  const siteContacts = (db as unknown as { contacts?: { phone: string; email: string; address: string } }).contacts || {
     phone: "0962 992 555",
     email: "khanhlinhtrans@gmail.com",
-    address: "368 Đường Bưởi, Ba Đình, Hà Nội",
+    address: "11a Nguyễn Hoàng Tôn, Tây Hồ, Hà Nội, Việt Nam",
   };
 
   return (

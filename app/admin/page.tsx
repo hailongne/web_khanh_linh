@@ -188,7 +188,7 @@ function ConfirmDialog({
 function AdminPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const tabParam = searchParams.get("tab");
+  const tabParam = searchParams?.get("tab");
   const [currentUser, setCurrentUser] = useState<Account | null>(null);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");

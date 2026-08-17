@@ -1,6 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { NextResponse } from "next/server";
+import { checkRateLimit, getClientIp } from "../../lib/rateLimit";
 
 const DB_PATH = path.join(process.cwd(), "db.json");
 
@@ -28,6 +29,14 @@ function readDb(): DbShape {
 
 function writeDb(data: DbShape): void {
   fs.writeFileSync(DB_PATH, JSON.stringify(data, null, 2), "utf-8");
+}
+
+function sanitizeText(str: string): string {
+  if (!str) return "";
+  return str
+    .replace(/<[^>]*>?/gm, "") // Strip HTML tags
+    .replace(/[<>'"]/g, "")    // Strip angle brackets and quotes
+    .trim();
 }
 
 export async function GET() {
@@ -65,6 +74,16 @@ export async function GET() {
 }
 
 export async function POST(req: Request) {
+  // Rate limiting check (max 3 review submissions per minute per IP)
+  const clientIp = getClientIp(req);
+  const rateLimit = checkRateLimit(`review:${clientIp}`, 3, 60000);
+  if (!rateLimit.success) {
+    return NextResponse.json(
+      { success: false, error: `Bạn thao tác quá nhanh. Vui lòng thử lại sau ${rateLimit.resetInSeconds} giây.` },
+      { status: 429 }
+    );
+  }
+
   let body: Record<string, unknown>;
   try {
     body = await req.json();
@@ -72,16 +91,19 @@ export async function POST(req: Request) {
     return NextResponse.json({ success: false, error: "Dữ liệu gửi lên không hợp lệ" }, { status: 400 });
   }
 
-  const displayName = typeof body?.displayName === "string" ? body.displayName.trim() : "";
-  const content = typeof body?.content === "string" ? body.content.trim() : "";
+  const rawName = typeof body?.displayName === "string" ? body.displayName : "";
+  const rawContent = typeof body?.content === "string" ? body.content : "";
   const rating = Number.parseInt(String(body?.rating ?? ""), 10);
 
+  const displayName = sanitizeText(rawName);
+  const content = sanitizeText(rawContent);
+
   if (!displayName) {
-    return NextResponse.json({ success: false, error: "Vui lòng nhập tên hiển thị" }, { status: 400 });
+    return NextResponse.json({ success: false, error: "Vui lòng nhập tên hiển thị hợp lệ" }, { status: 400 });
   }
 
   if (!content) {
-    return NextResponse.json({ success: false, error: "Vui lòng nhập nội dung đánh giá" }, { status: 400 });
+    return NextResponse.json({ success: false, error: "Vui lòng nhập nội dung đánh giá hợp lệ" }, { status: 400 });
   }
 
   if (Number.isNaN(rating) || rating < 1 || rating > 5) {

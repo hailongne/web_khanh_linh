@@ -381,8 +381,67 @@ export default function HomePage() {
     };
   }, [isTablet]);
 
+  const homepageSchemas = [
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "Khánh Linh Trans",
+      "url": "https://khanhlinhtrans.vn",
+      "logo": "https://khanhlinhtrans.vn/images/logoKhanhLinhFull.png",
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "telephone": siteContacts.phone || "",
+        "contactType": "customer service"
+      }
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "Khánh Linh Trans",
+      "url": "https://khanhlinhtrans.vn",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://khanhlinhtrans.vn/blog?search={search_term_string}",
+        "query-input": "required name=search_term_string"
+      }
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "AutoRental",
+      "name": "Khánh Linh Trans",
+      "image": "https://khanhlinhtrans.vn/images/logoKhanhLinhFull.png",
+      "telephone": siteContacts.phone || "",
+      "email": siteContacts.email || "",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": siteContacts.address || "",
+        "addressCountry": "VN"
+      },
+      "url": "https://khanhlinhtrans.vn"
+    },
+    ...(defaultFaqData.items && defaultFaqData.items.length > 0 ? [{
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": defaultFaqData.items.map((item) => ({
+        "@type": "Question",
+        "name": item.question,
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": item.answer
+        }
+      }))
+    }] : [])
+  ];
+
   return (
     <main className="page-shell" id="top">
+      {homepageSchemas.map((schema, index) => (
+        <script
+          key={`ld-json-${index}`}
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+        />
+      ))}
       <SiteHeader links={t.header.links} lang={lang} onToggleLang={toggleLang} />
           <section className="hero-section hero-banner" id="services">
             <div className="hero-banner__slider">

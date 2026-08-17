@@ -13,11 +13,11 @@ export function BlogHeader() {
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [categories, setCategories] = useState<{ id: string; name: string; slug: string }[]>([]);
-  const [searchValue, setSearchValue] = useState(searchParams.get("search") || "");
+  const [searchValue, setSearchValue] = useState(searchParams?.get("search") || "");
 
   // Sync search input with URL search param
   useEffect(() => {
-    const initialSearch = searchParams.get("search") || "";
+    const initialSearch = searchParams?.get("search") || "";
     Promise.resolve().then(() => setSearchValue(initialSearch));
   }, [searchParams]);
 
@@ -50,11 +50,11 @@ export function BlogHeader() {
     };
   }, [isSidebarOpen]);
 
-  const activeCategory = searchParams.get("category") || "all";
+  const activeCategory = searchParams?.get("category") || "all";
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const params = new URLSearchParams(searchParams.toString());
+    const params = new URLSearchParams(searchParams?.toString() || "");
     if (searchValue.trim()) {
       params.set("search", searchValue.trim());
     } else {
@@ -72,7 +72,7 @@ export function BlogHeader() {
     if (catName !== "all") {
       params.set("category", catName);
     }
-    const currentSearch = searchParams.get("search");
+    const currentSearch = searchParams?.get("search");
     if (currentSearch) {
       params.set("search", currentSearch);
     }
@@ -136,7 +136,7 @@ export function BlogHeader() {
                 className="blog-header-search-clear"
                 onClick={() => {
                   setSearchValue("");
-                  const params = new URLSearchParams(searchParams.toString());
+                  const params = new URLSearchParams(searchParams?.toString() || "");
                   params.delete("search");
                   router.push(pathname === "/blog" ? `/blog?${params.toString()}` : "/blog");
                 }}
@@ -214,7 +214,7 @@ export function BlogHeader() {
                 <nav className="blog-sidebar-nav">
                   <Link
                     href="/blog"
-                    className={`blog-sidebar-item ${pathname === "/blog" && !searchParams.get("category") && !searchParams.get("filter") ? "is-active" : ""}`}
+                    className={`blog-sidebar-item ${pathname === "/blog" && !searchParams?.get("category") && !searchParams?.get("filter") ? "is-active" : ""}`}
                     onClick={() => {
                       setIsSidebarOpen(false);
                       setSearchValue("");
@@ -232,8 +232,8 @@ export function BlogHeader() {
                   {categories.map((cat) => {
                     const isCatActive =
                       pathname === `/blog/category/${cat.slug}` ||
-                      searchParams.get("category") === cat.name ||
-                      searchParams.get("category") === cat.slug;
+                      searchParams?.get("category") === cat.name ||
+                      searchParams?.get("category") === cat.slug;
 
                     return (
                       <Link
@@ -259,7 +259,7 @@ export function BlogHeader() {
                 <nav className="blog-sidebar-nav">
                   <Link
                     href="/blog/latest"
-                    className={`blog-sidebar-item ${pathname === "/blog/latest" || searchParams.get("filter") === "latest" ? "is-active" : ""}`}
+                    className={`blog-sidebar-item ${pathname === "/blog/latest" || searchParams?.get("filter") === "latest" ? "is-active" : ""}`}
                     onClick={() => setIsSidebarOpen(false)}
                   >
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">

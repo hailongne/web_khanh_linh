@@ -31,7 +31,8 @@ export default function HeadingBlock({ block }: Props) {
 
   switch (level) {
     case 1:
-      return <h1 id={headingId} className="blog-block-heading blog-block-heading--h1">{text}</h1>;
+      // Map level 1 block to h2 so the article page title remains the sole <h1> tag
+      return <h2 id={headingId} className="blog-block-heading blog-block-heading--h1">{text}</h2>;
     case 2:
       return <h2 id={headingId} className="blog-block-heading blog-block-heading--h2">{text}</h2>;
     case 3:

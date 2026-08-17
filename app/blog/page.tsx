@@ -23,8 +23,8 @@ function BlogListContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const selectedCategory = searchParams.get("category") || "all";
-  const searchQuery = searchParams.get("search") || "";
+  const selectedCategory = searchParams?.get("category") || "all";
+  const searchQuery = searchParams?.get("search") || "";
 
   const [lang] = useState<"vi" | "en">("vi");
   const [posts, setPosts] = useState<NewsItem[]>([]);

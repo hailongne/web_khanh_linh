@@ -6,10 +6,21 @@ import {
   createSession,
   COOKIE_NAME
 } from "../_lib/adminAuth";
+import { checkRateLimit, getClientIp } from "../../../lib/rateLimit";
 
 export const dynamic = "force-dynamic";
 
 export async function POST(req: Request) {
+  // Anti brute-force rate limit (max 5 login attempts per minute per IP)
+  const clientIp = getClientIp(req);
+  const rateLimit = checkRateLimit(`login:${clientIp}`, 5, 60000);
+  if (!rateLimit.success) {
+    return NextResponse.json(
+      { success: false, error: `Bạn đã thử đăng nhập quá nhiều lần. Vui lòng thử lại sau ${rateLimit.resetInSeconds} giây.` },
+      { status: 429 }
+    );
+  }
+
   try {
     const body = await req.json();
     const username = (body.username || "").trim();
@@ -86,7 +97,8 @@ export async function POST(req: Request) {
 
     return response;
   } catch (error: unknown) {
-    const errorMsg = error instanceof Error ? error.message : "Lỗi hệ thống khi đăng nhập.";
+    console.error("Login error:", error);
+    const errorMsg = process.env.NODE_ENV === "production" ? "Lỗi hệ thống khi đăng nhập." : (error instanceof Error ? error.message : "Lỗi hệ thống khi đăng nhập.");
     return NextResponse.json(
       { success: false, error: errorMsg },
       { status: 500 }

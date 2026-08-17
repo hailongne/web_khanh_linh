@@ -1,6 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { NextResponse } from "next/server";
+import { isAuthorized } from "../admin/_lib/adminAuth";
 
 const DB_PATH = path.join(process.cwd(), "db.json");
 
@@ -40,6 +41,10 @@ export async function GET(req: Request) {
 }
 
 export async function POST(req: Request) {
+  if (!(await isAuthorized(req))) {
+    return NextResponse.json({ success: false, error: "401 Unauthorized" }, { status: 401 });
+  }
+
   const url = new URL(req.url);
   const lang = getLang(url);
 
@@ -66,6 +71,10 @@ export async function POST(req: Request) {
 }
 
 export async function PUT(req: Request) {
+  if (!(await isAuthorized(req))) {
+    return NextResponse.json({ success: false, error: "401 Unauthorized" }, { status: 401 });
+  }
+
   const url = new URL(req.url);
   const lang = getLang(url);
   const id = url.searchParams.get("id")?.trim();
@@ -102,6 +111,10 @@ export async function PUT(req: Request) {
 }
 
 export async function DELETE(req: Request) {
+  if (!(await isAuthorized(req))) {
+    return NextResponse.json({ success: false, error: "401 Unauthorized" }, { status: 401 });
+  }
+
   const url = new URL(req.url);
   const lang = getLang(url);
   const id = url.searchParams.get("id")?.trim();

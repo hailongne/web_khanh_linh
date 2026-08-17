@@ -1,12 +1,19 @@
 import { NextResponse } from "next/server";
 import { readCategories, createCategory, updateCategoryVisibility } from "../../lib/blogDb";
+import { isAuthorized } from "../admin/_lib/adminAuth";
 
 export const dynamic = "force-dynamic";
 
 export async function GET(req: Request) {
   try {
     const { searchParams } = new URL(req.url);
-    const includeHidden = searchParams.get("includeHidden") === "true";
+    const requestedIncludeHidden = searchParams.get("includeHidden") === "true";
+
+    // Only authorized admins can request hidden categories
+    let includeHidden = false;
+    if (requestedIncludeHidden) {
+      includeHidden = await isAuthorized(req);
+    }
 
     const allCategories = readCategories();
     const data = includeHidden
@@ -18,12 +25,16 @@ export async function GET(req: Request) {
       data,
     });
   } catch (error: unknown) {
-    const errorMsg = error instanceof Error ? error.message : "Internal error";
+    const errorMsg = process.env.NODE_ENV === "production" ? "Internal error" : (error instanceof Error ? error.message : "Internal error");
     return NextResponse.json({ success: false, error: errorMsg }, { status: 500 });
   }
 }
 
 export async function POST(req: Request) {
+  if (!(await isAuthorized(req))) {
+    return NextResponse.json({ success: false, error: "401 Unauthorized" }, { status: 401 });
+  }
+
   try {
     const body = await req.json();
     const { name, description } = body;
@@ -43,12 +54,16 @@ export async function POST(req: Request) {
       data: result.data,
     });
   } catch (error: unknown) {
-    const errorMsg = error instanceof Error ? error.message : "Internal error";
+    const errorMsg = process.env.NODE_ENV === "production" ? "Internal error" : (error instanceof Error ? error.message : "Internal error");
     return NextResponse.json({ success: false, error: errorMsg }, { status: 500 });
   }
 }
 
 export async function PATCH(req: Request) {
+  if (!(await isAuthorized(req))) {
+    return NextResponse.json({ success: false, error: "401 Unauthorized" }, { status: 401 });
+  }
+
   try {
     const body = await req.json();
     const { id, slug, name, visible } = body;
@@ -79,7 +94,7 @@ export async function PATCH(req: Request) {
       data: result.data,
     });
   } catch (error: unknown) {
-    const errorMsg = error instanceof Error ? error.message : "Internal error";
+    const errorMsg = process.env.NODE_ENV === "production" ? "Internal error" : (error instanceof Error ? error.message : "Internal error");
     return NextResponse.json({ success: false, error: errorMsg }, { status: 500 });
   }
 }

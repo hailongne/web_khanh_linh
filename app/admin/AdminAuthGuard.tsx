@@ -14,6 +14,7 @@ interface AdminAuthGuardProps {
 export default function AdminAuthGuard({ children }: AdminAuthGuardProps) {
   const router = useRouter();
   const pathname = usePathname();
+  const currentPath = pathname || "";
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
@@ -24,8 +25,8 @@ export default function AdminAuthGuard({ children }: AdminAuthGuardProps) {
           // BLOG_EDITOR chỉ được truy cập /admin/blog và /admin/media
           if (
             data.data.role === "BLOG_EDITOR" &&
-            !pathname.startsWith("/admin/blog") &&
-            !pathname.startsWith("/admin/media")
+            !currentPath.startsWith("/admin/blog") &&
+            !currentPath.startsWith("/admin/media")
           ) {
             router.replace("/admin/blog");
             return;

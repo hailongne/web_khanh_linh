@@ -23,8 +23,9 @@ function AdminShellContent({
 }) {
   const router = useRouter();
   const pathname = usePathname();
+  const currentPath = pathname || "";
   const searchParams = useSearchParams();
-  const currentTab = searchParams.get("tab") || "vehicles";
+  const currentTab = searchParams?.get("tab") || "vehicles";
   const [currentUser, setCurrentUser] = useState<Account | null>(null);
   const [loading, setLoading] = useState(true);
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
@@ -39,12 +40,12 @@ function AdminShellContent({
             return;
           }
           // Authorization check for BLOG_EDITOR
-          if (data.data.role === "BLOG_EDITOR" && !pathname.startsWith("/admin/blog") && !pathname.startsWith("/admin/media")) {
+          if (data.data.role === "BLOG_EDITOR" && !currentPath.startsWith("/admin/blog") && !currentPath.startsWith("/admin/media")) {
             router.replace("/admin/blog");
             return;
           }
           // Authorization check for ADMIN accessing /admin/accounts
-          if (data.data.role === "ADMIN" && pathname.startsWith("/admin/accounts")) {
+          if (data.data.role === "ADMIN" && currentPath.startsWith("/admin/accounts")) {
             router.replace("/admin");
             return;
           }
@@ -59,7 +60,7 @@ function AdminShellContent({
       .finally(() => {
         setLoading(false);
       });
-  }, [pathname, router]);
+  }, [currentPath, router]);
 
   async function handleLogout() {
     if (confirm("Bạn có chắc chắn muốn đăng xuất khỏi hệ thống không?")) {
@@ -107,11 +108,11 @@ function AdminShellContent({
             let isActive = false;
             if (item.href.includes("?tab=")) {
               const targetTab = item.href.split("?tab=")[1];
-              isActive = pathname === "/admin" && currentTab === targetTab;
+              isActive = currentPath === "/admin" && currentTab === targetTab;
             } else if (item.href === "/admin") {
-              isActive = pathname === "/admin" && (!currentTab || currentTab === "vehicles");
+              isActive = currentPath === "/admin" && (!currentTab || currentTab === "vehicles");
             } else {
-              isActive = pathname.startsWith(item.href);
+              isActive = currentPath.startsWith(item.href);
             }
 
             return (

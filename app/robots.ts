@@ -4,9 +4,10 @@ export default function robots(): MetadataRoute.Robots {
   return {
     rules: {
       userAgent: "*",
-      allow: "/",
-      disallow: ["/admin", "/admin/*", "/login", "/api/admin/*"],
+      allow: ["/", "/blog", "/blog/*", "/images/*", "/uploads/*"],
+      disallow: ["/admin", "/admin/*", "/login", "/api", "/api/*"],
     },
     sitemap: "https://khanhlinhtrans.vn/sitemap.xml",
   };
 }
+

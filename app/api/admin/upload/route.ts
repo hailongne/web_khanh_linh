@@ -70,6 +70,30 @@ export async function POST(req: Request) {
     );
   }
 
+  // 1. Try Cloudinary upload if configured in Environment Variables
+  const cloudName = process.env.CLOUDINARY_CLOUD_NAME || process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
+  const uploadPreset = process.env.CLOUDINARY_UPLOAD_PRESET || process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET;
+
+  if (cloudName && uploadPreset) {
+    try {
+      const cloudFormData = new FormData();
+      cloudFormData.append("file", file);
+      cloudFormData.append("upload_preset", uploadPreset);
+
+      const cloudRes = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
+        method: "POST",
+        body: cloudFormData,
+      });
+
+      const cloudData = await cloudRes.json();
+      if (cloudRes.ok && cloudData.secure_url) {
+        return NextResponse.json({ success: true, path: cloudData.secure_url });
+      }
+    } catch (err) {
+      console.error("Cloudinary upload error, falling back:", err);
+    }
+  }
+
   const safeBaseName = sanitizeFileName(file.name.replace(/\.[a-zA-Z0-9]+$/, "")) || "image";
   const fileName = `${safeBaseName}-${Date.now()}-${Math.random().toString(36).slice(2, 8)}${extension}`;
   const imagesFolder = path.resolve(process.cwd(), "public", "images");
@@ -82,29 +106,39 @@ export async function POST(req: Request) {
 
   await ensureDirectoryExists(imagesFolder);
 
+  // 2. Try writing file to local disk (works on VPS / Local)
   try {
     const buffer = Buffer.from(await file.arrayBuffer());
     await fs.writeFile(targetPath, buffer);
-  } catch {
-    return NextResponse.json({ success: false, error: "Unable to save uploaded file" }, { status: 500 });
-  }
 
-  if (oldPath) {
-    const normalizedOld = oldPath.replace(/\\/g, "/").replace(/^\/+/, "");
-    if (normalizedOld.startsWith("images/")) {
-      const publicRoot = path.resolve(process.cwd(), "public");
-      const oldFilePath = path.resolve(publicRoot, normalizedOld);
-      if (oldFilePath.startsWith(path.join(publicRoot, "images"))) {
-        try {
-          await fs.unlink(oldFilePath);
-        } catch {
-          // ignore deletion errors
+    if (oldPath) {
+      const normalizedOld = oldPath.replace(/\\/g, "/").replace(/^\/+/, "");
+      if (normalizedOld.startsWith("images/")) {
+        const publicRoot = path.resolve(process.cwd(), "public");
+        const oldFilePath = path.resolve(publicRoot, normalizedOld);
+        if (oldFilePath.startsWith(path.join(publicRoot, "images"))) {
+          try {
+            await fs.unlink(oldFilePath);
+          } catch {
+            // ignore deletion errors
+          }
         }
       }
     }
-  }
 
-  return NextResponse.json({ success: true, path: `/images/${fileName}` });
+    return NextResponse.json({ success: true, path: `/images/${fileName}` });
+  } catch {
+    // 3. Fallback for Read-Only Filesystem (Vercel): Convert to Base64 Data URI
+    try {
+      const buffer = Buffer.from(await file.arrayBuffer());
+      const base64Data = buffer.toString("base64");
+      const mimeType = file.type || "image/jpeg";
+      const dataUrl = `data:${mimeType};base64,${base64Data}`;
+      return NextResponse.json({ success: true, path: dataUrl });
+    } catch {
+      return NextResponse.json({ success: false, error: "Unable to process uploaded file" }, { status: 500 });
+    }
+  }
 }
 
 export async function DELETE(req: Request) {

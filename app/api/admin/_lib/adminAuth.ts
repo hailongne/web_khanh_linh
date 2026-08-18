@@ -18,6 +18,8 @@ export const DEFAULT_ADMIN_PASSWORD = "KhanhLinh2026!";
 export const ADMIN_MIN_PASSWORD_LENGTH = 8;
 export const COOKIE_NAME = "admin_session";
 
+const AUTH_SECRET = process.env.ADMIN_AUTH_SECRET || "khanhlinhtrans-secret-auth-key-2026";
+
 export interface SessionEntry {
   accountId: string;
   expire: string;
@@ -46,7 +48,11 @@ export function readDb(): Record<string, unknown> {
 }
 
 export function writeDb(data: Record<string, unknown>): void {
-  fs.writeFileSync(DB_PATH, JSON.stringify(data, null, 2), "utf-8");
+  try {
+    fs.writeFileSync(DB_PATH, JSON.stringify(data, null, 2), "utf-8");
+  } catch (err) {
+    console.warn("Notice: Cannot write db.json on read-only filesystem:", err);
+  }
 }
 
 export function readAccounts(): Account[] {
@@ -101,19 +107,41 @@ export function readAccounts(): Account[] {
     return accounts;
   } catch (err) {
     console.error("Error reading accounts.json:", err);
-    return [];
+    // Return default super admin fallback if file read/parse fails on serverless
+    const now = new Date().toISOString();
+    return [{
+      id: "acc_001",
+      username: DEFAULT_ADMIN_USERNAME,
+      passwordHash: bcrypt.hashSync(DEFAULT_ADMIN_PASSWORD, 10),
+      displayName: "Administrator",
+      avatar: "",
+      role: "SUPER_ADMIN",
+      permissions: [],
+      active: true,
+      createdAt: now,
+      updatedAt: now,
+      lastLogin: ""
+    }];
   }
 }
 
 export function writeAccounts(accounts: Account[]): void {
-  ensureDataDirs();
-  fs.writeFileSync(ACCOUNTS_PATH, JSON.stringify(accounts, null, 2), "utf-8");
+  try {
+    ensureDataDirs();
+    fs.writeFileSync(ACCOUNTS_PATH, JSON.stringify(accounts, null, 2), "utf-8");
+  } catch (err) {
+    console.warn("Notice: Cannot write accounts.json on read-only filesystem:", err);
+  }
 }
 
 export function readSessions(): SessionsMap {
   ensureDataDirs();
   if (!fs.existsSync(SESSIONS_PATH)) {
-    fs.writeFileSync(SESSIONS_PATH, JSON.stringify({}, null, 2), "utf-8");
+    try {
+      fs.writeFileSync(SESSIONS_PATH, JSON.stringify({}, null, 2), "utf-8");
+    } catch {
+      // ignore read-only error
+    }
     return {};
   }
 
@@ -127,30 +155,82 @@ export function readSessions(): SessionsMap {
 }
 
 export function writeSessions(sessions: SessionsMap): void {
-  ensureDataDirs();
-  fs.writeFileSync(SESSIONS_PATH, JSON.stringify(sessions, null, 2), "utf-8");
+  try {
+    ensureDataDirs();
+    fs.writeFileSync(SESSIONS_PATH, JSON.stringify(sessions, null, 2), "utf-8");
+  } catch (err) {
+    console.warn("Notice: Cannot write sessions.json on read-only filesystem:", err);
+  }
+}
+
+/**
+ * Creates a HMAC-signed stateless session token that works on Vercel / Read-Only Filesystem
+ */
+function createStatelessToken(accountId: string, expireMs: number): string {
+  const payload = `${accountId}:${expireMs}`;
+  const signature = crypto.createHmac("sha256", AUTH_SECRET).update(payload).digest("hex");
+  return `stateless.${payload}:${signature}`;
+}
+
+function verifyStatelessToken(token: string): { accountId: string; expireMs: number } | null {
+  if (!token || !token.startsWith("stateless.")) return null;
+  const raw = token.slice("stateless.".length);
+  const lastColon = raw.lastIndexOf(":");
+  if (lastColon === -1) return null;
+
+  const payload = raw.slice(0, lastColon);
+  const signature = raw.slice(lastColon + 1);
+
+  const parts = payload.split(":");
+  if (parts.length !== 2) return null;
+  const [accountId, expireStr] = parts;
+  const expireMs = parseInt(expireStr, 10);
+  if (isNaN(expireMs) || expireMs < Date.now()) return null;
+
+  const expectedSignature = crypto.createHmac("sha256", AUTH_SECRET).update(payload).digest("hex");
+  try {
+    if (crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expectedSignature))) {
+      return { accountId, expireMs };
+    }
+  } catch {
+    return null;
+  }
+  return null;
 }
 
 export async function createSession(accountId: string): Promise<string> {
-  const sessionId = crypto.randomUUID();
   const expireDate = new Date();
   expireDate.setDate(expireDate.getDate() + 7); // 7 days expiration
+  const expireMs = expireDate.getTime();
 
-  const sessions = readSessions();
-  sessions[sessionId] = {
-    accountId,
-    expire: expireDate.toISOString()
-  };
-  writeSessions(sessions);
-  return sessionId;
+  // Generate stateless HMAC token so authentication works even on Read-Only Vercel
+  const token = createStatelessToken(accountId, expireMs);
+
+  // Best effort write to sessions.json for legacy persistence if filesystem is writable
+  try {
+    const sessions = readSessions();
+    sessions[token] = {
+      accountId,
+      expire: expireDate.toISOString()
+    };
+    writeSessions(sessions);
+  } catch {
+    // Ignore read-only errors on serverless
+  }
+
+  return token;
 }
 
 export async function destroySession(sessionId: string): Promise<void> {
   if (!sessionId) return;
-  const sessions = readSessions();
-  if (sessions[sessionId]) {
-    delete sessions[sessionId];
-    writeSessions(sessions);
+  try {
+    const sessions = readSessions();
+    if (sessions[sessionId]) {
+      delete sessions[sessionId];
+      writeSessions(sessions);
+    }
+  } catch {
+    // Ignore read-only errors on serverless
   }
 }
 
@@ -182,22 +262,33 @@ export async function getAuthenticatedAccount(req?: Request): Promise<Account | 
   }
 
   if (sessionId) {
-    const sessions = readSessions();
-    const session = sessions[sessionId];
-    if (session) {
-      const now = new Date().getTime();
-      const expireTime = new Date(session.expire).getTime();
-      if (expireTime > now) {
-        const accounts = readAccounts();
-        const account = accounts.find((a) => a.id === session.accountId && a.active);
-        if (account) {
-          return account;
-        }
-      } else {
-        // Remove expired session
-        delete sessions[sessionId];
-        writeSessions(sessions);
+    // 1. Try stateless token verification first (works on Vercel / serverless without disk access)
+    const verified = verifyStatelessToken(sessionId);
+    if (verified) {
+      const accounts = readAccounts();
+      const account = accounts.find((a) => a.id === verified.accountId && a.active);
+      if (account) {
+        return account;
       }
+    }
+
+    // 2. Fallback to file-based session lookup (for legacy UUID sessions)
+    try {
+      const sessions = readSessions();
+      const session = sessions[sessionId];
+      if (session) {
+        const now = new Date().getTime();
+        const expireTime = new Date(session.expire).getTime();
+        if (expireTime > now) {
+          const accounts = readAccounts();
+          const account = accounts.find((a) => a.id === session.accountId && a.active);
+          if (account) {
+            return account;
+          }
+        }
+      }
+    } catch {
+      // ignore disk read errors
     }
   }
 

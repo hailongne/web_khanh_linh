@@ -23,13 +23,24 @@ type DbShape = {
   vehicles?: Record<string, Vehicle[]>;
 };
 
+export const dynamic = "force-dynamic";
+
 function readDb(): DbShape {
-  const raw = fs.readFileSync(DB_PATH, "utf-8");
-  return JSON.parse(raw) as DbShape;
+  try {
+    if (!fs.existsSync(DB_PATH)) return {};
+    const raw = fs.readFileSync(DB_PATH, "utf-8");
+    return JSON.parse(raw) as DbShape;
+  } catch {
+    return {};
+  }
 }
 
 function writeDb(data: DbShape): void {
-  fs.writeFileSync(DB_PATH, JSON.stringify(data, null, 2), "utf-8");
+  try {
+    fs.writeFileSync(DB_PATH, JSON.stringify(data, null, 2), "utf-8");
+  } catch (err) {
+    console.warn("Notice: Cannot write db.json on read-only filesystem:", err);
+  }
 }
 
 function getLang(url: URL): string {

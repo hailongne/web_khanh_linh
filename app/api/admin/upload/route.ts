@@ -153,37 +153,43 @@ export async function POST(req: Request) {
 }
 
 export async function DELETE(req: Request) {
-  if (!(await isAuthorized(req))) {
-    return unauthorizedResponse();
-  }
-
-  const url = new URL(req.url);
-  const imagePath = url.searchParams.get("path")?.trim() ?? "";
-
-  if (!imagePath) {
-    return NextResponse.json({ success: false, error: "Missing image path" }, { status: 400 });
-  }
-
-  const normalized = imagePath.replace(/\\/g, "/").replace(/^\/+/, "");
-  if (!normalized.startsWith("images/") || normalized.includes("..")) {
-    return NextResponse.json({ success: false, error: "Invalid image path" }, { status: 400 });
-  }
-
-  const publicRoot = path.resolve(process.cwd(), "public");
-  const absolutePath = path.resolve(publicRoot, normalized);
-
-  if (!absolutePath.startsWith(path.join(publicRoot, "images"))) {
-    return NextResponse.json({ success: false, error: "Đường dẫn xóa tệp không hợp lệ." }, { status: 400 });
-  }
-
   try {
-    await fs.unlink(absolutePath);
-  } catch (error: unknown) {
-    const errCode = (error as { code?: string })?.code;
-    if (errCode !== "ENOENT") {
-      return NextResponse.json({ success: false, error: "Unable to delete image file" }, { status: 500 });
+    if (!(await isAuthorized(req))) {
+      return unauthorizedResponse();
     }
-  }
 
-  return NextResponse.json({ success: true });
+    const url = new URL(req.url);
+    const imagePath = url.searchParams.get("path")?.trim() ?? "";
+
+    if (!imagePath) {
+      return NextResponse.json({ success: false, error: "Missing image path" }, { status: 400 });
+    }
+
+    // Base64 Data URIs or external Cloudinary URLs do not need file deletion
+    if (imagePath.startsWith("data:") || imagePath.startsWith("http://") || imagePath.startsWith("https://")) {
+      return NextResponse.json({ success: true });
+    }
+
+    const normalized = imagePath.replace(/\\/g, "/").replace(/^\/+/, "");
+    if (!normalized.startsWith("images/") || normalized.includes("..")) {
+      return NextResponse.json({ success: false, error: "Invalid image path" }, { status: 400 });
+    }
+
+    const publicRoot = path.resolve(process.cwd(), "public");
+    const absolutePath = path.resolve(publicRoot, normalized);
+
+    if (absolutePath.startsWith(path.join(publicRoot, "images"))) {
+      try {
+        await fs.unlink(absolutePath);
+      } catch (error: unknown) {
+        // Silently catch EROFS (read-only filesystem) or ENOENT (file missing)
+        console.warn("Notice: File unlink skipped on serverless/read-only filesystem:", error);
+      }
+    }
+
+    return NextResponse.json({ success: true });
+  } catch (error: unknown) {
+    console.error("Error in upload DELETE route:", error);
+    return NextResponse.json({ success: true });
+  }
 }

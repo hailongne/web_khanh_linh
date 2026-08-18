@@ -300,15 +300,15 @@ function AdminPageContent() {
     );
   }
 
-  function showError(message: string) {
+  const showError = useCallback((message: string) => {
     setError(message);
     setSuccessMessage(null);
-  }
+  }, []);
 
-  function showSuccess(message: string) {
+  const showSuccess = useCallback((message: string) => {
     setSuccessMessage(message);
     setError(null);
-  }
+  }, []);
 
   function handleCredentialsChange(nextUsername: string, nextPassword: string) {
     setUsername(nextUsername);

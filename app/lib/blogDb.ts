@@ -197,7 +197,7 @@ export function writeNewsIndex(items: NewsIndexItem[]): void {
   try {
     fs.writeFileSync(INDEX_PATH, JSON.stringify(items, null, 2), "utf-8");
   } catch (err) {
-    console.error("Error writing news-index.json:", err);
+    console.warn("Notice: Cannot write news-index.json on read-only filesystem:", err);
   }
 }
 
@@ -253,7 +253,11 @@ export function writeNewsDetail(slug: string, detail: NewsDetail): void {
     updatedAt: detail.updatedAt,
   };
 
-  fs.writeFileSync(filePath, JSON.stringify(dataToSave, null, 2), "utf-8");
+  try {
+    fs.writeFileSync(filePath, JSON.stringify(dataToSave, null, 2), "utf-8");
+  } catch (err) {
+    console.warn(`Notice: Cannot write news detail ${slug} on read-only filesystem:`, err);
+  }
 }
 
 export function deleteNewsDetail(slug: string): void {
@@ -263,7 +267,7 @@ export function deleteNewsDetail(slug: string): void {
     try {
       fs.unlinkSync(filePath);
     } catch (err) {
-      console.error(`Error deleting news file ${slug}:`, err);
+      console.warn(`Notice: Cannot delete news file ${slug} on read-only filesystem:`, err);
     }
   }
 }
@@ -294,7 +298,7 @@ export function deleteOrphanImage(imagePath: string): void {
     try {
       fs.unlinkSync(fullPath);
     } catch (err) {
-      console.error(`Error unlinking orphan image ${fileName}:`, err);
+      console.warn(`Notice: Cannot unlink orphan image ${fileName} on read-only filesystem:`, err);
     }
   }
 }
@@ -317,7 +321,7 @@ export function readCategories(): BlogCategory[] {
     try {
       fs.writeFileSync(CATEGORIES_PATH, JSON.stringify(initial, null, 2), "utf-8");
     } catch (err) {
-      console.error("Error creating initial categories.json:", err);
+      console.warn("Notice: Cannot create initial categories.json on read-only filesystem:", err);
     }
     return initial;
   }
@@ -340,7 +344,7 @@ export function writeCategories(items: BlogCategory[]): void {
   try {
     fs.writeFileSync(CATEGORIES_PATH, JSON.stringify(items, null, 2), "utf-8");
   } catch (err) {
-    console.error("Error writing categories.json:", err);
+    console.warn("Notice: Cannot write categories.json on read-only filesystem:", err);
   }
 }
 

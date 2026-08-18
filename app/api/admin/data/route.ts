@@ -10,13 +10,25 @@ type DbShape = Record<string, unknown>;
 const VALID_TYPES = ["vehicles", "pricing", "sales", "testimonials", "faq"] as const;
 type DataType = (typeof VALID_TYPES)[number];
 
+export const dynamic = "force-dynamic";
+
 function readDb(): DbShape {
-  const raw = fs.readFileSync(DB_PATH, "utf-8");
-  return JSON.parse(raw) as DbShape;
+  try {
+    if (!fs.existsSync(DB_PATH)) return {};
+    const raw = fs.readFileSync(DB_PATH, "utf-8");
+    return JSON.parse(raw) as DbShape;
+  } catch (err) {
+    console.warn("Notice: Cannot read db.json:", err);
+    return {};
+  }
 }
 
 function writeDb(data: DbShape): void {
-  fs.writeFileSync(DB_PATH, JSON.stringify(data, null, 2), "utf-8");
+  try {
+    fs.writeFileSync(DB_PATH, JSON.stringify(data, null, 2), "utf-8");
+  } catch (err) {
+    console.warn("Notice: Cannot write db.json on read-only filesystem:", err);
+  }
 }
 
 function unauthorizedResponse() {
@@ -81,155 +93,180 @@ function setObjectSection(db: DbShape, type: DataType, lang: string, value: unkn
 }
 
 export async function GET(req: Request) {
-  if (!(await isAuthorized(req))) {
-    return unauthorizedResponse();
-  }
+  try {
+    if (!(await isAuthorized(req))) {
+      return unauthorizedResponse();
+    }
 
-  const url = new URL(req.url);
-  const type = getType(url);
-  if (!type) {
-    return NextResponse.json({ success: false, error: "Invalid or missing type" }, { status: 400 });
-  }
+    const url = new URL(req.url);
+    const type = getType(url);
+    if (!type) {
+      return NextResponse.json({ success: false, error: "Invalid or missing type" }, { status: 400 });
+    }
 
-  const db = readDb();
+    const db = readDb();
 
-  if (type === "sales") {
-    const items = getArraySection(db, "sales") ?? [];
-    return NextResponse.json({ success: true, items });
-  }
+    if (type === "sales") {
+      const items = getArraySection(db, "sales") ?? [];
+      return NextResponse.json({ success: true, items });
+    }
 
-  if (type === "vehicles") {
+    if (type === "vehicles") {
+      const lang = getLang(url);
+      const vehicles = db.vehicles as Record<string, unknown[]> | undefined;
+      return NextResponse.json({ success: true, items: vehicles?.[lang] ?? [] });
+    }
+
     const lang = getLang(url);
-    const vehicles = db.vehicles as Record<string, unknown[]> | undefined;
-    return NextResponse.json({ success: true, items: vehicles?.[lang] ?? [] });
+    const section = db[type] as Record<string, unknown> | undefined;
+    return NextResponse.json({ success: true, data: section?.[lang] ?? null });
+  } catch (error: unknown) {
+    console.error("GET admin data error:", error);
+    return NextResponse.json({ success: false, error: "Lỗi tải dữ liệu" }, { status: 500 });
   }
-
-  const lang = getLang(url);
-  const section = db[type] as Record<string, unknown> | undefined;
-  return NextResponse.json({ success: true, data: section?.[lang] ?? null });
 }
 
 export async function POST(req: Request) {
-  if (!(await isAuthorized(req))) {
-    return unauthorizedResponse();
-  }
-
-  const url = new URL(req.url);
-  const type = getType(url);
-  if (!type) {
-    return NextResponse.json({ success: false, error: "Invalid or missing type" }, { status: 400 });
-  }
-
-  let payload: Record<string, unknown>;
   try {
-    payload = (await req.json()) as Record<string, unknown>;
-  } catch {
-    return NextResponse.json({ success: false, error: "Invalid JSON body" }, { status: 400 });
+    if (!(await isAuthorized(req))) {
+      return unauthorizedResponse();
+    }
+
+    const url = new URL(req.url);
+    const type = getType(url);
+    if (!type) {
+      return NextResponse.json({ success: false, error: "Invalid or missing type" }, { status: 400 });
+    }
+
+    let payload: Record<string, unknown>;
+    try {
+      payload = (await req.json()) as Record<string, unknown>;
+    } catch {
+      return NextResponse.json({ success: false, error: "Invalid JSON body" }, { status: 400 });
+    }
+
+    const db = readDb();
+
+    if (type === "sales" || type === "vehicles") {
+      const lang = type === "vehicles" ? getLang(url) : undefined;
+      const items = getArraySection(db, type, lang) ?? [];
+      const newItem = { ...payload, id: (payload?.id as string) ?? (type === "sales" ? crypto.randomUUID() : generateId(items)) };
+      setArraySection(db, type, [...items, newItem], lang);
+      writeDb(db);
+      return NextResponse.json({ success: true, item: newItem }, { status: 201 });
+    }
+
+    return NextResponse.json({ success: false, error: "POST not supported for this type" }, { status: 400 });
+  } catch (error: unknown) {
+    console.error("POST admin data error:", error);
+    return NextResponse.json({ success: false, error: "Lỗi thêm dữ liệu" }, { status: 500 });
   }
-
-  const db = readDb();
-
-  if (type === "sales" || type === "vehicles") {
-    const lang = type === "vehicles" ? getLang(url) : undefined;
-    const items = getArraySection(db, type, lang) ?? [];
-    const newItem = { ...payload, id: (payload?.id as string) ?? (type === "sales" ? crypto.randomUUID() : generateId(items)) };
-    setArraySection(db, type, [...items, newItem], lang);
-    writeDb(db);
-    return NextResponse.json({ success: true, item: newItem }, { status: 201 });
-  }
-
-  return NextResponse.json({ success: false, error: "POST not supported for this type" }, { status: 400 });
 }
 
 export async function PUT(req: Request) {
-  if (!(await isAuthorized(req))) {
-    return unauthorizedResponse();
-  }
-
-  const url = new URL(req.url);
-  const type = getType(url);
-  if (!type) {
-    return NextResponse.json({ success: false, error: "Invalid or missing type" }, { status: 400 });
-  }
-
-  let payload: Record<string, unknown>;
   try {
-    payload = (await req.json()) as Record<string, unknown>;
-  } catch {
-    return NextResponse.json({ success: false, error: "Invalid JSON body" }, { status: 400 });
+    if (!(await isAuthorized(req))) {
+      return unauthorizedResponse();
+    }
+
+    const url = new URL(req.url);
+    const type = getType(url);
+    if (!type) {
+      return NextResponse.json({ success: false, error: "Invalid or missing type" }, { status: 400 });
+    }
+
+    let payload: Record<string, unknown>;
+    try {
+      payload = (await req.json()) as Record<string, unknown>;
+    } catch {
+      return NextResponse.json({ success: false, error: "Invalid JSON body" }, { status: 400 });
+    }
+
+    const db = readDb();
+
+    if (type === "sales" || type === "vehicles") {
+      const lang = type === "vehicles" ? getLang(url) : undefined;
+      const id = url.searchParams.get("id")?.trim();
+      if (!id) {
+        return NextResponse.json({ success: false, error: "Missing id" }, { status: 400 });
+      }
+      const items = getArraySection(db, type, lang) ?? [];
+      const index = items.findIndex((item) => String(item?.id) === id);
+      if (index === -1) {
+        // If editing item created dynamically in memory, append or return success
+        const updatedItem = { ...payload, id };
+        items.push(updatedItem);
+        setArraySection(db, type, items, lang);
+        writeDb(db);
+        return NextResponse.json({ success: true, item: updatedItem });
+      }
+      items[index] = { ...payload, id };
+      setArraySection(db, type, items, lang);
+      writeDb(db);
+      return NextResponse.json({ success: true, item: items[index] });
+    }
+
+    if (type === "pricing" || type === "testimonials" || type === "faq") {
+      const lang = getLang(url);
+      setObjectSection(db, type, lang, payload);
+      writeDb(db);
+      return NextResponse.json({ success: true, data: payload });
+    }
+
+    return NextResponse.json({ success: false, error: "Unsupported type" }, { status: 400 });
+  } catch (error: unknown) {
+    console.error("PUT admin data error:", error);
+    return NextResponse.json({ success: false, error: "Lỗi cập nhật dữ liệu" }, { status: 500 });
   }
+}
 
-  const db = readDb();
+export async function DELETE(req: Request) {
+  try {
+    if (!(await isAuthorized(req))) {
+      return unauthorizedResponse();
+    }
 
-  if (type === "sales" || type === "vehicles") {
-    const lang = type === "vehicles" ? getLang(url) : undefined;
+    const url = new URL(req.url);
+    const type = getType(url);
+    if (!type) {
+      return NextResponse.json({ success: false, error: "Invalid or missing type" }, { status: 400 });
+    }
+
+    if (type !== "sales" && type !== "vehicles") {
+      return NextResponse.json({ success: false, error: "DELETE only supported for sales and vehicles" }, { status: 400 });
+    }
+
     const id = url.searchParams.get("id")?.trim();
     if (!id) {
       return NextResponse.json({ success: false, error: "Missing id" }, { status: 400 });
     }
+
+    const db = readDb();
+    const lang = type === "vehicles" ? getLang(url) : undefined;
     const items = getArraySection(db, type, lang) ?? [];
-    const index = items.findIndex((item) => String(item?.id) === id);
-    if (index === -1) {
-      return NextResponse.json({ success: false, error: "Item not found" }, { status: 404 });
-    }
-    items[index] = { ...payload, id };
-    setArraySection(db, type, items, lang);
-    writeDb(db);
-    return NextResponse.json({ success: true, item: items[index] });
-  }
+    const targetItem = items.find((item) => String(item?.id) === id);
 
-  if (type === "pricing" || type === "testimonials" || type === "faq") {
-    const lang = getLang(url);
-    setObjectSection(db, type, lang, payload);
-    writeDb(db);
-    return NextResponse.json({ success: true, data: payload });
-  }
-
-  return NextResponse.json({ success: false, error: "Unsupported type" }, { status: 400 });
-}
-
-export async function DELETE(req: Request) {
-  if (!(await isAuthorized(req))) {
-    return unauthorizedResponse();
-  }
-
-  const url = new URL(req.url);
-  const type = getType(url);
-  if (!type) {
-    return NextResponse.json({ success: false, error: "Invalid or missing type" }, { status: 400 });
-  }
-
-  if (type !== "sales" && type !== "vehicles") {
-    return NextResponse.json({ success: false, error: "DELETE only supported for sales and vehicles" }, { status: 400 });
-  }
-
-  const id = url.searchParams.get("id")?.trim();
-  if (!id) {
-    return NextResponse.json({ success: false, error: "Missing id" }, { status: 400 });
-  }
-
-  const db = readDb();
-  const lang = type === "vehicles" ? getLang(url) : undefined;
-  const items = getArraySection(db, type, lang) ?? [];
-  const targetItem = items.find((item) => String(item?.id) === id);
-
-  if (targetItem) {
-    const imagePath = targetItem.avatar || targetItem.image;
-    if (typeof imagePath === "string" && imagePath.startsWith("/images/")) {
-      const normalized = imagePath.slice(1);
-      if (normalized.startsWith("images/") && !normalized.includes("..")) {
-        const absolutePath = path.join(process.cwd(), "public", normalized);
-        try {
-          fs.unlinkSync(absolutePath);
-        } catch {
-          // ignore if file does not exist
+    if (targetItem) {
+      const imagePath = targetItem.avatar || targetItem.image;
+      if (typeof imagePath === "string" && imagePath.startsWith("/images/")) {
+        const normalized = imagePath.slice(1);
+        if (normalized.startsWith("images/") && !normalized.includes("..")) {
+          const absolutePath = path.join(process.cwd(), "public", normalized);
+          try {
+            fs.unlinkSync(absolutePath);
+          } catch {
+            // ignore if file does not exist
+          }
         }
       }
     }
-  }
 
-  const filtered = items.filter((item) => String(item?.id) !== id);
-  setArraySection(db, type, filtered, lang);
-  writeDb(db);
-  return NextResponse.json({ success: true });
+    const filtered = items.filter((item) => String(item?.id) !== id);
+    setArraySection(db, type, filtered, lang);
+    writeDb(db);
+    return NextResponse.json({ success: true });
+  } catch (error: unknown) {
+    console.error("DELETE admin data error:", error);
+    return NextResponse.json({ success: false, error: "Lỗi xóa dữ liệu" }, { status: 500 });
+  }
 }

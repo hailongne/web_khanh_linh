@@ -235,6 +235,24 @@ export default function HomePage() {
     }
   }, []);
 
+  const [salesContacts, setSalesContacts] = useState<SalesPerson[]>(typedDb.sales || []);
+
+  const fetchSalesContacts = useCallback(async () => {
+    try {
+      const res = await fetch("/api/sales");
+      const json = await res.json();
+      if (json.items && Array.isArray(json.items) && json.items.length > 0) {
+        setSalesContacts(json.items);
+      }
+    } catch {
+      // noop
+    }
+  }, []);
+
+  useEffect(() => {
+    Promise.resolve().then(fetchSalesContacts);
+  }, [fetchSalesContacts]);
+
   useEffect(() => {
     Promise.resolve().then(fetchPublicReviews);
   }, [fetchPublicReviews]);

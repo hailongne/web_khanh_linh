@@ -10,12 +10,24 @@ type SalesContact = {
   avatar: string;
 };
 
-const salesContacts = ((db as unknown) as { sales?: SalesContact[] }).sales || [];
+const defaultSalesContacts = ((db as unknown) as { sales?: SalesContact[] }).sales || [];
 
 type PanelType = "call" | "zalo" | null;
 
 export default function FloatingContactWidget() {
+  const [salesContacts, setSalesContacts] = useState<SalesContact[]>(defaultSalesContacts);
   const [activePanel, setActivePanel] = useState<PanelType>(null);
+
+  useEffect(() => {
+    fetch("/api/sales")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.items && Array.isArray(data.items) && data.items.length > 0) {
+          setSalesContacts(data.items);
+        }
+      })
+      .catch(() => {});
+  }, []);
   const widgetRef = useRef<HTMLDivElement | null>(null);
   const callPanelRef = useRef<HTMLDivElement | null>(null);
   const zaloPanelRef = useRef<HTMLDivElement | null>(null);

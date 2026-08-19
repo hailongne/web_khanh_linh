@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
 import { isAuthorized } from "../_lib/adminAuth";
-import { supabase } from "../../../lib/supabase";
+import { pool } from "../../../lib/dbPool";
 
 const VALID_TYPES = ["vehicles", "pricing", "sales", "testimonials", "faq"] as const;
 type DataType = (typeof VALID_TYPES)[number];
@@ -30,14 +30,14 @@ export async function GET(req: Request) {
     }
 
     if (type === "sales") {
-      const { data: row } = await supabase.from("site_settings").select("value").eq("key", "sales").single();
-      const items = Array.isArray(row?.value) ? row.value : [];
+      const { rows } = await pool.query("SELECT value FROM public.site_settings WHERE key = 'sales' LIMIT 1");
+      const items = Array.isArray(rows[0]?.value) ? rows[0].value : [];
       return NextResponse.json({ success: true, items });
     }
 
     if (type === "vehicles") {
       const lang = getLang(url);
-      const { data: rows } = await supabase.from("vehicles").select("*").eq("lang", lang).order("id", { ascending: true });
+      const { rows } = await pool.query("SELECT * FROM public.vehicles WHERE lang = $1 ORDER BY id ASC", [lang]);
       const items = (rows || []).map((r) => ({
         id: r.id,
         name: r.name,
@@ -50,8 +50,8 @@ export async function GET(req: Request) {
     }
 
     const lang = getLang(url);
-    const { data: row } = await supabase.from("site_settings").select("value").eq("key", type).single();
-    const valObj = (row?.value || {}) as Record<string, unknown>;
+    const { rows } = await pool.query("SELECT value FROM public.site_settings WHERE key = $1 LIMIT 1", [type]);
+    const valObj = (rows[0]?.value || {}) as Record<string, unknown>;
     return NextResponse.json({ success: true, data: valObj[lang] ?? null });
   } catch (error: unknown) {
     console.error("GET data error:", error);
@@ -79,11 +79,18 @@ export async function POST(req: Request) {
     }
 
     if (type === "sales") {
-      const { data: row } = await supabase.from("site_settings").select("value").eq("key", "sales").single();
-      const items = Array.isArray(row?.value) ? row.value : [];
+      const { rows } = await pool.query("SELECT value FROM public.site_settings WHERE key = 'sales' LIMIT 1");
+      const items = Array.isArray(rows[0]?.value) ? rows[0].value : [];
       const newItem = { ...payload, id: (payload?.id as string) || crypto.randomUUID() };
       const updated = [...items, newItem];
-      await supabase.from("site_settings").upsert({ key: "sales", value: updated, updated_at: new Date().toISOString() });
+
+      await pool.query(
+        `INSERT INTO public.site_settings (key, value, updated_at)
+         VALUES ('sales', $1, NOW())
+         ON CONFLICT (key) DO UPDATE SET value = EXCLUDED.value, updated_at = NOW()`,
+        [JSON.stringify(updated)]
+      );
+
       try { revalidatePath("/"); } catch {}
       return NextResponse.json({ success: true, item: newItem }, { status: 201 });
     }
@@ -100,7 +107,19 @@ export async function POST(req: Request) {
         image: String(payload.image || ""),
         specs: payload.specs || []
       };
-      await supabase.from("vehicles").upsert(newItem);
+
+      await pool.query(
+        `INSERT INTO public.vehicles (id, lang, name, badge, price, image, specs, created_at)
+         VALUES ($1, $2, $3, $4, $5, $6, $7, NOW())
+         ON CONFLICT (id, lang) DO UPDATE SET
+           name = EXCLUDED.name,
+           badge = EXCLUDED.badge,
+           price = EXCLUDED.price,
+           image = EXCLUDED.image,
+           specs = EXCLUDED.specs`,
+        [newItem.id, newItem.lang, newItem.name, newItem.badge, newItem.price, newItem.image, JSON.stringify(newItem.specs)]
+      );
+
       try { revalidatePath("/"); } catch {}
       return NextResponse.json({ success: true, item: newItem }, { status: 201 });
     }
@@ -133,8 +152,8 @@ export async function PUT(req: Request) {
 
     if (type === "sales") {
       const id = url.searchParams.get("id")?.trim();
-      const { data: row } = await supabase.from("site_settings").select("value").eq("key", "sales").single();
-      let items = Array.isArray(row?.value) ? row.value : [];
+      const { rows } = await pool.query("SELECT value FROM public.site_settings WHERE key = 'sales' LIMIT 1");
+      let items = Array.isArray(rows[0]?.value) ? rows[0].value : [];
       const updatedItem = { ...payload, id: id || (payload.id as string) || crypto.randomUUID() };
       
       const idx = items.findIndex((i: any) => String(i.id) === String(updatedItem.id));
@@ -143,7 +162,14 @@ export async function PUT(req: Request) {
       } else {
         items.push(updatedItem);
       }
-      await supabase.from("site_settings").upsert({ key: "sales", value: items, updated_at: new Date().toISOString() });
+
+      await pool.query(
+        `INSERT INTO public.site_settings (key, value, updated_at)
+         VALUES ('sales', $1, NOW())
+         ON CONFLICT (key) DO UPDATE SET value = EXCLUDED.value, updated_at = NOW()`,
+        [JSON.stringify(items)]
+      );
+
       try { revalidatePath("/"); } catch {}
       return NextResponse.json({ success: true, item: updatedItem });
     }
@@ -160,18 +186,36 @@ export async function PUT(req: Request) {
         image: String(payload.image || ""),
         specs: payload.specs || []
       };
-      await supabase.from("vehicles").upsert(updatedItem);
+
+      await pool.query(
+        `INSERT INTO public.vehicles (id, lang, name, badge, price, image, specs, created_at)
+         VALUES ($1, $2, $3, $4, $5, $6, $7, NOW())
+         ON CONFLICT (id, lang) DO UPDATE SET
+           name = EXCLUDED.name,
+           badge = EXCLUDED.badge,
+           price = EXCLUDED.price,
+           image = EXCLUDED.image,
+           specs = EXCLUDED.specs`,
+        [updatedItem.id, updatedItem.lang, updatedItem.name, updatedItem.badge, updatedItem.price, updatedItem.image, JSON.stringify(updatedItem.specs)]
+      );
+
       try { revalidatePath("/"); } catch {}
       return NextResponse.json({ success: true, item: updatedItem });
     }
 
     if (type === "pricing" || type === "testimonials" || type === "faq") {
       const lang = getLang(url);
-      const { data: row } = await supabase.from("site_settings").select("value").eq("key", type).single();
-      const valObj = (row?.value || {}) as Record<string, unknown>;
+      const { rows } = await pool.query("SELECT value FROM public.site_settings WHERE key = $1 LIMIT 1", [type]);
+      const valObj = (rows[0]?.value || {}) as Record<string, unknown>;
       valObj[lang] = payload;
 
-      await supabase.from("site_settings").upsert({ key: type, value: valObj, updated_at: new Date().toISOString() });
+      await pool.query(
+        `INSERT INTO public.site_settings (key, value, updated_at)
+         VALUES ($1, $2, NOW())
+         ON CONFLICT (key) DO UPDATE SET value = EXCLUDED.value, updated_at = NOW()`,
+        [type, JSON.stringify(valObj)]
+      );
+
       try { revalidatePath("/"); } catch {}
       return NextResponse.json({ success: true, data: payload });
     }
@@ -205,13 +249,19 @@ export async function DELETE(req: Request) {
     }
 
     if (type === "sales") {
-      const { data: row } = await supabase.from("site_settings").select("value").eq("key", "sales").single();
-      let items = Array.isArray(row?.value) ? row.value : [];
+      const { rows } = await pool.query("SELECT value FROM public.site_settings WHERE key = 'sales' LIMIT 1");
+      let items = Array.isArray(rows[0]?.value) ? rows[0].value : [];
       items = items.filter((i: any) => String(i.id) !== id);
-      await supabase.from("site_settings").upsert({ key: "sales", value: items, updated_at: new Date().toISOString() });
+
+      await pool.query(
+        `INSERT INTO public.site_settings (key, value, updated_at)
+         VALUES ('sales', $1, NOW())
+         ON CONFLICT (key) DO UPDATE SET value = EXCLUDED.value, updated_at = NOW()`,
+        [JSON.stringify(items)]
+      );
     } else if (type === "vehicles") {
       const lang = getLang(url);
-      await supabase.from("vehicles").delete().eq("id", id).eq("lang", lang);
+      await pool.query("DELETE FROM public.vehicles WHERE id = $1 AND lang = $2", [id, lang]);
     }
 
     try { revalidatePath("/"); } catch {}

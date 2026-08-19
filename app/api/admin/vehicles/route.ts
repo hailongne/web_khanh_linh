@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
 import { isAuthorized } from "../_lib/adminAuth";
-import { supabase } from "../../../lib/supabase";
+import { pool } from "../../../lib/dbPool";
 
 type Spec = {
   label: string;
@@ -86,7 +86,7 @@ export async function GET(req: Request) {
 
   const url = new URL(req.url);
   const lang = getLang(url);
-  const { data: rows } = await supabase.from("vehicles").select("*").eq("lang", lang).order("id", { ascending: true });
+  const { rows } = await pool.query("SELECT * FROM public.vehicles WHERE lang = $1 ORDER BY id ASC", [lang]);
 
   const items: Vehicle[] = (rows || []).map((r) => ({
     id: r.id,
@@ -123,15 +123,17 @@ export async function POST(req: Request) {
 
   const newItem: Vehicle = { id: newId, ...validated.data };
 
-  await supabase.from("vehicles").upsert({
-    id: newId,
-    lang,
-    name: newItem.name,
-    badge: newItem.badge,
-    price: newItem.price,
-    image: newItem.image,
-    specs: newItem.specs
-  });
+  await pool.query(
+    `INSERT INTO public.vehicles (id, lang, name, badge, price, image, specs, created_at)
+     VALUES ($1, $2, $3, $4, $5, $6, $7, NOW())
+     ON CONFLICT (id, lang) DO UPDATE SET
+       name = EXCLUDED.name,
+       badge = EXCLUDED.badge,
+       price = EXCLUDED.price,
+       image = EXCLUDED.image,
+       specs = EXCLUDED.specs`,
+    [newItem.id, lang, newItem.name, newItem.badge, newItem.price, newItem.image, JSON.stringify(newItem.specs)]
+  );
 
   try { revalidatePath("/"); } catch {}
 
@@ -165,15 +167,17 @@ export async function PUT(req: Request) {
 
   const updatedItem: Vehicle = { id, ...validated.data };
 
-  await supabase.from("vehicles").upsert({
-    id,
-    lang,
-    name: updatedItem.name,
-    badge: updatedItem.badge,
-    price: updatedItem.price,
-    image: updatedItem.image,
-    specs: updatedItem.specs
-  });
+  await pool.query(
+    `INSERT INTO public.vehicles (id, lang, name, badge, price, image, specs, created_at)
+     VALUES ($1, $2, $3, $4, $5, $6, $7, NOW())
+     ON CONFLICT (id, lang) DO UPDATE SET
+       name = EXCLUDED.name,
+       badge = EXCLUDED.badge,
+       price = EXCLUDED.price,
+       image = EXCLUDED.image,
+       specs = EXCLUDED.specs`,
+    [updatedItem.id, lang, updatedItem.name, updatedItem.badge, updatedItem.price, updatedItem.image, JSON.stringify(updatedItem.specs)]
+  );
 
   try { revalidatePath("/"); } catch {}
 
@@ -193,7 +197,7 @@ export async function DELETE(req: Request) {
     return NextResponse.json({ success: false, error: "Missing id parameter" }, { status: 400 });
   }
 
-  await supabase.from("vehicles").delete().eq("id", id).eq("lang", lang);
+  await pool.query("DELETE FROM public.vehicles WHERE id = $1 AND lang = $2", [id, lang]);
   try { revalidatePath("/"); } catch {}
 
   return NextResponse.json({ success: true });

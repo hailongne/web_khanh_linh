@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { checkRateLimit, getClientIp } from "../../lib/rateLimit";
-import { supabase } from "../../lib/supabase";
+import { pool } from "../../lib/dbPool";
 
 export type Review = {
   id: string;
@@ -23,8 +23,8 @@ function sanitizeText(str: string): string {
 
 async function getReviewsFromSupabase(): Promise<Review[]> {
   try {
-    const { data: row } = await supabase.from("site_settings").select("value").eq("key", "reviews").single();
-    return Array.isArray(row?.value) ? row.value : [];
+    const { rows } = await pool.query("SELECT value FROM public.site_settings WHERE key = 'reviews' LIMIT 1");
+    return Array.isArray(rows[0]?.value) ? rows[0].value : [];
   } catch {
     return [];
   }
@@ -32,11 +32,12 @@ async function getReviewsFromSupabase(): Promise<Review[]> {
 
 async function saveReviewsToSupabase(reviews: Review[]): Promise<void> {
   try {
-    await supabase.from("site_settings").upsert({
-      key: "reviews",
-      value: reviews,
-      updated_at: new Date().toISOString()
-    });
+    await pool.query(
+      `INSERT INTO public.site_settings (key, value, updated_at)
+       VALUES ('reviews', $1, NOW())
+       ON CONFLICT (key) DO UPDATE SET value = EXCLUDED.value, updated_at = NOW()`,
+      [JSON.stringify(reviews)]
+    );
   } catch (err) {
     console.error("Error saving reviews to Supabase:", err);
   }

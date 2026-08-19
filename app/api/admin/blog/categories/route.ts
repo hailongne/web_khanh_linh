@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { readCategories, createCategory, updateCategoryVisibility } from "../../../../lib/blogDb";
+import { readCategoriesAsync, createCategoryAsync, updateCategoryVisibilityAsync } from "../../../../lib/blogDb";
 
 export const dynamic = "force-dynamic";
 
@@ -8,7 +8,7 @@ export async function GET(req: Request) {
     const { searchParams } = new URL(req.url);
     const includeHidden = searchParams.get("includeHidden") === "true";
 
-    const allCategories = readCategories();
+    const allCategories = await readCategoriesAsync();
     const data = includeHidden
       ? allCategories
       : allCategories.filter((c) => c.visible !== false);
@@ -35,7 +35,7 @@ export async function POST(req: Request) {
       );
     }
 
-    const result = createCategory(name, description);
+    const result = await createCategoryAsync(name, description);
     return NextResponse.json({
       success: true,
       isDuplicate: Boolean(result.isDuplicate),
@@ -68,7 +68,7 @@ export async function PATCH(req: Request) {
       );
     }
 
-    const result = updateCategoryVisibility(target, visible);
+    const result = await updateCategoryVisibilityAsync(target, visible);
     if (!result.success) {
       return NextResponse.json({ success: false, error: result.message }, { status: 404 });
     }

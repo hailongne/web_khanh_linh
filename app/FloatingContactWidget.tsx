@@ -1,8 +1,6 @@
 "use client";
 import React, { useEffect, useRef, useState } from "react";
 
-import db from "../db.json";
-
 type SalesContact = {
   name: string;
   phone: string;
@@ -10,7 +8,7 @@ type SalesContact = {
   avatar: string;
 };
 
-const defaultSalesContacts = ((db as unknown) as { sales?: SalesContact[] }).sales || [];
+const defaultSalesContacts: SalesContact[] = [];
 
 type PanelType = "call" | "zalo" | null;
 

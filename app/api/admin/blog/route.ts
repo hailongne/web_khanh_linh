@@ -1,10 +1,10 @@
 import { NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { getAuthenticatedAccount } from "../_lib/adminAuth";
 import {
-  readNewsIndex,
-  writeNewsIndex,
-  writeNewsDetail,
-  generateUniqueSlug,
+  readNewsIndexAsync,
+  writeNewsDetailAsync,
+  generateUniqueSlugAsync,
   NewsIndexItem,
   NewsDetail,
 } from "../../../lib/blogDb";
@@ -18,8 +18,7 @@ export async function GET(req: Request) {
   }
 
   try {
-    const items = readNewsIndex();
-    // Sort by updatedAt descending for admin list
+    const items = await readNewsIndexAsync();
     items.sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime());
     return NextResponse.json({ success: true, data: items });
   } catch (error: unknown) {
@@ -46,7 +45,7 @@ export async function POST(req: Request) {
     }
 
     const now = new Date().toISOString();
-    const slug = generateUniqueSlug(title.vi || title.en || "bai-viet");
+    const slug = await generateUniqueSlugAsync(title.vi || title.en || "bai-viet");
 
     const newIndexItem: NewsIndexItem = {
       id: `news_${Date.now()}`,
@@ -84,11 +83,13 @@ export async function POST(req: Request) {
       updatedAt: now,
     };
 
-    const items = readNewsIndex();
-    items.unshift(newIndexItem);
-    writeNewsIndex(items);
+    await writeNewsDetailAsync(newIndexItem, newDetail);
 
-    writeNewsDetail(slug, newDetail);
+    // Instant revalidation for public blog pages
+    try {
+      revalidatePath("/blog");
+      revalidatePath(`/blog/${slug}`);
+    } catch {}
 
     return NextResponse.json({
       success: true,

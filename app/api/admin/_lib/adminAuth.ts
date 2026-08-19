@@ -1,17 +1,11 @@
 import bcrypt from "bcryptjs";
 import crypto from "node:crypto";
-import fs from "node:fs";
-import path from "node:path";
 import { cookies } from "next/headers";
 import { Role, Account, MENU_ITEMS, getAccessibleMenuItems } from "../../../admin/adminConfig";
+import { supabase } from "../../../lib/supabase";
 
 export type { Role, Account };
 export { MENU_ITEMS, getAccessibleMenuItems };
-
-const DB_PATH = path.join(process.cwd(), "db.json");
-const DATA_DIR = path.join(process.cwd(), "data");
-const ACCOUNTS_PATH = path.join(DATA_DIR, "accounts.json");
-const SESSIONS_PATH = path.join(DATA_DIR, "sessions.json");
 
 export const DEFAULT_ADMIN_USERNAME = "adminKhanhLinhTrans";
 export const DEFAULT_ADMIN_PASSWORD = "KhanhLinh2026!";
@@ -27,145 +21,80 @@ export interface SessionEntry {
 
 export type SessionsMap = Record<string, SessionEntry>;
 
-function ensureDataDirs() {
+// Helper convert database row to Account interface
+function mapRowToAccount(row: any): Account {
+  return {
+    id: row.id,
+    username: row.username,
+    passwordHash: row.password_hash,
+    displayName: row.display_name || "",
+    avatar: row.avatar || "",
+    role: row.role as Role,
+    permissions: Array.isArray(row.permissions) ? row.permissions : [],
+    active: row.active ?? true,
+    createdAt: row.created_at || new Date().toISOString(),
+    updatedAt: row.updated_at || new Date().toISOString(),
+    lastLogin: row.last_login || ""
+  };
+}
+
+export async function readAccountsAsync(): Promise<Account[]> {
   try {
-    if (!fs.existsSync(DATA_DIR)) {
-      fs.mkdirSync(DATA_DIR, { recursive: true });
+    const { data, error } = await supabase.from("accounts").select("*").order("created_at", { ascending: true });
+    if (error || !data || data.length === 0) {
+      return [];
     }
+    return data.map(mapRowToAccount);
   } catch (err) {
-    console.warn("Notice: Cannot create data dir on read-only filesystem:", err);
+    console.error("Error reading accounts from Supabase:", err);
+    return [];
   }
 }
 
-export function readDb(): Record<string, unknown> {
-  if (!fs.existsSync(DB_PATH)) return {};
-  try {
-    const raw = fs.readFileSync(DB_PATH, "utf-8");
-    return JSON.parse(raw);
-  } catch {
-    return {};
-  }
-}
-
-export function writeDb(data: Record<string, unknown>): void {
-  try {
-    fs.writeFileSync(DB_PATH, JSON.stringify(data, null, 2), "utf-8");
-  } catch (err) {
-    console.warn("Notice: Cannot write db.json on read-only filesystem:", err);
-  }
-}
-
+// Backward compatible sync method
 export function readAccounts(): Account[] {
-  ensureDataDirs();
-  if (!fs.existsSync(ACCOUNTS_PATH)) {
-    // Migration helper: migrate legacy admin from db.json if exists
-    const db = readDb();
-    const now = new Date().toISOString();
-    const legacyAdmin = db.admin as { passwordHash?: string; username?: string; createdAt?: string; updatedAt?: string } | undefined;
-    const defaultPasswordHash = legacyAdmin?.passwordHash || bcrypt.hashSync(DEFAULT_ADMIN_PASSWORD, 10);
-    const initialAccount: Account = {
-      id: "acc_001",
-      username: legacyAdmin?.username || DEFAULT_ADMIN_USERNAME,
-      passwordHash: defaultPasswordHash,
-      displayName: "Administrator",
-      avatar: "",
-      role: "SUPER_ADMIN",
-      permissions: [],
-      active: true,
-      createdAt: legacyAdmin?.createdAt || now,
-      updatedAt: legacyAdmin?.updatedAt || now,
-      lastLogin: ""
-    };
+  return [];
+}
 
-    const initialAccounts = [initialAccount];
-    writeAccounts(initialAccounts);
-    return initialAccounts;
-  }
-
+export async function writeAccountAsync(acc: Account): Promise<void> {
   try {
-    const raw = fs.readFileSync(ACCOUNTS_PATH, "utf-8");
-    const accounts = JSON.parse(raw) as Account[];
-    if (!Array.isArray(accounts) || accounts.length === 0) {
-      // Re-seed default super admin if empty
-      const now = new Date().toISOString();
-      const defaultAcc: Account = {
-        id: "acc_001",
-        username: DEFAULT_ADMIN_USERNAME,
-        passwordHash: bcrypt.hashSync(DEFAULT_ADMIN_PASSWORD, 10),
-        displayName: "Administrator",
-        avatar: "",
-        role: "SUPER_ADMIN",
-        permissions: [],
-        active: true,
-        createdAt: now,
-        updatedAt: now,
-        lastLogin: ""
-      };
-      writeAccounts([defaultAcc]);
-      return [defaultAcc];
-    }
-    return accounts;
+    await supabase.from("accounts").upsert({
+      id: acc.id,
+      username: acc.username,
+      password_hash: acc.passwordHash,
+      display_name: acc.displayName,
+      avatar: acc.avatar,
+      role: acc.role,
+      permissions: acc.permissions || [],
+      active: acc.active,
+      updated_at: new Date().toISOString(),
+      last_login: acc.lastLogin || null
+    });
   } catch (err) {
-    console.error("Error reading accounts.json:", err);
-    // Return default super admin fallback if file read/parse fails on serverless
-    const now = new Date().toISOString();
-    return [{
-      id: "acc_001",
-      username: DEFAULT_ADMIN_USERNAME,
-      passwordHash: bcrypt.hashSync(DEFAULT_ADMIN_PASSWORD, 10),
-      displayName: "Administrator",
-      avatar: "",
-      role: "SUPER_ADMIN",
-      permissions: [],
-      active: true,
-      createdAt: now,
-      updatedAt: now,
-      lastLogin: ""
-    }];
+    console.error("Error writing account to Supabase:", err);
+  }
+}
+
+export async function deleteAccountAsync(id: string): Promise<void> {
+  try {
+    await supabase.from("accounts").delete().eq("id", id);
+  } catch (err) {
+    console.error("Error deleting account from Supabase:", err);
   }
 }
 
 export function writeAccounts(accounts: Account[]): void {
-  try {
-    ensureDataDirs();
-    fs.writeFileSync(ACCOUNTS_PATH, JSON.stringify(accounts, null, 2), "utf-8");
-  } catch (err) {
-    console.warn("Notice: Cannot write accounts.json on read-only filesystem:", err);
-  }
+  // Legacy call - handled via writeAccountAsync in APIs
 }
 
 export function readSessions(): SessionsMap {
-  ensureDataDirs();
-  if (!fs.existsSync(SESSIONS_PATH)) {
-    try {
-      fs.writeFileSync(SESSIONS_PATH, JSON.stringify({}, null, 2), "utf-8");
-    } catch {
-      // ignore read-only error
-    }
-    return {};
-  }
-
-  try {
-    const raw = fs.readFileSync(SESSIONS_PATH, "utf-8");
-    return JSON.parse(raw) as SessionsMap;
-  } catch (err) {
-    console.error("Error reading sessions.json:", err);
-    return {};
-  }
+  return {};
 }
 
 export function writeSessions(sessions: SessionsMap): void {
-  try {
-    ensureDataDirs();
-    fs.writeFileSync(SESSIONS_PATH, JSON.stringify(sessions, null, 2), "utf-8");
-  } catch (err) {
-    console.warn("Notice: Cannot write sessions.json on read-only filesystem:", err);
-  }
+  // Legacy call
 }
 
-/**
- * Creates a HMAC-signed stateless session token that works on Vercel / Read-Only Filesystem
- */
 function createStatelessToken(accountId: string, expireMs: number): string {
   const payload = `${accountId}:${expireMs}`;
   const signature = crypto.createHmac("sha256", AUTH_SECRET).update(payload).digest("hex");
@@ -200,22 +129,18 @@ function verifyStatelessToken(token: string): { accountId: string; expireMs: num
 
 export async function createSession(accountId: string): Promise<string> {
   const expireDate = new Date();
-  expireDate.setDate(expireDate.getDate() + 7); // 7 days expiration
+  expireDate.setDate(expireDate.getDate() + 7);
   const expireMs = expireDate.getTime();
-
-  // Generate stateless HMAC token so authentication works even on Read-Only Vercel
   const token = createStatelessToken(accountId, expireMs);
 
-  // Best effort write to sessions.json for legacy persistence if filesystem is writable
   try {
-    const sessions = readSessions();
-    sessions[token] = {
-      accountId,
+    await supabase.from("sessions").upsert({
+      id: token,
+      account_id: accountId,
       expire: expireDate.toISOString()
-    };
-    writeSessions(sessions);
-  } catch {
-    // Ignore read-only errors on serverless
+    });
+  } catch (err) {
+    console.error("Notice: failed saving session to Supabase:", err);
   }
 
   return token;
@@ -224,28 +149,21 @@ export async function createSession(accountId: string): Promise<string> {
 export async function destroySession(sessionId: string): Promise<void> {
   if (!sessionId) return;
   try {
-    const sessions = readSessions();
-    if (sessions[sessionId]) {
-      delete sessions[sessionId];
-      writeSessions(sessions);
-    }
-  } catch {
-    // Ignore read-only errors on serverless
+    await supabase.from("sessions").delete().eq("id", sessionId);
+  } catch (err) {
+    console.error("Error destroying session in Supabase:", err);
   }
 }
 
 export function getSessionIdFromRequest(req?: Request): string | null {
   if (req) {
-    // Check Header first
     const headerSession = req.headers.get("x-admin-session");
     if (headerSession) return headerSession.trim();
 
-    // Check Cookie in Request
     const cookieHeader = req.headers.get("cookie") || "";
     const match = cookieHeader.match(new RegExp(`(?:^|;\\s*)${COOKIE_NAME}=([^;]*)`));
     if (match && match[1]) return decodeURIComponent(match[1].trim());
   }
-
   return null;
 }
 
@@ -262,45 +180,41 @@ export async function getAuthenticatedAccount(req?: Request): Promise<Account | 
   }
 
   if (sessionId) {
-    // 1. Try stateless token verification first (works on Vercel / serverless without disk access)
+    // 1. Try stateless token verification
     const verified = verifyStatelessToken(sessionId);
     if (verified) {
-      const accounts = readAccounts();
-      const account = accounts.find((a) => a.id === verified.accountId && a.active);
-      if (account) {
-        return account;
+      const { data } = await supabase.from("accounts").select("*").eq("id", verified.accountId).single();
+      if (data && data.active) {
+        return mapRowToAccount(data);
       }
     }
 
-    // 2. Fallback to file-based session lookup (for legacy UUID sessions)
+    // 2. Try DB session lookup
     try {
-      const sessions = readSessions();
-      const session = sessions[sessionId];
+      const { data: session } = await supabase.from("sessions").select("account_id, expire").eq("id", sessionId).single();
       if (session) {
         const now = new Date().getTime();
         const expireTime = new Date(session.expire).getTime();
         if (expireTime > now) {
-          const accounts = readAccounts();
-          const account = accounts.find((a) => a.id === session.accountId && a.active);
-          if (account) {
-            return account;
+          const { data: account } = await supabase.from("accounts").select("*").eq("id", session.account_id).single();
+          if (account && account.active) {
+            return mapRowToAccount(account);
           }
         }
       }
-    } catch {
-      // ignore disk read errors
+    } catch (err) {
+      // ignore lookup error
     }
   }
 
-  // Fallback for legacy custom header auth (for backward compatibility during transition)
+  // 3. Fallback to header basic auth
   if (req) {
     const username = req.headers.get("x-admin-username")?.trim();
     const password = req.headers.get("x-admin-password")?.trim();
     if (username && password) {
-      const accounts = readAccounts();
-      const account = accounts.find((a) => a.username === username && a.active);
-      if (account && bcrypt.compareSync(password, account.passwordHash)) {
-        return account;
+      const { data: account } = await supabase.from("accounts").select("*").eq("username", username).single();
+      if (account && account.active && bcrypt.compareSync(password, account.password_hash)) {
+        return mapRowToAccount(account);
       }
     }
   }

@@ -4,7 +4,6 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { createPortal } from "react-dom";
 import { useEffect, useLayoutEffect, useRef, useState, type SVGProps } from "react";
-import db from "../db.json";
 import { translations } from "./translations";
 import { VNFlag } from "./flag-icons";
 
@@ -363,7 +362,7 @@ export function SiteHeader({ links, lang = "vi", onToggleLang }: SiteHeaderProps
     address: string;
   };
 
-  const contacts = (db as unknown as { contacts?: ContactInfo }).contacts || ({ phone: "", zalo: "", email: "", address: "" } as ContactInfo);
+  const contacts: ContactInfo = { phone: "0962 992 555", zalo: "https://zalo.me/0962992555", email: "info@khanhlinhtrans.com", address: "11a Nguyễn Hoàng Tôn, Tây Hồ, Hà Nội, Việt Nam" };
   const t = (translations as Record<string, typeof translations.vi>)[lang] ?? translations.vi;
   const [mounted, setMounted] = useState(false);
 

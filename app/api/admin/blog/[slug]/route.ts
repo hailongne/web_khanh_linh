@@ -1,13 +1,12 @@
 import { NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { getAuthenticatedAccount } from "../../_lib/adminAuth";
 import {
-  readNewsIndex,
-  writeNewsIndex,
-  readNewsDetail,
-  writeNewsDetail,
-  deleteNewsDetail,
-  deleteOrphanImage,
-  generateUniqueSlug,
+  readNewsIndexAsync,
+  readNewsDetailAsync,
+  writeNewsDetailAsync,
+  deleteNewsDetailAsync,
+  generateUniqueSlugAsync,
   NewsDetail,
 } from "../../../../lib/blogDb";
 
@@ -21,14 +20,14 @@ export async function GET(req: Request, { params }: { params: Promise<{ slug: st
 
   try {
     const { slug } = await params;
-    const items = readNewsIndex();
+    const items = await readNewsIndexAsync();
     const meta = items.find((item) => item.slug === slug);
 
     if (!meta) {
       return NextResponse.json({ success: false, error: "Không tìm thấy bài viết." }, { status: 404 });
     }
 
-    const detail = readNewsDetail(slug);
+    const detail = await readNewsDetailAsync(slug);
     return NextResponse.json({
       success: true,
       data: {
@@ -56,22 +55,18 @@ export async function PUT(req: Request, { params }: { params: Promise<{ slug: st
     const body = await req.json();
     const { title, excerpt, blocks, thumbnail, category, status, featured, seo } = body;
 
-    const items = readNewsIndex();
-    const indexIdx = items.findIndex((item) => item.slug === targetSlug);
+    const items = await readNewsIndexAsync();
+    const currentMeta = items.find((item) => item.slug === targetSlug);
 
-    if (indexIdx === -1) {
+    if (!currentMeta) {
       return NextResponse.json({ success: false, error: "Không tìm thấy bài viết để cập nhật." }, { status: 404 });
     }
 
     const now = new Date().toISOString();
-    const currentMeta = items[indexIdx];
-    const oldThumbnail = currentMeta.thumbnail;
-
-    // Check if slug needs update if title changed
     let newSlug = targetSlug;
     if (title?.vi || title?.en) {
       const newTitleStr = title.vi || title.en;
-      newSlug = generateUniqueSlug(newTitleStr, targetSlug);
+      newSlug = await generateUniqueSlugAsync(newTitleStr, targetSlug);
     }
 
     const authorId = currentMeta.authorId || account.id;
@@ -89,10 +84,7 @@ export async function PUT(req: Request, { params }: { params: Promise<{ slug: st
       updatedAt: now,
     };
 
-    items[indexIdx] = updatedIndexItem;
-    writeNewsIndex(items);
-
-    const existingDetail = readNewsDetail(targetSlug);
+    const existingDetail = await readNewsDetailAsync(targetSlug);
     const updatedDetail: NewsDetail = {
       slug: newSlug,
       blocks: blocks
@@ -105,13 +97,15 @@ export async function PUT(req: Request, { params }: { params: Promise<{ slug: st
     };
 
     if (newSlug !== targetSlug) {
-      deleteNewsDetail(targetSlug);
+      await deleteNewsDetailAsync(targetSlug);
     }
-    writeNewsDetail(newSlug, updatedDetail);
+    await writeNewsDetailAsync(updatedIndexItem, updatedDetail);
 
-    if (oldThumbnail && oldThumbnail !== updatedIndexItem.thumbnail) {
-      deleteOrphanImage(oldThumbnail);
-    }
+    try {
+      revalidatePath("/blog");
+      revalidatePath(`/blog/${newSlug}`);
+      if (newSlug !== targetSlug) revalidatePath(`/blog/${targetSlug}`);
+    } catch {}
 
     return NextResponse.json({
       success: true,
@@ -132,21 +126,19 @@ export async function DELETE(req: Request, { params }: { params: Promise<{ slug:
 
   try {
     const { slug } = await params;
-    const items = readNewsIndex();
-    const indexIdx = items.findIndex((item) => item.slug === slug);
+    const items = await readNewsIndexAsync();
+    const targetItem = items.find((item) => item.slug === slug);
 
-    if (indexIdx === -1) {
+    if (!targetItem) {
       return NextResponse.json({ success: false, error: "Không tìm thấy bài viết để xóa." }, { status: 404 });
     }
 
-    const targetItem = items[indexIdx];
-    items.splice(indexIdx, 1);
-    writeNewsIndex(items);
+    await deleteNewsDetailAsync(slug);
 
-    deleteNewsDetail(slug);
-    if (targetItem.thumbnail) {
-      deleteOrphanImage(targetItem.thumbnail);
-    }
+    try {
+      revalidatePath("/blog");
+      revalidatePath(`/blog/${slug}`);
+    } catch {}
 
     return NextResponse.json({
       success: true,

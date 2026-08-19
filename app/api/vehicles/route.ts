@@ -1,32 +1,9 @@
-import fs from "node:fs";
-import path from "node:path";
 import { NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { isAuthorized } from "../admin/_lib/adminAuth";
+import { supabase } from "../../lib/supabase";
 
-const DB_PATH = path.join(process.cwd(), "db.json");
-
-type DbShape = {
-  vehicles?: Record<string, Record<string, unknown>[]>;
-};
-
-type ItemWithId = { id: string };
-
-function readDb(): DbShape {
-  const raw = fs.readFileSync(DB_PATH, "utf-8");
-  return JSON.parse(raw) as DbShape;
-}
-
-function writeDb(data: DbShape): void {
-  fs.writeFileSync(DB_PATH, JSON.stringify(data, null, 2), "utf-8");
-}
-
-function generateId(items: ItemWithId[]): string {
-  if (items.length === 0) return "v1";
-  const nums = items
-    .map((v) => parseInt(v.id.replace(/^v/i, ""), 10))
-    .filter(Boolean);
-  return `v${Math.max(...nums) + 1}`;
-}
+export const dynamic = "force-dynamic";
 
 function getLang(url: URL): string {
   return url.searchParams.get("lang") ?? "vi";
@@ -35,8 +12,17 @@ function getLang(url: URL): string {
 export async function GET(req: Request) {
   const url = new URL(req.url);
   const lang = getLang(url);
-  const db = readDb();
-  const items = db.vehicles?.[lang] ?? [];
+  const { data: rows } = await supabase.from("vehicles").select("*").eq("lang", lang).order("id", { ascending: true });
+  
+  const items = (rows || []).map((r) => ({
+    id: r.id,
+    name: r.name,
+    badge: r.badge || "",
+    price: r.price || "",
+    image: r.image || "",
+    specs: r.specs || []
+  }));
+
   return NextResponse.json({ items });
 }
 
@@ -55,17 +41,19 @@ export async function POST(req: Request) {
     return NextResponse.json({ success: false, error: "Invalid JSON body" }, { status: 400 });
   }
 
-  if (!payload || typeof payload !== "object") {
-    return NextResponse.json({ success: false, error: "Request body must be an object" }, { status: 400 });
-  }
+  const newId = (payload?.id as string) || String(Date.now());
+  const newItem = {
+    id: newId,
+    lang,
+    name: String(payload.name || ""),
+    badge: String(payload.badge || ""),
+    price: String(payload.price || ""),
+    image: String(payload.image || ""),
+    specs: payload.specs || []
+  };
 
-  const db = readDb();
-  db.vehicles = db.vehicles ?? {};
-  db.vehicles[lang] = db.vehicles[lang] ?? [];
-
-  const newItem = { ...payload, id: generateId(db.vehicles[lang] as unknown as ItemWithId[]) };
-  db.vehicles[lang].push(newItem);
-  writeDb(db);
+  await supabase.from("vehicles").upsert(newItem);
+  try { revalidatePath("/"); } catch {}
 
   return NextResponse.json({ success: true, item: newItem }, { status: 201 });
 }
@@ -90,22 +78,18 @@ export async function PUT(req: Request) {
     return NextResponse.json({ success: false, error: "Invalid JSON body" }, { status: 400 });
   }
 
-  if (!payload || typeof payload !== "object") {
-    return NextResponse.json({ success: false, error: "Request body must be an object" }, { status: 400 });
-  }
+  const updatedItem = {
+    id,
+    lang,
+    name: String(payload.name || ""),
+    badge: String(payload.badge || ""),
+    price: String(payload.price || ""),
+    image: String(payload.image || ""),
+    specs: payload.specs || []
+  };
 
-  const db = readDb();
-  const vehicles = db.vehicles?.[lang] ?? [];
-  const index = vehicles.findIndex((item) => item.id === id);
-
-  if (index === -1) {
-    return NextResponse.json({ success: false, error: "Vehicle not found" }, { status: 404 });
-  }
-
-  const updatedItem = { ...vehicles[index], ...payload, id };
-  vehicles[index] = updatedItem;
-  db.vehicles![lang] = vehicles;
-  writeDb(db);
+  await supabase.from("vehicles").upsert(updatedItem);
+  try { revalidatePath("/"); } catch {}
 
   return NextResponse.json({ success: true, item: updatedItem });
 }
@@ -123,16 +107,8 @@ export async function DELETE(req: Request) {
     return NextResponse.json({ success: false, error: "Missing id parameter" }, { status: 400 });
   }
 
-  const db = readDb();
-  const vehicles = db.vehicles?.[lang] ?? [];
-  const index = vehicles.findIndex((item) => item.id === id);
-
-  if (index === -1) {
-    return NextResponse.json({ success: false, error: "Vehicle not found" }, { status: 404 });
-  }
-
-  db.vehicles![lang] = vehicles.filter((item) => item.id !== id);
-  writeDb(db);
+  await supabase.from("vehicles").delete().eq("id", id).eq("lang", lang);
+  try { revalidatePath("/"); } catch {}
 
   return NextResponse.json({ success: true });
 }

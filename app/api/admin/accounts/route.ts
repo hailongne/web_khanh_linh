@@ -2,8 +2,9 @@ import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import {
   getAuthenticatedAccount,
-  readAccounts,
-  writeAccounts,
+  readAccountsAsync,
+  writeAccountAsync,
+  deleteAccountAsync,
   Account,
   Role,
   ADMIN_MIN_PASSWORD_LENGTH
@@ -18,8 +19,7 @@ export async function GET(req: Request) {
   }
 
   try {
-    const accounts = readAccounts();
-    // Return sanitized accounts without passwordHash
+    const accounts = await readAccountsAsync();
     const sanitized = accounts.map((acc) => {
       const item = { ...acc };
       delete (item as { passwordHash?: string }).passwordHash;
@@ -59,7 +59,7 @@ export async function POST(req: Request) {
       );
     }
 
-    const accounts = readAccounts();
+    const accounts = await readAccountsAsync();
     if (accounts.some((a) => a.username.toLowerCase() === username.toLowerCase())) {
       return NextResponse.json({ success: false, error: "Tên đăng nhập đã tồn tại trên hệ thống." }, { status: 400 });
     }
@@ -81,8 +81,7 @@ export async function POST(req: Request) {
       lastLogin: ""
     };
 
-    accounts.push(newAccount);
-    writeAccounts(accounts);
+    await writeAccountAsync(newAccount);
 
     const result = { ...newAccount };
     delete (result as { passwordHash?: string }).passwordHash;
@@ -111,16 +110,13 @@ export async function PUT(req: Request) {
       return NextResponse.json({ success: false, error: "Thiếu ID tài khoản cần sửa." }, { status: 400 });
     }
 
-    const accounts = readAccounts();
-    const idx = accounts.findIndex((a) => a.id === id);
+    const accounts = await readAccountsAsync();
+    const existingAcc = accounts.find((a) => a.id === id);
 
-    if (idx === -1) {
+    if (!existingAcc) {
       return NextResponse.json({ success: false, error: "Không tìm thấy tài khoản." }, { status: 404 });
     }
 
-    const existingAcc = accounts[idx];
-
-    // Username check if changed
     if (username && username.trim().toLowerCase() !== existingAcc.username.toLowerCase()) {
       const trimmedUser = username.trim();
       if (accounts.some((a) => a.id !== id && a.username.toLowerCase() === trimmedUser.toLowerCase())) {
@@ -143,8 +139,7 @@ export async function PUT(req: Request) {
     if (active !== undefined) existingAcc.active = Boolean(active);
     existingAcc.updatedAt = new Date().toISOString();
 
-    accounts[idx] = existingAcc;
-    writeAccounts(accounts);
+    await writeAccountAsync(existingAcc);
 
     const result = { ...existingAcc };
     delete (result as { passwordHash?: string }).passwordHash;
@@ -177,14 +172,7 @@ export async function DELETE(req: Request) {
       return NextResponse.json({ success: false, error: "Không thể tự xóa tài khoản của chính mình." }, { status: 400 });
     }
 
-    const accounts = readAccounts();
-    const filtered = accounts.filter((a) => a.id !== id);
-
-    if (filtered.length === accounts.length) {
-      return NextResponse.json({ success: false, error: "Không tìm thấy tài khoản để xóa." }, { status: 404 });
-    }
-
-    writeAccounts(filtered);
+    await deleteAccountAsync(id);
     return NextResponse.json({ success: true, message: "Xóa tài khoản thành công." });
   } catch (error: unknown) {
     const errorMsg = error instanceof Error ? error.message : "Internal Error";

@@ -2,7 +2,6 @@
 import React, { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
 import Image from "next/image";
 import "./user.css";
-import db from "../db.json";
 import { SiteHeader } from "./site-header";
 import FleetSection from "./fleet-section";
 import FloatingContactWidget from "./FloatingContactWidget";
@@ -91,9 +90,14 @@ type PublicReview = {
   createdAt: string;
 };
 
-const typedDb = db as unknown as TypedDb;
+const typedDb: TypedDb = {};
 const salesContacts = typedDb.sales || [];
-const siteContacts = typedDb.contacts || ({} as ContactInfo);
+const siteContacts = typedDb.contacts || {
+  phone: "0962 992 555",
+  zalo: "https://zalo.me/0962992555",
+  email: "info@khanhlinhtrans.com",
+  address: "11a Nguyễn Hoàng Tôn, Tây Hồ, Hà Nội, Việt Nam"
+};
 const dbPricing = typedDb.pricing || {};
 const dbFaq = typedDb.faq || {};
 
@@ -621,10 +625,10 @@ export default function HomePage() {
                   {salesContacts.length > 0 && (
                     <div className="addon-card__sales-list" aria-label="Danh sách Sales">
                       {salesContacts.map((staff) => {
-                        const normalizedPhone = staff.phone.replace(/\s+/g, "");
+                        const normalizedPhone = (staff.phone || "").replace(/\s+/g, "");
                         const zaloLink = staff.zalo?.startsWith("http")
                           ? staff.zalo
-                          : `https://zalo.me/${staff.zalo.replace(/\s+/g, "")}`;
+                          : `https://zalo.me/${(staff.zalo || "").replace(/\s+/g, "")}`;
 
                         return (
                           <div className="addon-card__sales-item" key={`${staff.name}-${staff.phone}`}>

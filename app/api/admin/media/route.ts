@@ -1,29 +1,9 @@
 import { NextResponse } from "next/server";
-import fs from "node:fs";
 import path from "node:path";
 import { getAuthenticatedAccount } from "../_lib/adminAuth";
+import { supabase } from "../../../lib/supabase";
 
 export const dynamic = "force-dynamic";
-
-const UPLOADS_DIR = path.join(process.cwd(), "public", "uploads");
-const NEWS_IMAGES_DIR = path.join(process.cwd(), "public", "images", "news");
-
-function ensureMediaDirs() {
-  try {
-    if (!fs.existsSync(UPLOADS_DIR)) {
-      fs.mkdirSync(UPLOADS_DIR, { recursive: true });
-    }
-    const blogUploads = path.join(UPLOADS_DIR, "blog");
-    if (!fs.existsSync(blogUploads)) {
-      fs.mkdirSync(blogUploads, { recursive: true });
-    }
-    if (!fs.existsSync(NEWS_IMAGES_DIR)) {
-      fs.mkdirSync(NEWS_IMAGES_DIR, { recursive: true });
-    }
-  } catch (err) {
-    console.warn("Notice: Cannot create media dirs on read-only filesystem:", err);
-  }
-}
 
 export type MediaFile = {
   name: string;
@@ -33,31 +13,6 @@ export type MediaFile = {
   createdAt: string;
 };
 
-function scanFolder(dirPath: string, folderName: string, urlPrefix: string): MediaFile[] {
-  if (!fs.existsSync(dirPath)) return [];
-  try {
-    const files = fs.readdirSync(dirPath);
-    return files
-      .filter((file) => !file.startsWith("."))
-      .map((file) => {
-        const fullPath = path.join(dirPath, file);
-        const stat = fs.statSync(fullPath);
-        if (stat.isDirectory()) return null;
-        return {
-          name: file,
-          url: `${urlPrefix}/${file}`,
-          size: stat.size,
-          folder: folderName,
-          createdAt: stat.birthtime ? stat.birthtime.toISOString() : stat.mtime.toISOString()
-        };
-      })
-      .filter(Boolean) as MediaFile[];
-  } catch (err) {
-    console.error(`Error scanning folder ${dirPath}:`, err);
-    return [];
-  }
-}
-
 export async function GET(req: Request) {
   const account = await getAuthenticatedAccount(req);
   if (!account || !account.active) {
@@ -65,16 +20,32 @@ export async function GET(req: Request) {
   }
 
   try {
-    ensureMediaDirs();
-    const blogUploads = path.join(UPLOADS_DIR, "blog");
+    const folders = ["uploads", "uploads/blog", "images", "images/news"];
+    const mediaList: MediaFile[] = [];
 
-    const mediaList: MediaFile[] = [
-      ...scanFolder(blogUploads, "blog", "/uploads/blog"),
-      ...scanFolder(NEWS_IMAGES_DIR, "news", "/images/news"),
-      ...scanFolder(UPLOADS_DIR, "uploads", "/uploads")
-    ];
+    for (const folder of folders) {
+      const { data: files, error } = await supabase.storage.from("media").list(folder, {
+        limit: 100,
+        sortBy: { column: "created_at", order: "desc" }
+      });
 
-    // Sort newest first
+      if (!error && files) {
+        for (const file of files) {
+          if (file.id && file.name) {
+            const filePath = `${folder}/${file.name}`;
+            const { data: publicUrlData } = supabase.storage.from("media").getPublicUrl(filePath);
+            mediaList.push({
+              name: file.name,
+              url: publicUrlData.publicUrl,
+              size: file.metadata?.size || 0,
+              folder: folder,
+              createdAt: file.created_at || new Date().toISOString()
+            });
+          }
+        }
+      }
+    }
+
     mediaList.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 
     return NextResponse.json({ success: true, data: mediaList });
@@ -91,7 +62,6 @@ export async function POST(req: Request) {
   }
 
   try {
-    ensureMediaDirs();
     const formData = await req.formData();
     const file = formData.get("file") as File | null;
     const category = (formData.get("category") as string) || "blog";
@@ -100,14 +70,14 @@ export async function POST(req: Request) {
       return NextResponse.json({ success: false, error: "Vui lòng chọn tệp hình ảnh." }, { status: 400 });
     }
 
-    const ALLOWED_EXTENSIONS = [".jpg", ".jpeg", ".png", ".webp"];
-    const ALLOWED_MIME_TYPES = ["image/jpeg", "image/png", "image/webp"];
-    const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB limit
+    const ALLOWED_EXTENSIONS = [".jpg", ".jpeg", ".png", ".webp", ".svg", ".gif"];
+    const ALLOWED_MIME_TYPES = ["image/jpeg", "image/png", "image/webp", "image/svg+xml", "image/gif"];
+    const MAX_FILE_SIZE = 10 * 1024 * 1024;
 
     const ext = path.extname(file.name).toLowerCase();
     if (!ALLOWED_EXTENSIONS.includes(ext) || !ALLOWED_MIME_TYPES.includes(file.type.toLowerCase())) {
       return NextResponse.json(
-        { success: false, error: "Định dạng tệp không được hỗ trợ. Chỉ chấp nhận JPG, JPEG, PNG, WEBP." },
+        { success: false, error: "Định dạng tệp không được hỗ trợ. Chỉ chấp nhận JPG, JPEG, PNG, WEBP, SVG, GIF." },
         { status: 400 }
       );
     }
@@ -122,50 +92,31 @@ export async function POST(req: Request) {
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
 
-    // Clean file name
     const baseName = path.basename(file.name, ext).replace(/[^a-zA-Z0-9_-]/g, "_");
     const uniqueFileName = `${baseName}_${Date.now()}${ext}`;
-
     const sanitizedCategory = category.replace(/[^a-zA-Z0-9_-]/g, "");
-    const targetDir = sanitizedCategory === "news" ? NEWS_IMAGES_DIR : path.join(UPLOADS_DIR, sanitizedCategory);
     
-    try {
-      if (!fs.existsSync(targetDir)) {
-        fs.mkdirSync(targetDir, { recursive: true });
-      }
-    } catch {
-      // Safe fallback for read-only filesystem
+    const folderPrefix = sanitizedCategory === "news" ? "images/news" : `uploads/${sanitizedCategory}`;
+    const storagePath = `${folderPrefix}/${uniqueFileName}`;
+
+    const { error } = await supabase.storage.from("media").upload(storagePath, buffer, {
+      contentType: file.type || "image/jpeg",
+      upsert: true
+    });
+
+    if (error) {
+      console.error("Supabase Storage upload error:", error);
+      return NextResponse.json({ success: false, error: `Upload thất bại: ${error.message}` }, { status: 500 });
     }
 
-    const savePath = path.resolve(targetDir, uniqueFileName);
+    const { data: publicUrlData } = supabase.storage.from("media").getPublicUrl(storagePath);
 
-    // Path Traversal Security Check
-    const publicRoot = path.resolve(process.cwd(), "public");
-    if (!savePath.startsWith(publicRoot)) {
-      return NextResponse.json({ success: false, error: "Đường dẫn lưu file không an toàn." }, { status: 400 });
-    }
-
-    try {
-      fs.writeFileSync(savePath, buffer);
-      const publicUrl = sanitizedCategory === "news" ? `/images/news/${uniqueFileName}` : `/uploads/${sanitizedCategory}/${uniqueFileName}`;
-      return NextResponse.json({
-        success: true,
-        message: "Tải ảnh lên thành công.",
-        url: publicUrl,
-        fileName: uniqueFileName
-      });
-    } catch (err) {
-      console.warn("Notice: Cannot write media file to disk (Serverless/Read-only fallback):", err);
-      const base64Data = buffer.toString("base64");
-      const mimeType = file.type || "image/jpeg";
-      const dataUrl = `data:${mimeType};base64,${base64Data}`;
-      return NextResponse.json({
-        success: true,
-        message: "Tải ảnh lên thành công.",
-        url: dataUrl,
-        fileName: uniqueFileName
-      });
-    }
+    return NextResponse.json({
+      success: true,
+      message: "Tải ảnh lên Supabase Storage thành công.",
+      url: publicUrlData.publicUrl,
+      fileName: uniqueFileName
+    });
   } catch (error: unknown) {
     const errorMsg = error instanceof Error ? error.message : "Internal error";
     return NextResponse.json({ success: false, error: errorMsg }, { status: 500 });
@@ -186,31 +137,16 @@ export async function DELETE(req: Request) {
       return NextResponse.json({ success: false, error: "Thiếu đường dẫn tệp ảnh (url)." }, { status: 400 });
     }
 
-    // Ignore base64 Data URIs or external URLs
-    if (urlPath.startsWith("data:") || urlPath.startsWith("http://") || urlPath.startsWith("https://")) {
-      return NextResponse.json({ success: true, message: "Đã xóa tệp media thành công." });
+    // Parse path inside media bucket from full public URL or relative path
+    let relativePath = urlPath;
+    if (urlPath.includes("/storage/v1/object/public/media/")) {
+      relativePath = urlPath.split("/storage/v1/object/public/media/")[1];
+    } else {
+      relativePath = urlPath.replace(/^\/+/, "");
     }
 
-    // Safety check path traversal
-    const cleanUrlPath = urlPath.replace(/\\/g, "/").replace(/^\/+/, "");
-    const publicRoot = path.resolve(process.cwd(), "public");
-    const fullPath = path.resolve(publicRoot, cleanUrlPath);
-
-    if (!fullPath.startsWith(publicRoot)) {
-      return NextResponse.json({ success: false, error: "Đường dẫn tệp không hợp lệ." }, { status: 400 });
-    }
-
-    const relativePath = path.relative(publicRoot, fullPath).replace(/\\/g, "/");
-    if (!relativePath.startsWith("uploads/") && !relativePath.startsWith("images/news/")) {
-      return NextResponse.json({ success: false, error: "Chỉ được phép xóa file trong thư mục media." }, { status: 400 });
-    }
-
-    try {
-      if (fs.existsSync(fullPath)) {
-        fs.unlinkSync(fullPath);
-      }
-    } catch (err) {
-      console.warn("Notice: File deletion skipped on read-only filesystem:", err);
+    if (relativePath) {
+      await supabase.storage.from("media").remove([relativePath]);
     }
 
     return NextResponse.json({ success: true, message: "Đã xóa tệp media thành công." });

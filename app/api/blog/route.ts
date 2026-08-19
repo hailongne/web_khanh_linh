@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { readNewsIndex, readCategories } from "../../lib/blogDb";
+import { readNewsIndexAsync, readCategoriesAsync } from "../../lib/blogDb";
 
 export const dynamic = "force-dynamic";
 
@@ -11,15 +11,13 @@ export async function GET(req: Request) {
     const featured = searchParams.get("featured");
     const search = searchParams.get("search")?.toLowerCase().trim();
 
-    let items = readNewsIndex();
+    let items = await readNewsIndexAsync();
+    const categories = await readCategoriesAsync();
 
-    // Get list of hidden category names
-    const categories = readCategories();
     const hiddenCategoryNames = new Set(
       categories.filter((c) => c.visible === false).map((c) => c.name)
     );
 
-    // Filter published only and exclude posts belonging to hidden categories for public API
     items = items.filter(
       (item) => item.status === "published" && !hiddenCategoryNames.has(item.category)
     );
@@ -46,7 +44,6 @@ export async function GET(req: Request) {
       });
     }
 
-    // Sort by publishedAt descending
     items.sort((a, b) => {
       const timeA = a.publishedAt ? new Date(a.publishedAt).getTime() : 0;
       const timeB = b.publishedAt ? new Date(b.publishedAt).getTime() : 0;

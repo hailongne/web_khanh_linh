@@ -10,10 +10,12 @@
     "reset-admin": "node scripts/reset-admin.js"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.112.3",
     "@types/bcryptjs": "^2.4.6",
     "bcryptjs": "^3.0.3",
     "lucide-react": "^1.28.0",
     "next": "15.5.18",
+    "pg": "^8.23.0",
     "react": "19.1.1",
     "react-dom": "19.1.1"
   },

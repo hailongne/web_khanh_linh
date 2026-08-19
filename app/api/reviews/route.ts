@@ -1,9 +1,6 @@
-import fs from "node:fs";
-import path from "node:path";
 import { NextResponse } from "next/server";
 import { checkRateLimit, getClientIp } from "../../lib/rateLimit";
-
-const DB_PATH = path.join(process.cwd(), "db.json");
+import { supabase } from "../../lib/supabase";
 
 export type Review = {
   id: string;
@@ -14,42 +11,43 @@ export type Review = {
   createdAt: string;
 };
 
-type DbShape = Record<string, unknown> & {
-  reviews?: Review[];
-};
-
-function readDb(): DbShape {
-  try {
-    const raw = fs.readFileSync(DB_PATH, "utf-8");
-    return JSON.parse(raw) as DbShape;
-  } catch {
-    return { reviews: [] };
-  }
-}
-
-function writeDb(data: DbShape): void {
-  fs.writeFileSync(DB_PATH, JSON.stringify(data, null, 2), "utf-8");
-}
+export const dynamic = "force-dynamic";
 
 function sanitizeText(str: string): string {
   if (!str) return "";
   return str
-    .replace(/<[^>]*>?/gm, "") // Strip HTML tags
-    .replace(/[<>'"]/g, "")    // Strip angle brackets and quotes
+    .replace(/<[^>]*>?/gm, "")
+    .replace(/[<>'"]/g, "")
     .trim();
 }
 
-export async function GET() {
-  const db = readDb();
-  const allReviews: Review[] = Array.isArray(db.reviews) ? db.reviews : [];
+async function getReviewsFromSupabase(): Promise<Review[]> {
+  try {
+    const { data: row } = await supabase.from("site_settings").select("value").eq("key", "reviews").single();
+    return Array.isArray(row?.value) ? row.value : [];
+  } catch {
+    return [];
+  }
+}
 
-  // Filter approved reviews only
+async function saveReviewsToSupabase(reviews: Review[]): Promise<void> {
+  try {
+    await supabase.from("site_settings").upsert({
+      key: "reviews",
+      value: reviews,
+      updated_at: new Date().toISOString()
+    });
+  } catch (err) {
+    console.error("Error saving reviews to Supabase:", err);
+  }
+}
+
+export async function GET() {
+  const allReviews: Review[] = await getReviewsFromSupabase();
   const approvedReviews = allReviews.filter((r) => r.approved === true);
 
-  // Sort newest first
   approvedReviews.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 
-  // Calculate statistics
   const totalReviews = approvedReviews.length;
   const ratingBreakdown = { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 };
   let sumRating = 0;
@@ -74,7 +72,6 @@ export async function GET() {
 }
 
 export async function POST(req: Request) {
-  // Rate limiting check (max 3 review submissions per minute per IP)
   const clientIp = getClientIp(req);
   const rateLimit = checkRateLimit(`review:${clientIp}`, 3, 60000);
   if (!rateLimit.success) {
@@ -110,10 +107,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ success: false, error: "Số sao đánh giá phải từ 1 đến 5 sao" }, { status: 400 });
   }
 
-  const db = readDb();
-  if (!Array.isArray(db.reviews)) {
-    db.reviews = [];
-  }
+  const reviews = await getReviewsFromSupabase();
 
   const newReview: Review = {
     id: crypto.randomUUID(),
@@ -124,8 +118,8 @@ export async function POST(req: Request) {
     createdAt: new Date().toISOString()
   };
 
-  db.reviews.push(newReview);
-  writeDb(db);
+  reviews.push(newReview);
+  await saveReviewsToSupabase(reviews);
 
   return NextResponse.json(
     {

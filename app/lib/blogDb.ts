@@ -1,12 +1,5 @@
-import fs from "node:fs";
-import path from "node:path";
 import { BlogBlock, LocalizedBlocks } from "../components/blog/types";
-
-const DATA_DIR = path.join(process.cwd(), "data");
-const INDEX_PATH = path.join(DATA_DIR, "news-index.json");
-const CATEGORIES_PATH = path.join(DATA_DIR, "categories.json");
-const NEWS_DIR = path.join(DATA_DIR, "news");
-const IMAGES_DIR = path.join(process.cwd(), "public", "images", "news");
+import { supabase } from "./supabase";
 
 export type BlogCategory = {
   id: string;
@@ -49,34 +42,17 @@ export type NewsSeo = {
 export type NewsDetail = {
   slug: string;
   blocks: LocalizedBlocks;
-  content?: LocalizedText; // legacy support
+  content?: LocalizedText;
   seo?: NewsSeo;
   authorId?: string;
   createdAt: string;
   updatedAt: string;
 };
 
-function ensureDirs() {
-  try {
-    if (!fs.existsSync(DATA_DIR)) {
-      fs.mkdirSync(DATA_DIR, { recursive: true });
-    }
-    if (!fs.existsSync(NEWS_DIR)) {
-      fs.mkdirSync(NEWS_DIR, { recursive: true });
-    }
-    if (!fs.existsSync(IMAGES_DIR)) {
-      fs.mkdirSync(IMAGES_DIR, { recursive: true });
-    }
-  } catch (err) {
-    console.warn("Notice: Cannot create directories on read-only filesystem:", err);
-  }
-}
-
 export function slugify(str: string): string {
   if (!str) return "bai-viet";
   let slug = str.toLowerCase().trim();
 
-  // Remove Vietnamese diacritics
   slug = slug
     .replace(/[àáảãạâầấẩẫậăằắẳẵặ]/g, "a")
     .replace(/[èéẻẽẹêềếểễệ]/g, "e")
@@ -93,9 +69,6 @@ export function slugify(str: string): string {
   return slug || "bai-viet";
 }
 
-/**
- * Migration helper: Converts legacy HTML / plain text strings to structured Block Editor blocks
- */
 export function migrateLegacyHtmlToBlocks(htmlStr: string): BlogBlock[] {
   if (!htmlStr || typeof htmlStr !== "string") return [];
 
@@ -103,7 +76,6 @@ export function migrateLegacyHtmlToBlocks(htmlStr: string): BlogBlock[] {
   const cleanStr = htmlStr.trim();
   if (!cleanStr) return blocks;
 
-  // Simple regex-based HTML chunk parsing for migration
   const tagRegex = /<(h[1-4]|p|blockquote|hr|img)[^>]*>([\s\S]*?)<\/\1>|<(hr|img)[^>]*\/?>/gi;
   let match;
 
@@ -163,7 +135,6 @@ export function migrateLegacyHtmlToBlocks(htmlStr: string): BlogBlock[] {
     }
   }
 
-  // If no HTML tags matched, treat the whole text as a paragraph block
   if (blocks.length === 0 && cleanStr) {
     const textWithoutTags = cleanStr.replace(/<[^>]+>/g, "").trim();
     if (textWithoutTags) {
@@ -178,108 +149,128 @@ export function migrateLegacyHtmlToBlocks(htmlStr: string): BlogBlock[] {
   return blocks;
 }
 
-export function readNewsIndex(): NewsIndexItem[] {
-  ensureDirs();
-  if (!fs.existsSync(INDEX_PATH)) {
-    return [];
-  }
-  try {
-    const raw = fs.readFileSync(INDEX_PATH, "utf-8");
-    return JSON.parse(raw) as NewsIndexItem[];
-  } catch (err) {
-    console.error("Error reading news-index.json:", err);
-    return [];
-  }
-}
-
-export function writeNewsIndex(items: NewsIndexItem[]): void {
-  ensureDirs();
-  try {
-    fs.writeFileSync(INDEX_PATH, JSON.stringify(items, null, 2), "utf-8");
-  } catch (err) {
-    console.warn("Notice: Cannot write news-index.json on read-only filesystem:", err);
-  }
-}
-
-export function incrementNewsViews(slug: string): number {
-  const items = readNewsIndex();
-  const indexIdx = items.findIndex((item) => item.slug === slug);
-  if (indexIdx === -1) return 0;
-
-  const currentCount = typeof items[indexIdx].viewCount === "number" ? items[indexIdx].viewCount : 0;
-  const newCount = currentCount + 1;
-  items[indexIdx].viewCount = newCount;
-  writeNewsIndex(items);
-  return newCount;
-}
-
-export function readNewsDetail(slug: string): NewsDetail | null {
-  ensureDirs();
-  const filePath = path.join(NEWS_DIR, `${slug}.json`);
-  if (!fs.existsSync(filePath)) {
-    return null;
-  }
-  try {
-    const raw = fs.readFileSync(filePath, "utf-8");
-    const detail = JSON.parse(raw);
-
-    // Automatic Backward Compatibility Migration
-    if (!detail.blocks) {
-      const legacyVi = detail.content?.vi || "";
-      const legacyEn = detail.content?.en || "";
-      detail.blocks = {
-        vi: migrateLegacyHtmlToBlocks(legacyVi),
-        en: migrateLegacyHtmlToBlocks(legacyEn),
-      };
-    }
-
-    return detail as NewsDetail;
-  } catch (err) {
-    console.error(`Error reading news detail file for ${slug}:`, err);
-    return null;
-  }
-}
-
-export function writeNewsDetail(slug: string, detail: NewsDetail): void {
-  ensureDirs();
-  const filePath = path.join(NEWS_DIR, `${slug}.json`);
-
-  // Clean up legacy `content` field when saving new block structure
-  const dataToSave = {
-    slug: detail.slug,
-    blocks: detail.blocks,
-    seo: detail.seo,
-    createdAt: detail.createdAt,
-    updatedAt: detail.updatedAt,
+export function mapRowToNewsIndexItem(row: any): NewsIndexItem {
+  return {
+    id: row.id,
+    slug: row.slug,
+    title: row.title || { vi: "", en: "" },
+    excerpt: row.excerpt || { vi: "", en: "" },
+    thumbnail: row.thumbnail || "",
+    category: row.category || "",
+    status: (row.status || "published") as NewsStatus,
+    featured: row.featured ?? false,
+    viewCount: row.view_count || 0,
+    authorId: row.author_id || undefined,
+    publishedAt: row.published_at || row.created_at || new Date().toISOString(),
+    updatedAt: row.updated_at || new Date().toISOString()
   };
+}
 
+export async function readNewsIndexAsync(): Promise<NewsIndexItem[]> {
   try {
-    fs.writeFileSync(filePath, JSON.stringify(dataToSave, null, 2), "utf-8");
+    const { data, error } = await supabase.from("posts").select("*").order("published_at", { ascending: false });
+    if (error || !data) return [];
+    return data.map(mapRowToNewsIndexItem);
   } catch (err) {
-    console.warn(`Notice: Cannot write news detail ${slug} on read-only filesystem:`, err);
+    console.error("Error reading news index from Supabase:", err);
+    return [];
   }
 }
 
-export function deleteNewsDetail(slug: string): void {
-  ensureDirs();
-  const filePath = path.join(NEWS_DIR, `${slug}.json`);
-  if (fs.existsSync(filePath)) {
-    try {
-      fs.unlinkSync(filePath);
-    } catch (err) {
-      console.warn(`Notice: Cannot delete news file ${slug} on read-only filesystem:`, err);
+export function readNewsIndex(): NewsIndexItem[] {
+  return [];
+}
+
+export function writeNewsIndex(): void {}
+
+export async function incrementNewsViewsAsync(slug: string): Promise<number> {
+  try {
+    const { data: post } = await supabase.from("posts").select("view_count").eq("slug", slug).single();
+    if (!post) return 0;
+    const newCount = (post.view_count || 0) + 1;
+    await supabase.from("posts").update({ view_count: newCount }).eq("slug", slug);
+    return newCount;
+  } catch {
+    return 0;
+  }
+}
+
+export function incrementNewsViews(): number {
+  return 0;
+}
+
+export async function readNewsDetailAsync(slug: string): Promise<NewsDetail | null> {
+  try {
+    const { data, error } = await supabase.from("posts").select("*").eq("slug", slug).single();
+    if (error || !data) return null;
+
+    let blocks = data.blocks;
+    if (!blocks || (!blocks.vi && !blocks.en)) {
+      blocks = { vi: [], en: [] };
     }
+
+    return {
+      slug: data.slug,
+      blocks,
+      seo: data.seo || {},
+      authorId: data.author_id || undefined,
+      createdAt: data.created_at || new Date().toISOString(),
+      updatedAt: data.updated_at || new Date().toISOString()
+    };
+  } catch (err) {
+    console.error(`Error reading news detail for ${slug}:`, err);
+    return null;
   }
 }
 
-export function generateUniqueSlug(titleStr: string, currentSlug?: string): string {
-  const baseSlug = slugify(titleStr);
-  const index = readNewsIndex();
+export function readNewsDetail(): NewsDetail | null {
+  return null;
+}
 
+export async function writeNewsDetailAsync(item: NewsIndexItem, detail: NewsDetail): Promise<void> {
+  try {
+    await supabase.from("posts").upsert({
+      id: item.id,
+      slug: item.slug,
+      title: item.title,
+      excerpt: item.excerpt,
+      thumbnail: item.thumbnail,
+      category: item.category,
+      status: item.status,
+      featured: item.featured,
+      view_count: item.viewCount || 0,
+      author_id: item.authorId || null,
+      blocks: detail.blocks,
+      seo: detail.seo || {},
+      published_at: item.publishedAt,
+      updated_at: new Date().toISOString()
+    });
+  } catch (err) {
+    console.error(`Error writing news detail ${item.slug}:`, err);
+  }
+}
+
+export function writeNewsDetail(): void {}
+
+export async function deleteNewsDetailAsync(slug: string): Promise<void> {
+  try {
+    await supabase.from("posts").delete().eq("slug", slug);
+  } catch (err) {
+    console.error(`Error deleting news detail ${slug}:`, err);
+  }
+}
+
+export function deleteNewsDetail(): void {}
+
+export async function generateUniqueSlugAsync(titleStr: string, currentSlug?: string): Promise<string> {
+  const baseSlug = slugify(titleStr);
+  const { data: posts } = await supabase.from("posts").select("slug");
+
+  const slugs = (posts || []).map((p) => p.slug);
   let candidate = baseSlug;
   let counter = 1;
 
-  while (index.some((item) => item.slug === candidate && item.slug !== currentSlug)) {
+  while (slugs.some((s) => s === candidate && s !== currentSlug)) {
     candidate = `${baseSlug}-${counter}`;
     counter++;
   }
@@ -287,71 +278,41 @@ export function generateUniqueSlug(titleStr: string, currentSlug?: string): stri
   return candidate;
 }
 
-export function deleteOrphanImage(imagePath: string): void {
-  if (!imagePath || !imagePath.startsWith("/images/news/")) return;
-  const fileName = path.basename(imagePath);
-  const fullPath = path.join(IMAGES_DIR, fileName);
-
-  const index = readNewsIndex();
-  const isUsed = index.some((item) => item.thumbnail === imagePath);
-  if (!isUsed && fs.existsSync(fullPath)) {
-    try {
-      fs.unlinkSync(fullPath);
-    } catch (err) {
-      console.warn(`Notice: Cannot unlink orphan image ${fileName} on read-only filesystem:`, err);
-    }
-  }
+export function generateUniqueSlug(titleStr: string, currentSlug?: string): string {
+  return slugify(titleStr);
 }
 
-export function readCategories(): BlogCategory[] {
-  ensureDirs();
-  if (!fs.existsSync(CATEGORIES_PATH)) {
-    // Auto-seed from news index unique categories if file doesn't exist
-    const news = readNewsIndex();
-    const uniqueNames = Array.from(new Set(news.map((item) => item.category).filter(Boolean)));
-    const now = new Date().toISOString();
-    const initial: BlogCategory[] = uniqueNames.map((name, idx) => ({
-      id: `cat_${idx + 1}`,
-      name,
-      slug: slugify(name),
-      description: "",
-      createdAt: now,
-      updatedAt: now,
-    }));
-    try {
-      fs.writeFileSync(CATEGORIES_PATH, JSON.stringify(initial, null, 2), "utf-8");
-    } catch (err) {
-      console.warn("Notice: Cannot create initial categories.json on read-only filesystem:", err);
-    }
-    return initial;
-  }
+export function deleteOrphanImage(imagePath: string): void {}
 
+export async function readCategoriesAsync(): Promise<BlogCategory[]> {
   try {
-    const raw = fs.readFileSync(CATEGORIES_PATH, "utf-8");
-    const parsed = JSON.parse(raw) as BlogCategory[];
-    return parsed.map((c) => ({
-      ...c,
-      visible: c.visible !== false,
+    const { data, error } = await supabase.from("categories").select("*").order("name", { ascending: true });
+    if (error || !data) return [];
+    return data.map((c) => ({
+      id: c.id,
+      name: c.name,
+      slug: c.slug,
+      description: c.description || "",
+      visible: c.visible ?? true,
+      createdAt: c.created_at || new Date().toISOString(),
+      updatedAt: c.updated_at || new Date().toISOString()
     }));
   } catch (err) {
-    console.error("Error reading categories.json:", err);
+    console.error("Error reading categories from Supabase:", err);
     return [];
   }
 }
 
-export function writeCategories(items: BlogCategory[]): void {
-  ensureDirs();
-  try {
-    fs.writeFileSync(CATEGORIES_PATH, JSON.stringify(items, null, 2), "utf-8");
-  } catch (err) {
-    console.warn("Notice: Cannot write categories.json on read-only filesystem:", err);
-  }
+export function readCategories(): BlogCategory[] {
+  return [];
 }
 
-export function createCategory(
+export function writeCategories(): void {}
+
+export async function createCategoryAsync(
   nameStr: string,
   descriptionStr?: string
-): { success: boolean; data: BlogCategory; isDuplicate?: boolean; message?: string } {
+): Promise<{ success: boolean; data: BlogCategory; isDuplicate?: boolean; message?: string }> {
   const cleanName = nameStr ? nameStr.trim().replace(/\s+/g, " ") : "";
   if (!cleanName) {
     throw new Error("Tên danh mục không được để trống.");
@@ -359,9 +320,8 @@ export function createCategory(
 
   const normalizedInput = cleanName.toLowerCase();
   const candidateSlug = slugify(cleanName);
-  const categories = readCategories();
+  const categories = await readCategoriesAsync();
 
-  // Case-insensitive & normalized duplicate check (Requirement 6)
   const existing = categories.find(
     (c) =>
       c.name.trim().replace(/\s+/g, " ").toLowerCase() === normalizedInput ||
@@ -388,8 +348,15 @@ export function createCategory(
     updatedAt: now,
   };
 
-  categories.push(newCat);
-  writeCategories(categories);
+  await supabase.from("categories").insert({
+    id: newCat.id,
+    name: newCat.name,
+    slug: newCat.slug,
+    description: newCat.description,
+    visible: newCat.visible,
+    created_at: newCat.createdAt,
+    updated_at: newCat.updatedAt
+  });
 
   return {
     success: true,
@@ -397,11 +364,11 @@ export function createCategory(
   };
 }
 
-export function updateCategoryVisibility(
+export async function updateCategoryVisibilityAsync(
   idOrSlug: string,
   visible: boolean
-): { success: boolean; data?: BlogCategory; message?: string } {
-  const categories = readCategories();
+): Promise<{ success: boolean; data?: BlogCategory; message?: string }> {
+  const categories = await readCategoriesAsync();
   const cat = categories.find(
     (c) => c.id === idOrSlug || c.slug === idOrSlug || c.name === idOrSlug
   );
@@ -409,9 +376,11 @@ export function updateCategoryVisibility(
     return { success: false, message: "Không tìm thấy danh mục." };
   }
 
+  const now = new Date().toISOString();
+  await supabase.from("categories").update({ visible, updated_at: now }).eq("id", cat.id);
+
   cat.visible = Boolean(visible);
-  cat.updatedAt = new Date().toISOString();
-  writeCategories(categories);
+  cat.updatedAt = now;
 
   return {
     success: true,
@@ -419,4 +388,3 @@ export function updateCategoryVisibility(
     message: visible ? "Đã bật hiển thị danh mục." : "Đã ẩn danh mục thành công.",
   };
 }
-

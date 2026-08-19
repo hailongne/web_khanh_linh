@@ -1,11 +1,8 @@
-import fs from "node:fs";
-import path from "node:path";
 import { NextResponse } from "next/server";
 import { isAuthorized } from "../_lib/adminAuth";
+import { supabase } from "../../../lib/supabase";
 
 export const dynamic = "force-dynamic";
-
-const DB_PATH = path.join(process.cwd(), "db.json");
 
 export type Review = {
   id: string;
@@ -16,30 +13,29 @@ export type Review = {
   createdAt: string;
 };
 
-type DbShape = Record<string, unknown> & {
-  reviews?: Review[];
-};
-
-function readDb(): DbShape {
-  try {
-    if (!fs.existsSync(DB_PATH)) return { reviews: [] };
-    const raw = fs.readFileSync(DB_PATH, "utf-8");
-    return JSON.parse(raw) as DbShape;
-  } catch {
-    return { reviews: [] };
-  }
-}
-
-function writeDb(data: DbShape): void {
-  try {
-    fs.writeFileSync(DB_PATH, JSON.stringify(data, null, 2), "utf-8");
-  } catch (err) {
-    console.warn("Notice: Cannot write db.json on read-only filesystem:", err);
-  }
-}
-
 function unauthorizedResponse() {
   return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
+}
+
+async function getReviewsFromSupabase(): Promise<Review[]> {
+  try {
+    const { data: row } = await supabase.from("site_settings").select("value").eq("key", "reviews").single();
+    return Array.isArray(row?.value) ? row.value : [];
+  } catch {
+    return [];
+  }
+}
+
+async function saveReviewsToSupabase(reviews: Review[]): Promise<void> {
+  try {
+    await supabase.from("site_settings").upsert({
+      key: "reviews",
+      value: reviews,
+      updated_at: new Date().toISOString()
+    });
+  } catch (err) {
+    console.error("Error saving reviews to Supabase:", err);
+  }
 }
 
 export async function GET(req: Request) {
@@ -48,10 +44,7 @@ export async function GET(req: Request) {
       return unauthorizedResponse();
     }
 
-    const db = readDb();
-    const reviews: Review[] = Array.isArray(db.reviews) ? db.reviews : [];
-
-    // Sort newest first
+    const reviews = await getReviewsFromSupabase();
     reviews.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 
     return NextResponse.json({
@@ -85,8 +78,7 @@ export async function PUT(req: Request) {
       return NextResponse.json({ success: false, error: "Thiếu ID đánh giá" }, { status: 400 });
     }
 
-    const db = readDb();
-    const reviews = Array.isArray(db.reviews) ? db.reviews : [];
+    const reviews = await getReviewsFromSupabase();
     const index = reviews.findIndex((r) => r.id === id);
 
     if (index === -1) {
@@ -99,8 +91,7 @@ export async function PUT(req: Request) {
       reviews[index].approved = !reviews[index].approved;
     }
 
-    db.reviews = reviews;
-    writeDb(db);
+    await saveReviewsToSupabase(reviews);
 
     return NextResponse.json({
       success: true,
@@ -134,8 +125,7 @@ export async function DELETE(req: Request) {
       return NextResponse.json({ success: false, error: "Thiếu ID đánh giá" }, { status: 400 });
     }
 
-    const db = readDb();
-    const reviews = Array.isArray(db.reviews) ? db.reviews : [];
+    const reviews = await getReviewsFromSupabase();
     const initialLength = reviews.length;
     const filtered = reviews.filter((r) => r.id !== id);
 
@@ -143,8 +133,7 @@ export async function DELETE(req: Request) {
       return NextResponse.json({ success: false, error: "Không tìm thấy đánh giá cần xóa" }, { status: 404 });
     }
 
-    db.reviews = filtered;
-    writeDb(db);
+    await saveReviewsToSupabase(filtered);
 
     return NextResponse.json({ success: true });
   } catch (error: unknown) {

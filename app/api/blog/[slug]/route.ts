@@ -1,40 +1,37 @@
 import { NextResponse } from "next/server";
-import { incrementNewsViews, readNewsDetail, readNewsIndex, readCategories } from "../../../lib/blogDb";
-import { readAccounts } from "../../admin/_lib/adminAuth";
+import { incrementNewsViewsAsync, readNewsDetailAsync, readNewsIndexAsync, readCategoriesAsync } from "../../../lib/blogDb";
+import { readAccountsAsync } from "../../admin/_lib/adminAuth";
 
 export const dynamic = "force-dynamic";
 
 export async function GET(req: Request, { params }: { params: Promise<{ slug: string }> }) {
   try {
     const { slug } = await params;
-    const index = readNewsIndex();
+    const index = await readNewsIndexAsync();
     const meta = index.find((item) => item.slug === slug && item.status === "published");
 
     if (!meta) {
       return NextResponse.json({ success: false, error: "Bài viết không tồn tại hoặc chưa xuất bản." }, { status: 404 });
     }
 
-    // Check if category is hidden
-    const categories = readCategories();
+    const categories = await readCategoriesAsync();
     const targetCategory = categories.find((c) => c.name === meta.category);
     if (targetCategory && targetCategory.visible === false) {
       return NextResponse.json({ success: false, error: "Bài viết thuộc danh mục đã bị ẩn." }, { status: 404 });
     }
 
-    const detail = readNewsDetail(slug);
+    const detail = await readNewsDetailAsync(slug);
     if (!detail) {
       return NextResponse.json({ success: false, error: "Nội dung bài viết không tìm thấy." }, { status: 404 });
     }
 
-    // Auto-increment view count
-    const updatedViewCount = incrementNewsViews(slug);
+    const updatedViewCount = await incrementNewsViewsAsync(slug);
 
-    // Resolve author info from authorId
     let authorInfo = { displayName: "Khánh Linh Trans", avatar: "" };
     const authorId = detail.authorId || meta.authorId;
     if (authorId) {
       try {
-        const accounts = readAccounts();
+        const accounts = await readAccountsAsync();
         const authorAcc = accounts.find((a) => a.id === authorId);
         if (authorAcc) {
           authorInfo = {
@@ -43,7 +40,7 @@ export async function GET(req: Request, { params }: { params: Promise<{ slug: st
           };
         }
       } catch {
-        // Fallback silently if accounts file is inaccessible
+        // Fallback silently
       }
     }
 

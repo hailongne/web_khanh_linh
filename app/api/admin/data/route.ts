@@ -1,35 +1,12 @@
-import fs from "node:fs";
-import path from "node:path";
 import { NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { isAuthorized } from "../_lib/adminAuth";
-
-const DB_PATH = path.join(process.cwd(), "db.json");
-
-type DbShape = Record<string, unknown>;
+import { supabase } from "../../../lib/supabase";
 
 const VALID_TYPES = ["vehicles", "pricing", "sales", "testimonials", "faq"] as const;
 type DataType = (typeof VALID_TYPES)[number];
 
 export const dynamic = "force-dynamic";
-
-function readDb(): DbShape {
-  try {
-    if (!fs.existsSync(DB_PATH)) return {};
-    const raw = fs.readFileSync(DB_PATH, "utf-8");
-    return JSON.parse(raw) as DbShape;
-  } catch (err) {
-    console.warn("Notice: Cannot read db.json:", err);
-    return {};
-  }
-}
-
-function writeDb(data: DbShape): void {
-  try {
-    fs.writeFileSync(DB_PATH, JSON.stringify(data, null, 2), "utf-8");
-  } catch (err) {
-    console.warn("Notice: Cannot write db.json on read-only filesystem:", err);
-  }
-}
 
 function unauthorizedResponse() {
   return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
@@ -44,54 +21,6 @@ function getLang(url: URL): string {
   return url.searchParams.get("lang")?.trim() || "vi";
 }
 
-function generateId(items: Record<string, unknown>[]): string {
-  const maxId = items.reduce((max, item) => {
-    const numericId = Number.parseInt(String(item?.id ?? ""), 10);
-    return Number.isFinite(numericId) ? Math.max(max, numericId) : max;
-  }, 0);
-  return String(maxId + 1);
-}
-
-function getArraySection(db: DbShape, type: DataType, lang?: string): Record<string, unknown>[] | null {
-  if (type === "sales") {
-    if (Array.isArray(db.sales)) {
-      let modified = false;
-      (db.sales as Record<string, unknown>[]).forEach((item: Record<string, unknown>) => {
-        if (!item.id) {
-          item.id = crypto.randomUUID();
-          modified = true;
-        }
-      });
-      if (modified) writeDb(db);
-      return db.sales as Record<string, unknown>[];
-    }
-    return null;
-  }
-  if (type === "vehicles") {
-    const vehicles = db.vehicles as Record<string, Record<string, unknown>[]> | undefined;
-    return vehicles?.[lang || "vi"] || null;
-  }
-  return null;
-}
-
-function setArraySection(db: DbShape, type: DataType, items: Record<string, unknown>[], lang?: string): void {
-  if (type === "sales") {
-    db.sales = items;
-  } else if (type === "vehicles") {
-    const vehicles = (db.vehicles ?? {}) as Record<string, Record<string, unknown>[]>;
-    vehicles[lang || "vi"] = items;
-    db.vehicles = vehicles;
-  }
-}
-
-function setObjectSection(db: DbShape, type: DataType, lang: string, value: unknown): void {
-  if (type === "pricing" || type === "testimonials" || type === "faq") {
-    const section = (db[type] ?? {}) as Record<string, unknown>;
-    section[lang] = value;
-    db[type] = section;
-  }
-}
-
 export async function GET(req: Request) {
   try {
     if (!(await isAuthorized(req))) {
@@ -104,22 +33,30 @@ export async function GET(req: Request) {
       return NextResponse.json({ success: false, error: "Invalid or missing type" }, { status: 400 });
     }
 
-    const db = readDb();
-
     if (type === "sales") {
-      const items = getArraySection(db, "sales") ?? [];
+      const { data: row } = await supabase.from("site_settings").select("value").eq("key", "sales").single();
+      const items = Array.isArray(row?.value) ? row.value : [];
       return NextResponse.json({ success: true, items });
     }
 
     if (type === "vehicles") {
       const lang = getLang(url);
-      const vehicles = db.vehicles as Record<string, unknown[]> | undefined;
-      return NextResponse.json({ success: true, items: vehicles?.[lang] ?? [] });
+      const { data: rows } = await supabase.from("vehicles").select("*").eq("lang", lang).order("id", { ascending: true });
+      const items = (rows || []).map((r) => ({
+        id: r.id,
+        name: r.name,
+        badge: r.badge || "",
+        price: r.price || "",
+        image: r.image || "",
+        specs: r.specs || []
+      }));
+      return NextResponse.json({ success: true, items });
     }
 
     const lang = getLang(url);
-    const section = db[type] as Record<string, unknown> | undefined;
-    return NextResponse.json({ success: true, data: section?.[lang] ?? null });
+    const { data: row } = await supabase.from("site_settings").select("value").eq("key", type).single();
+    const valObj = (row?.value || {}) as Record<string, unknown>;
+    return NextResponse.json({ success: true, data: valObj[lang] ?? null });
   } catch (error: unknown) {
     console.error("GET admin data error:", error);
     return NextResponse.json({ success: false, error: "Lỗi tải dữ liệu" }, { status: 500 });
@@ -145,14 +82,30 @@ export async function POST(req: Request) {
       return NextResponse.json({ success: false, error: "Invalid JSON body" }, { status: 400 });
     }
 
-    const db = readDb();
+    if (type === "sales") {
+      const { data: row } = await supabase.from("site_settings").select("value").eq("key", "sales").single();
+      const items = Array.isArray(row?.value) ? row.value : [];
+      const newItem = { ...payload, id: (payload?.id as string) || crypto.randomUUID() };
+      const updated = [...items, newItem];
+      await supabase.from("site_settings").upsert({ key: "sales", value: updated, updated_at: new Date().toISOString() });
+      try { revalidatePath("/"); } catch {}
+      return NextResponse.json({ success: true, item: newItem }, { status: 201 });
+    }
 
-    if (type === "sales" || type === "vehicles") {
-      const lang = type === "vehicles" ? getLang(url) : undefined;
-      const items = getArraySection(db, type, lang) ?? [];
-      const newItem = { ...payload, id: (payload?.id as string) ?? (type === "sales" ? crypto.randomUUID() : generateId(items)) };
-      setArraySection(db, type, [...items, newItem], lang);
-      writeDb(db);
+    if (type === "vehicles") {
+      const lang = getLang(url);
+      const newId = (payload?.id as string) || String(Date.now());
+      const newItem = {
+        id: newId,
+        lang,
+        name: String(payload.name || ""),
+        badge: String(payload.badge || ""),
+        price: String(payload.price || ""),
+        image: String(payload.image || ""),
+        specs: payload.specs || []
+      };
+      await supabase.from("vehicles").upsert(newItem);
+      try { revalidatePath("/"); } catch {}
       return NextResponse.json({ success: true, item: newItem }, { status: 201 });
     }
 
@@ -182,34 +135,48 @@ export async function PUT(req: Request) {
       return NextResponse.json({ success: false, error: "Invalid JSON body" }, { status: 400 });
     }
 
-    const db = readDb();
-
-    if (type === "sales" || type === "vehicles") {
-      const lang = type === "vehicles" ? getLang(url) : undefined;
+    if (type === "sales") {
       const id = url.searchParams.get("id")?.trim();
-      if (!id) {
-        return NextResponse.json({ success: false, error: "Missing id" }, { status: 400 });
-      }
-      const items = getArraySection(db, type, lang) ?? [];
-      const index = items.findIndex((item) => String(item?.id) === id);
-      if (index === -1) {
-        // If editing item created dynamically in memory, append or return success
-        const updatedItem = { ...payload, id };
+      const { data: row } = await supabase.from("site_settings").select("value").eq("key", "sales").single();
+      let items = Array.isArray(row?.value) ? row.value : [];
+      const updatedItem = { ...payload, id: id || (payload.id as string) || crypto.randomUUID() };
+      
+      const idx = items.findIndex((i: any) => String(i.id) === String(updatedItem.id));
+      if (idx !== -1) {
+        items[idx] = updatedItem;
+      } else {
         items.push(updatedItem);
-        setArraySection(db, type, items, lang);
-        writeDb(db);
-        return NextResponse.json({ success: true, item: updatedItem });
       }
-      items[index] = { ...payload, id };
-      setArraySection(db, type, items, lang);
-      writeDb(db);
-      return NextResponse.json({ success: true, item: items[index] });
+      await supabase.from("site_settings").upsert({ key: "sales", value: items, updated_at: new Date().toISOString() });
+      try { revalidatePath("/"); } catch {}
+      return NextResponse.json({ success: true, item: updatedItem });
+    }
+
+    if (type === "vehicles") {
+      const lang = getLang(url);
+      const id = url.searchParams.get("id")?.trim() || String(payload.id);
+      const updatedItem = {
+        id,
+        lang,
+        name: String(payload.name || ""),
+        badge: String(payload.badge || ""),
+        price: String(payload.price || ""),
+        image: String(payload.image || ""),
+        specs: payload.specs || []
+      };
+      await supabase.from("vehicles").upsert(updatedItem);
+      try { revalidatePath("/"); } catch {}
+      return NextResponse.json({ success: true, item: updatedItem });
     }
 
     if (type === "pricing" || type === "testimonials" || type === "faq") {
       const lang = getLang(url);
-      setObjectSection(db, type, lang, payload);
-      writeDb(db);
+      const { data: row } = await supabase.from("site_settings").select("value").eq("key", type).single();
+      const valObj = (row?.value || {}) as Record<string, unknown>;
+      valObj[lang] = payload;
+
+      await supabase.from("site_settings").upsert({ key: type, value: valObj, updated_at: new Date().toISOString() });
+      try { revalidatePath("/"); } catch {}
       return NextResponse.json({ success: true, data: payload });
     }
 
@@ -241,29 +208,17 @@ export async function DELETE(req: Request) {
       return NextResponse.json({ success: false, error: "Missing id" }, { status: 400 });
     }
 
-    const db = readDb();
-    const lang = type === "vehicles" ? getLang(url) : undefined;
-    const items = getArraySection(db, type, lang) ?? [];
-    const targetItem = items.find((item) => String(item?.id) === id);
-
-    if (targetItem) {
-      const imagePath = targetItem.avatar || targetItem.image;
-      if (typeof imagePath === "string" && imagePath.startsWith("/images/")) {
-        const normalized = imagePath.slice(1);
-        if (normalized.startsWith("images/") && !normalized.includes("..")) {
-          const absolutePath = path.join(process.cwd(), "public", normalized);
-          try {
-            fs.unlinkSync(absolutePath);
-          } catch {
-            // ignore if file does not exist
-          }
-        }
-      }
+    if (type === "sales") {
+      const { data: row } = await supabase.from("site_settings").select("value").eq("key", "sales").single();
+      let items = Array.isArray(row?.value) ? row.value : [];
+      items = items.filter((i: any) => String(i.id) !== id);
+      await supabase.from("site_settings").upsert({ key: "sales", value: items, updated_at: new Date().toISOString() });
+    } else if (type === "vehicles") {
+      const lang = getLang(url);
+      await supabase.from("vehicles").delete().eq("id", id).eq("lang", lang);
     }
 
-    const filtered = items.filter((item) => String(item?.id) !== id);
-    setArraySection(db, type, filtered, lang);
-    writeDb(db);
+    try { revalidatePath("/"); } catch {}
     return NextResponse.json({ success: true });
   } catch (error: unknown) {
     console.error("DELETE admin data error:", error);

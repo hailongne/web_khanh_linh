@@ -13,6 +13,46 @@ export type MediaFile = {
   createdAt: string;
 };
 
+const SYSTEM_STATIC_FILES = [
+  "logoKhanhLinh.png",
+  "logoKhanhLinhFull.png",
+  "logo3D.png",
+  "phone.png",
+  "zalo.png",
+  "banner.png",
+  "banner+.png",
+  "mobile.png",
+  "_mobile.png"
+];
+
+function classifyFile(fileName: string, rawFolder: string): string {
+  if (SYSTEM_STATIC_FILES.includes(fileName) || fileName.startsWith("no-avt")) {
+    return "system";
+  }
+
+  const lower = fileName.toLowerCase();
+  if (lower.includes("avt") || lower.includes("avatar") || lower.startsWith("hieu-") || lower.startsWith("2-1787")) {
+    return "avatar";
+  }
+
+  if (
+    lower.startsWith("kia_") ||
+    lower.startsWith("toyota_") ||
+    lower.startsWith("ford_") ||
+    lower.startsWith("hyundai_") ||
+    lower.startsWith("thaco_") ||
+    lower.startsWith("tracomeco_") ||
+    lower.startsWith("haeco_")
+  ) {
+    return "fleet";
+  }
+
+  if (rawFolder === "uploads/blog") return "blog";
+  if (rawFolder === "images/news") return "news";
+  if (rawFolder === "images") return "images";
+  return "uploads";
+}
+
 export async function GET(req: Request) {
   const account = await getAuthenticatedAccount(req);
   if (!account || !account.active) {
@@ -31,14 +71,17 @@ export async function GET(req: Request) {
 
       if (!error && files) {
         for (const file of files) {
-          if (file.id && file.name) {
+          // Ignore system hidden files like .gitkeep or .DS_Store
+          if (file.id && file.name && !file.name.startsWith(".")) {
             const filePath = `${folder}/${file.name}`;
             const { data: publicUrlData } = supabase.storage.from("media").getPublicUrl(filePath);
+            const folderCategory = classifyFile(file.name, folder);
+            
             mediaList.push({
               name: file.name,
               url: publicUrlData.publicUrl,
               size: file.metadata?.size || 0,
-              folder: folder,
+              folder: folderCategory,
               createdAt: file.created_at || new Date().toISOString()
             });
           }
@@ -96,7 +139,10 @@ export async function POST(req: Request) {
     const uniqueFileName = `${baseName}_${Date.now()}${ext}`;
     const sanitizedCategory = category.replace(/[^a-zA-Z0-9_-]/g, "");
     
-    const folderPrefix = sanitizedCategory === "news" ? "images/news" : `uploads/${sanitizedCategory}`;
+    let folderPrefix = `uploads/${sanitizedCategory}`;
+    if (sanitizedCategory === "news") folderPrefix = "images/news";
+    else if (sanitizedCategory === "fleet" || sanitizedCategory === "avatar") folderPrefix = "images";
+
     const storagePath = `${folderPrefix}/${uniqueFileName}`;
 
     const { error } = await supabase.storage.from("media").upload(storagePath, buffer, {
@@ -137,7 +183,6 @@ export async function DELETE(req: Request) {
       return NextResponse.json({ success: false, error: "Thiếu đường dẫn tệp ảnh (url)." }, { status: 400 });
     }
 
-    // Parse path inside media bucket from full public URL or relative path
     let relativePath = urlPath;
     if (urlPath.includes("/storage/v1/object/public/media/")) {
       relativePath = urlPath.split("/storage/v1/object/public/media/")[1];

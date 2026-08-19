@@ -90,16 +90,12 @@ type PublicReview = {
   createdAt: string;
 };
 
-const typedDb: TypedDb = {};
-const salesContacts = typedDb.sales || [];
-const siteContacts = typedDb.contacts || {
+const siteContacts = {
   phone: "0962 992 555",
   zalo: "https://zalo.me/0962992555",
   email: "info@khanhlinhtrans.com",
   address: "11a Nguyễn Hoàng Tôn, Tây Hồ, Hà Nội, Việt Nam"
 };
-const dbPricing = typedDb.pricing || {};
-const dbFaq = typedDb.faq || {};
 
 const fontAwesomeIcons: Record<string, { prefix: FontAwesomePrefix; icon: string }> = {
   fleet: { prefix: "fas", icon: "fa-bus" },
@@ -185,12 +181,49 @@ export default function HomePage() {
   }, [lang]);
 
   const t = (translations as Record<string, typeof translations.vi>)[lang] ?? translations.vi;
-  const defaultPricing: PricingData = dbPricing?.vi ?? { heading: "", lead: "", note: "", cols: [], rows: [] };
-  const defaultFaqData: FaqData = dbFaq?.vi ?? { heading: "", lead: "", items: [] };
 
-  const pricing: PricingData = dbPricing?.[lang] ?? defaultPricing;
-  const faqData: FaqData = dbFaq?.[lang] ?? defaultFaqData;
-  const toggleLang = () => setLang((l) => (l === "vi" ? "en" : "vi"));
+  const [pricing, setPricing] = useState<PricingData | null>(null);
+  const [loadingPricing, setLoadingPricing] = useState<boolean>(true);
+
+  const [faqData, setFaqData] = useState<FaqData | null>(null);
+  const [loadingFaq, setLoadingFaq] = useState<boolean>(true);
+
+  useEffect(() => {
+    let active = true;
+    fetch(`/api/admin/data?type=pricing&lang=${lang}`)
+      .then((res) => res.json())
+      .then((json) => {
+        if (active && json.success && json.data) {
+          setPricing(json.data);
+        }
+      })
+      .catch(() => {})
+      .finally(() => {
+        if (active) setLoadingPricing(false);
+      });
+
+    fetch(`/api/admin/data?type=faq&lang=${lang}`)
+      .then((res) => res.json())
+      .then((json) => {
+        if (active && json.success && json.data) {
+          setFaqData(json.data);
+        }
+      })
+      .catch(() => {})
+      .finally(() => {
+        if (active) setLoadingFaq(false);
+      });
+
+    return () => {
+      active = false;
+    };
+  }, [lang]);
+
+  const toggleLang = () => {
+    setLoadingPricing(true);
+    setLoadingFaq(true);
+    setLang((l) => (l === "vi" ? "en" : "vi"));
+  };
   const isMobile = useMediaQuery("(max-width: 768px)");
   const isTablet = useMediaQuery("(max-width: 1024px)");
 
@@ -239,7 +272,7 @@ export default function HomePage() {
     }
   }, []);
 
-  const [salesContacts, setSalesContacts] = useState<SalesPerson[]>(typedDb.sales || []);
+  const [salesContacts, setSalesContacts] = useState<SalesPerson[]>([]);
 
   const fetchSalesContacts = useCallback(async () => {
     try {
@@ -441,10 +474,10 @@ export default function HomePage() {
       },
       "url": "https://khanhlinhtrans.vn"
     },
-    ...(defaultFaqData.items && defaultFaqData.items.length > 0 ? [{
+    ...(faqData?.items && faqData.items.length > 0 ? [{
       "@context": "https://schema.org",
       "@type": "FAQPage",
-      "mainEntity": defaultFaqData.items.map((item) => ({
+      "mainEntity": faqData.items.map((item) => ({
         "@type": "Question",
         "name": item.question,
         "acceptedAnswer": {
@@ -538,77 +571,88 @@ export default function HomePage() {
           {/* Bảng giá */}
           <section className="pricing-section" id="pricing">
             <div className="section-shell">
-              <div className="pricing-section__heading title-luxury">
-                <h2>{pricing.heading}</h2>
-                <p>{pricing.lead}</p>
-              </div>
-              <div className="pricing-table-wrap">
-                {!isMobile ? (
-                  <table className="pricing-table">
-                    <thead>
-                      <tr>
-                        {pricing.cols.map((c: string, idx: number) => (
-                          <th scope="col" key={idx}>{c}</th>
-                        ))}
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {pricing.rows.map((row: PricingRow) => {
-                        const seatsMatch = String(row.vehicle).match(/(\d+)/);
-                        const seats = seatsMatch ? Number(seatsMatch[1]) : 0;
-                        const iconType = seats > 7 ? "fleet" : "car";
-                        return (
-                          <tr key={row.vehicle}>
-                            <th scope="row">
-                              <div className="pricing-left">
-                                <div className="pricing-avatar" aria-hidden="true" />
-                                <span className="pricing-vehicle">
-                                  <FontAwesomeIcon type={iconType} />
-                                  <span className="pricing-vehicle__label">{row.vehicle}</span>
-                                </span>
-                              </div>
-                            </th>
-                            <td data-label={pricing.cols[1]}>{row.cityTour}</td>
-                            <td data-label={pricing.cols[2]}>{row.provinceTrip}</td>
-                            <td data-label={pricing.cols[3]}>{row.airport}</td>
-                          </tr>
-                        );
-                      })}
-                    </tbody>
-                  </table>
-                ) : (
-                  <div className="pricing-cards" role="list">
-                    {pricing.rows.map((row: PricingRow) => {
-                      const seatsMatch = String(row.vehicle).match(/(\d+)/);
-                      const seats = seatsMatch ? Number(seatsMatch[1]) : 0;
-                      const iconType = seats > 7 ? "fleet" : "car";
-                      return (
-                        <article className="pricing-card" role="listitem" key={row.vehicle}>
-                          <div className="card-header">
-                            <div className="vehicle">
-                              <div className="pricing-avatar" aria-hidden="true" />
-                              <span className="pricing-vehicle">
-                                <FontAwesomeIcon type={iconType} />
-                                <span className="pricing-vehicle__label">{row.vehicle}</span>
-                              </span>
-                            </div>
-                            <div className="airport-price">{row.airport}</div>
-                          </div>
-                          <div className="price-row">
-                            <div className="label">{pricing.cols[1]}</div>
-                            <div className="value">{row.cityTour}</div>
-                          </div>
-                          <div className="price-row">
-                            <div className="label">{pricing.cols[2]}</div>
-                            <div className="value">{row.provinceTrip}</div>
-                          </div>
-                        </article>
-                      );
-                    })}
+              {loadingPricing ? (
+                <div className="pricing-loading-skeleton" style={{ textAlign: "center", padding: "60px 20px" }}>
+                  <div style={{ display: "inline-block", width: "44px", height: "44px", border: "4px solid rgba(0, 150, 255, 0.15)", borderTopColor: "#0096ff", borderRadius: "50%", animation: "spin 0.8s linear infinite" }} />
+                  <p style={{ marginTop: "16px", color: "#64748b", fontWeight: 500, fontSize: "0.95rem" }}>
+                    {lang === "en" ? "Loading price list..." : "Đang tải bảng giá..."}
+                  </p>
+                </div>
+              ) : pricing ? (
+                <>
+                  <div className="pricing-section__heading title-luxury">
+                    <h2>{pricing.heading || (lang === "en" ? "Indicative Price List" : "Bảng Giá Tham Khảo Nhanh")}</h2>
+                    <p>{pricing.lead}</p>
                   </div>
-                )}
-              </div>
-              <p className="pricing-section__note">{pricing.note}</p>
+                  <div className="pricing-table-wrap">
+                    {!isMobile ? (
+                      <table className="pricing-table">
+                        <thead>
+                          <tr>
+                            {(pricing.cols || []).map((c: string, idx: number) => (
+                              <th scope="col" key={idx}>{c}</th>
+                            ))}
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {(pricing.rows || []).map((row: PricingRow) => {
+                            const seatsMatch = String(row.vehicle).match(/(\d+)/);
+                            const seats = seatsMatch ? Number(seatsMatch[1]) : 0;
+                            const iconType = seats > 7 ? "fleet" : "car";
+                            return (
+                              <tr key={row.vehicle}>
+                                <th scope="row">
+                                  <div className="pricing-left">
+                                    <div className="pricing-avatar" aria-hidden="true" />
+                                    <span className="pricing-vehicle">
+                                      <FontAwesomeIcon type={iconType} />
+                                      <span className="pricing-vehicle__label">{row.vehicle}</span>
+                                    </span>
+                                  </div>
+                                </th>
+                                <td data-label={pricing.cols?.[1]}>{row.cityTour}</td>
+                                <td data-label={pricing.cols?.[2]}>{row.provinceTrip}</td>
+                                <td data-label={pricing.cols?.[3]}>{row.airport}</td>
+                              </tr>
+                            );
+                          })}
+                        </tbody>
+                      </table>
+                    ) : (
+                      <div className="pricing-cards" role="list">
+                        {(pricing.rows || []).map((row: PricingRow) => {
+                          const seatsMatch = String(row.vehicle).match(/(\d+)/);
+                          const seats = seatsMatch ? Number(seatsMatch[1]) : 0;
+                          const iconType = seats > 7 ? "fleet" : "car";
+                          return (
+                            <article className="pricing-card" role="listitem" key={row.vehicle}>
+                              <div className="card-header">
+                                <div className="vehicle">
+                                  <div className="pricing-avatar" aria-hidden="true" />
+                                  <span className="pricing-vehicle">
+                                    <FontAwesomeIcon type={iconType} />
+                                    <span className="pricing-vehicle__label">{row.vehicle}</span>
+                                  </span>
+                                </div>
+                                <div className="airport-price">{row.airport}</div>
+                              </div>
+                              <div className="price-row">
+                                <div className="label">{pricing.cols?.[1]}</div>
+                                <div className="value">{row.cityTour}</div>
+                              </div>
+                              <div className="price-row">
+                                <div className="label">{pricing.cols?.[2]}</div>
+                                <div className="value">{row.provinceTrip}</div>
+                              </div>
+                            </article>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
+                  <p className="pricing-section__note">{pricing.note}</p>
+                </>
+              ) : null}
             </div>
           </section>
 
@@ -888,25 +932,36 @@ export default function HomePage() {
           {/* FAQ */}
           <section className="faq-section" aria-labelledby="faq-heading">
             <div className="section-shell faq-section__inner">
-              <div className="faq-section__heading title-luxury">
-                <h2 id="faq-heading">{faqData.heading}</h2>
-                <p>{faqData.lead}</p>
-              </div>
-              <div className="faq-list">
-                {faqData.items.map((item: FaqItem) => (
-                  <details className="faq-item" key={item.question}>
-                    <summary className="faq-item__summary">
-                      <span>{item.question}</span>
-                      <span className="faq-item__icon" aria-hidden="true">
-                        <FontAwesomeIcon type="faq" />
-                      </span>
-                    </summary>
-                    <div className="faq-item__answer">
-                      <p>{item.answer}</p>
-                    </div>
-                  </details>
-                ))}
-              </div>
+              {loadingFaq ? (
+                <div className="faq-loading-skeleton" style={{ textAlign: "center", padding: "60px 20px" }}>
+                  <div style={{ display: "inline-block", width: "44px", height: "44px", border: "4px solid rgba(0, 150, 255, 0.15)", borderTopColor: "#0096ff", borderRadius: "50%", animation: "spin 0.8s linear infinite" }} />
+                  <p style={{ marginTop: "16px", color: "#64748b", fontWeight: 500, fontSize: "0.95rem" }}>
+                    {lang === "en" ? "Loading FAQ..." : "Đang tải câu hỏi thường gặp..."}
+                  </p>
+                </div>
+              ) : faqData ? (
+                <>
+                  <div className="faq-section__heading title-luxury">
+                    <h2 id="faq-heading">{faqData.heading || (lang === "en" ? "Frequently Asked Questions" : "Câu Hỏi Thường Gặp")}</h2>
+                    <p>{faqData.lead}</p>
+                  </div>
+                  <div className="faq-list">
+                    {(faqData.items || []).map((item: FaqItem) => (
+                      <details className="faq-item" key={item.question}>
+                        <summary className="faq-item__summary">
+                          <span>{item.question}</span>
+                          <span className="faq-item__icon" aria-hidden="true">
+                            <FontAwesomeIcon type="faq" />
+                          </span>
+                        </summary>
+                        <div className="faq-item__answer">
+                          <p>{item.answer}</p>
+                        </div>
+                      </details>
+                    ))}
+                  </div>
+                </>
+              ) : null}
             </div>
           </section>
 

@@ -23,10 +23,6 @@ function getLang(url: URL): string {
 
 export async function GET(req: Request) {
   try {
-    if (!(await isAuthorized(req))) {
-      return unauthorizedResponse();
-    }
-
     const url = new URL(req.url);
     const type = getType(url);
     if (!type) {
@@ -58,7 +54,7 @@ export async function GET(req: Request) {
     const valObj = (row?.value || {}) as Record<string, unknown>;
     return NextResponse.json({ success: true, data: valObj[lang] ?? null });
   } catch (error: unknown) {
-    console.error("GET admin data error:", error);
+    console.error("GET data error:", error);
     return NextResponse.json({ success: false, error: "Lỗi tải dữ liệu" }, { status: 500 });
   }
 }

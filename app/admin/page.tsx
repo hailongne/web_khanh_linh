@@ -842,14 +842,9 @@ function VehiclesPanel({
   const [sharedImagePreview, setSharedImagePreview] = useState<string>("");
   const [editingId, setEditingId] = useState<string | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
-  const [warning, setWarning] = useState<string | null>(null);
   const [initialViForm, setInitialViForm] = useState<{ name: string; badge: string; price: string; image: string; specs: string } | null>(null);
   const [initialEnForm, setInitialEnForm] = useState<{ name: string; badge: string; price: string; image: string; specs: string } | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-
-  useEffect(() => {
-    if (warning) showToast("warning", warning);
-  }, [warning]);
 
   const resetForm = useCallback(() => {
     setViForm({ name: "", badge: "", price: "", image: "", specs: "" });
@@ -921,26 +916,42 @@ function VehiclesPanel({
   async function loadItems() {
     setLoading(true);
     try {
-      const [viResult, enResult] = await Promise.all([
+      const [viRes, enRes] = await Promise.all([
         api.get("/api/admin/data?type=vehicles&lang=vi"),
         api.get("/api/admin/data?type=vehicles&lang=en")
       ]);
-      const viItems = (viResult.items ?? []) as Vehicle[];
-      const enItems = (enResult.items ?? []) as Vehicle[];
-      const merged = viItems.map((item) => ({
-        id: item.id,
-        vi: item,
-        en: enItems.find((entry) => entry.id === item.id) ?? item
-      }));
-      setItems(merged);
+      const viVehicles: Vehicle[] = viRes.items ?? [];
+      const enVehicles: Vehicle[] = enRes.items ?? [];
+      const mergedMap = new Map<string, LocalizedVehicle>();
+
+      for (const item of viVehicles) {
+        mergedMap.set(item.id, {
+          id: item.id,
+          vi: item,
+          en: { id: item.id, name: "", badge: "", price: "", image: item.image, specs: [] }
+        });
+      }
+
+      for (const item of enVehicles) {
+        const existing = mergedMap.get(item.id);
+        if (existing) {
+          existing.en = item;
+        } else {
+          mergedMap.set(item.id, {
+            id: item.id,
+            vi: { id: item.id, name: "", badge: "", price: "", image: item.image, specs: [] },
+            en: item
+          });
+        }
+      }
+
+      setItems(Array.from(mergedMap.values()));
     } catch (err) {
-      onError(err instanceof Error ? err.message : "Lỗi tải dữ liệu");
+      onError(err instanceof Error ? err.message : "Lỗi tải dữ liệu xe");
     } finally {
       setLoading(false);
     }
   }
-
-
 
   function fillForm(item: LocalizedVehicle) {
     setEditingId(item.id);
@@ -958,7 +969,6 @@ function VehiclesPanel({
       image: item.en.image,
       specs: item.en.specs.map((spec) => spec.label).join(", ")
     });
-    // remember originals so we can detect per-language edits
     setInitialViForm({
       name: item.vi.name,
       badge: item.vi.badge,
@@ -977,47 +987,11 @@ function VehiclesPanel({
     setSharedImagePreview(item.vi.image || item.en.image);
   }
 
-  function formsEqual(a: { name: string; badge: string; price: string; image: string; specs: string } | null, b: { name: string; badge: string; price: string; image: string; specs: string } | null) {
-    if (!a || !b) return false;
-    return a.name === b.name && a.badge === b.badge && a.price === b.price && a.image === b.image && a.specs === b.specs;
-  }
-
-  function updateWarningFrom(vi: { name: string; badge: string; price: string; image: string; specs: string }, en: { name: string; badge: string; price: string; image: string; specs: string }) {
-    // if no editing id (creating new) then no warning
-    if (!editingId) {
-      setWarning(null);
-      return;
-    }
-    const viOrig = initialViForm;
-    const enOrig = initialEnForm;
-    // if originals unavailable, don't show warning
-    if (!viOrig || !enOrig) {
-      setWarning(null);
-      return;
-    }
-    const viChanged = !formsEqual(vi, viOrig);
-    const enChanged = !formsEqual(en, enOrig);
-    // show warning only when exactly one language changed
-    if ((viChanged && !enChanged) || (!viChanged && enChanged)) {
-      setWarning("Cảnh báo: hãy chỉnh sửa hai ngôn ngữ trước khi lưu.");
-    } else {
-      setWarning(null);
-    }
-  }
-
   function handleFieldChange(lang: "vi" | "en", field: string, value: string) {
     if (lang === "vi") {
-      setViForm((prev) => {
-        const next = { ...prev, [field]: value };
-        updateWarningFrom(next, enForm);
-        return next;
-      });
+      setViForm((prev) => ({ ...prev, [field]: value }));
     } else {
-      setEnForm((prev) => {
-        const next = { ...prev, [field]: value };
-        updateWarningFrom(viForm, next);
-        return next;
-      });
+      setEnForm((prev) => ({ ...prev, [field]: value }));
     }
   }
 
@@ -1031,9 +1005,6 @@ function VehiclesPanel({
     }
     setSharedImageFile(file);
     setSharedImagePreview(previewUrl);
-    setWarning(
-      "Cảnh báo: hình ảnh vừa được thay đổi. Ảnh mới sẽ được dùng cho cả hai ngôn ngữ khi lưu."
-    );
     event.currentTarget.value = "";
   }
 
@@ -1186,12 +1157,7 @@ function VehiclesPanel({
                 ×
               </button>
             </div>
-            {warning && (
-              <div className="admin-alert admin-alert--warning">
-                {warning}
-              </div>
-            )}
-            <form className={`admin-form admin-form--grid ${warning ? 'has-alert' : ''}`} onSubmit={saveItem}>
+            <form className="admin-form admin-form--grid" onSubmit={saveItem}>
               <div className="admin-form__fullwidth">
                 <div className="admin-form__fullwidth">
                   <button className="admin-button_languages">
@@ -1367,7 +1333,6 @@ function PricingPanel({
     cols: ["", "", "", ""],
     rows: []
   });
-  const [warning, setWarning] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const loadData = useCallback(async () => {
@@ -1395,10 +1360,7 @@ function PricingPanel({
     setIsSubmitting(true);
     setLoading(true);
     try {
-      await Promise.all([
-        api.put("/api/admin/data?type=pricing&lang=vi", viData),
-        api.put("/api/admin/data?type=pricing&lang=en", enData)
-      ]);
+      await api.put("/api/admin/data?type=pricing&lang=all", { vi: viData, en: enData });
       onSuccess("Lưu bảng giá thành công.");
     } catch (err) {
       onError(err instanceof Error ? err.message : "Lỗi lưu dữ liệu");
@@ -1408,10 +1370,6 @@ function PricingPanel({
     }
   }
 
-  function triggerVietnameseWarning() {
-    setWarning("Cảnh báo: bạn vừa chỉnh sửa tiếng Việt. Vui lòng kiểm tra và cập nhật đúng cả hai ngôn ngữ trước khi lưu.");
-  }
-
   function updateRow(language: "vi" | "en", index: number, field: keyof PricingRow, value: string) {
     const setter = language === "vi" ? setViData : setEnData;
     setter((prev) => {
@@ -1419,22 +1377,14 @@ function PricingPanel({
       rows[index] = { ...rows[index], [field]: value };
       return { ...prev, rows };
     });
-    setWarning("Cảnh báo: bạn vừa chỉnh sửa tiếng " + (language === "vi" ? "Việt" : "Anh") + ". Vui lòng kiểm tra và cập nhật đúng cả hai ngôn ngữ trước khi lưu.");
   }
 
   function addRow(language: "vi" | "en") {
     const setter = language === "vi" ? setViData : setEnData;
-    const otherData = language === "vi" ? enData : viData;
     setter((prev) => ({
       ...prev,
       rows: [...prev.rows, { vehicle: "", cityTour: "", provinceTrip: "", airport: "" }]
     }));
-    const newCount = (language === "vi" ? viData.rows.length + 1 : enData.rows.length + 1);
-    if (otherData.rows.length !== newCount) {
-      setWarning("⚠️ Cảnh báo: số lượng hàng không khớp! Tiếng Việt: " + (language === "vi" ? newCount : viData.rows.length) + " hàng, Tiếng Anh: " + (language === "en" ? newCount : enData.rows.length) + " hàng. Vui lòng thêm hàng tương ứng cho tiếng " + (language === "vi" ? "Anh" : "Việt") + ".");
-    } else {
-      triggerVietnameseWarning();
-    }
   }
 
   async function removeRow(language: "vi" | "en", index: number) {
@@ -1450,10 +1400,7 @@ function PricingPanel({
 
     setLoading(true);
     try {
-      await Promise.all([
-        api.put("/api/admin/data?type=pricing&lang=vi", nextVi),
-        api.put("/api/admin/data?type=pricing&lang=en", nextEn)
-      ]);
+      await api.put("/api/admin/data?type=pricing&lang=all", { vi: nextVi, en: nextEn });
       onSuccess("Đã xóa hàng bảng giá thành công!");
     } catch (err) {
       onError(err instanceof Error ? err.message : "Lỗi xóa hàng bảng giá");
@@ -1478,26 +1425,23 @@ function PricingPanel({
       cols[index] = value;
       return { ...prev, cols };
     });
-    setWarning("Cảnh báo: bạn vừa chỉnh sửa tiếng " + (language === "vi" ? "Việt" : "Anh") + ". Vui lòng kiểm tra và cập nhật đúng cả hai ngôn ngữ trước khi lưu.");
   }
 
   function updateField(language: "vi" | "en", field: keyof PricingData, value: string) {
     const setter = language === "vi" ? setViData : setEnData;
     setter((prev) => ({ ...prev, [field]: value } as PricingData));
-    setWarning("Cảnh báo: bạn vừa chỉnh sửa tiếng " + (language === "vi" ? "Việt" : "Anh") + ". Vui lòng kiểm tra và cập nhật đúng cả hai ngôn ngữ trước khi lưu.");
   }
 
   return (
     <section className="admin-section">
       <h2>Nội dung bảng giá</h2>
-      {warning && <AdminWarningToast message={warning} onClose={() => setWarning(null)} />}
       <form className="admin-form admin-form--grid" onSubmit={saveData}>
         <div className="admin-form__fullwidth admin-language-grid">
           <div className="admin-language-card">
             <div className="admin-language-card__header">
               <div>
                 <h3>Tiếng Việt</h3>
-                <p className="admin-language-card__subtitle">Chỉnh sửa nội dung tiếng Việt. Thay đổi sẽ tạo cảnh báo đồng nhất.</p>
+                <p className="admin-language-card__subtitle">Chỉnh sửa nội dung tiếng Việt.</p>
               </div>
             </div>
             <div className="admin-language-card__fields">
@@ -2062,7 +2006,6 @@ function FaqPanel({
   const api = useAdminFetch(username, password);
   const [viData, setViData] = useState<FaqData>({ heading: "", lead: "", items: [] });
   const [enData, setEnData] = useState<FaqData>({ heading: "", lead: "", items: [] });
-  const [warning, setWarning] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const loadData = useCallback(async () => {
@@ -2090,10 +2033,7 @@ function FaqPanel({
     setIsSubmitting(true);
     setLoading(true);
     try {
-      await Promise.all([
-        api.put("/api/admin/data?type=faq&lang=vi", viData),
-        api.put("/api/admin/data?type=faq&lang=en", enData)
-      ]);
+      await api.put("/api/admin/data?type=faq&lang=all", { vi: viData, en: enData });
       onSuccess("Lưu câu hỏi thành công.");
     } catch (err) {
       onError(err instanceof Error ? err.message : "Lỗi lưu dữ liệu");
@@ -2106,7 +2046,6 @@ function FaqPanel({
   function updateField(language: "vi" | "en", field: keyof FaqData, value: string) {
     const setter = language === "vi" ? setViData : setEnData;
     setter((prev) => ({ ...prev, [field]: value } as FaqData));
-    setWarning("Cảnh báo: bạn vừa chỉnh sửa tiếng " + (language === "vi" ? "Việt" : "Anh") + ". Vui lòng kiểm tra và cập nhật đúng cả hai ngôn ngữ trước khi lưu.");
   }
 
   function updateItem(language: "vi" | "en", index: number, field: keyof FaqItem, value: string) {
@@ -2116,18 +2055,11 @@ function FaqPanel({
       items[index] = { ...items[index], [field]: value };
       return { ...prev, items };
     });
-    setWarning("Cảnh báo: bạn vừa chỉnh sửa tiếng " + (language === "vi" ? "Việt" : "Anh") + ". Vui lòng kiểm tra và cập nhật đúng cả hai ngôn ngữ trước khi lưu.");
   }
 
   function addItem(language: "vi" | "en") {
     const setter = language === "vi" ? setViData : setEnData;
-    const otherData = language === "vi" ? enData : viData;
     setter((prev) => ({ ...prev, items: [...prev.items, { question: "", answer: "" }] }));
-    if (otherData.items.length !== (language === "vi" ? viData.items.length : enData.items.length)) {
-      setWarning("⚠️ Cảnh báo: số lượng câu hỏi không khớp! Tiếng Việt: " + (language === "vi" ? (viData.items.length + 1) : viData.items.length) + ", Tiếng Anh: " + (language === "en" ? (enData.items.length + 1) : enData.items.length) + ". Vui lòng thêm câu hỏi cho cả hai ngôn ngữ.");
-    } else {
-      setWarning("Cảnh báo: bạn vừa thêm 1 câu hỏi tiếng " + (language === "vi" ? "Việt" : "Anh") + ". Vui lòng thêm câu hỏi tương ứng cho tiếng " + (language === "vi" ? "Anh" : "Việt") + ".");
-    }
   }
 
   async function removeItem(language: "vi" | "en", index: number) {
@@ -2143,10 +2075,7 @@ function FaqPanel({
 
     setLoading(true);
     try {
-      await Promise.all([
-        api.put("/api/admin/data?type=faq&lang=vi", nextVi),
-        api.put("/api/admin/data?type=faq&lang=en", nextEn)
-      ]);
+      await api.put("/api/admin/data?type=faq&lang=all", { vi: nextVi, en: nextEn });
       onSuccess("Đã xóa câu hỏi thành công!");
     } catch (err) {
       onError(err instanceof Error ? err.message : "Lỗi xóa câu hỏi");
@@ -2167,7 +2096,6 @@ function FaqPanel({
   return (
     <section className="admin-section">
       <h2>Nội dung câu hỏi thường gặp</h2>
-      {warning && <AdminWarningToast message={warning} onClose={() => setWarning(null)} />}
       <form className={`admin-form admin-form--grid`} onSubmit={saveData}>
         <div className="admin-form__fullwidth admin-language-grid">
           <div className="admin-language-card">

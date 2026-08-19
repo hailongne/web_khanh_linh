@@ -207,7 +207,12 @@ export async function PUT(req: Request) {
       const lang = getLang(url);
       const { rows } = await pool.query("SELECT value FROM public.site_settings WHERE key = $1 LIMIT 1", [type]);
       const valObj = (rows[0]?.value || {}) as Record<string, unknown>;
-      valObj[lang] = payload;
+
+      if (lang === "all" && typeof payload === "object" && payload !== null) {
+        Object.assign(valObj, payload);
+      } else {
+        valObj[lang] = payload;
+      }
 
       await pool.query(
         `INSERT INTO public.site_settings (key, value, updated_at)

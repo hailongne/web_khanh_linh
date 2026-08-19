@@ -22,6 +22,7 @@
   "devDependencies": {
     "@types/bcrypt": "^6.0.0",
     "@types/node": "latest",
+    "@types/pg": "^8.23.1",
     "@types/react": "latest",
     "@types/react-dom": "latest",
     "eslint": "9.39.5",

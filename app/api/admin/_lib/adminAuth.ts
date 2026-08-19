@@ -3,6 +3,7 @@ import crypto from "node:crypto";
 import { cookies } from "next/headers";
 import { Role, Account, MENU_ITEMS, getAccessibleMenuItems } from "../../../admin/adminConfig";
 import { supabase } from "../../../lib/supabase";
+import { pool } from "../../../lib/dbPool";
 
 export type { Role, Account };
 export { MENU_ITEMS, getAccessibleMenuItems };
@@ -40,13 +41,10 @@ function mapRowToAccount(row: any): Account {
 
 export async function readAccountsAsync(): Promise<Account[]> {
   try {
-    const { data, error } = await supabase.from("accounts").select("*").order("created_at", { ascending: true });
-    if (error || !data || data.length === 0) {
-      return [];
-    }
-    return data.map(mapRowToAccount);
+    const { rows } = await pool.query("SELECT * FROM public.accounts ORDER BY created_at ASC");
+    return rows.map(mapRowToAccount);
   } catch (err) {
-    console.error("Error reading accounts from Supabase:", err);
+    console.error("Error reading accounts from PostgreSQL:", err);
     return [];
   }
 }
@@ -58,28 +56,42 @@ export function readAccounts(): Account[] {
 
 export async function writeAccountAsync(acc: Account): Promise<void> {
   try {
-    await supabase.from("accounts").upsert({
-      id: acc.id,
-      username: acc.username,
-      password_hash: acc.passwordHash,
-      display_name: acc.displayName,
-      avatar: acc.avatar,
-      role: acc.role,
-      permissions: acc.permissions || [],
-      active: acc.active,
-      updated_at: new Date().toISOString(),
-      last_login: acc.lastLogin || null
-    });
+    await pool.query(
+      `INSERT INTO public.accounts (id, username, password_hash, display_name, avatar, role, permissions, active, updated_at, last_login)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+       ON CONFLICT (id) DO UPDATE SET
+         username = EXCLUDED.username,
+         password_hash = EXCLUDED.password_hash,
+         display_name = EXCLUDED.display_name,
+         avatar = EXCLUDED.avatar,
+         role = EXCLUDED.role,
+         permissions = EXCLUDED.permissions,
+         active = EXCLUDED.active,
+         updated_at = EXCLUDED.updated_at,
+         last_login = EXCLUDED.last_login`,
+      [
+        acc.id,
+        acc.username,
+        acc.passwordHash,
+        acc.displayName,
+        acc.avatar,
+        acc.role,
+        JSON.stringify(acc.permissions || []),
+        acc.active,
+        new Date().toISOString(),
+        acc.lastLogin || null
+      ]
+    );
   } catch (err) {
-    console.error("Error writing account to Supabase:", err);
+    console.error("Error writing account to PostgreSQL:", err);
   }
 }
 
 export async function deleteAccountAsync(id: string): Promise<void> {
   try {
-    await supabase.from("accounts").delete().eq("id", id);
+    await pool.query("DELETE FROM public.accounts WHERE id = $1", [id]);
   } catch (err) {
-    console.error("Error deleting account from Supabase:", err);
+    console.error("Error deleting account from PostgreSQL:", err);
   }
 }
 
@@ -134,13 +146,14 @@ export async function createSession(accountId: string): Promise<string> {
   const token = createStatelessToken(accountId, expireMs);
 
   try {
-    await supabase.from("sessions").upsert({
-      id: token,
-      account_id: accountId,
-      expire: expireDate.toISOString()
-    });
+    await pool.query(
+      `INSERT INTO public.sessions (id, account_id, expire)
+       VALUES ($1, $2, $3)
+       ON CONFLICT (id) DO UPDATE SET expire = EXCLUDED.expire`,
+      [token, accountId, expireDate.toISOString()]
+    );
   } catch (err) {
-    console.error("Notice: failed saving session to Supabase:", err);
+    console.error("Notice: failed saving session to PostgreSQL:", err);
   }
 
   return token;
@@ -149,9 +162,9 @@ export async function createSession(accountId: string): Promise<string> {
 export async function destroySession(sessionId: string): Promise<void> {
   if (!sessionId) return;
   try {
-    await supabase.from("sessions").delete().eq("id", sessionId);
+    await pool.query("DELETE FROM public.sessions WHERE id = $1", [sessionId]);
   } catch (err) {
-    console.error("Error destroying session in Supabase:", err);
+    console.error("Error destroying session in PostgreSQL:", err);
   }
 }
 
@@ -183,22 +196,23 @@ export async function getAuthenticatedAccount(req?: Request): Promise<Account | 
     // 1. Try stateless token verification
     const verified = verifyStatelessToken(sessionId);
     if (verified) {
-      const { data } = await supabase.from("accounts").select("*").eq("id", verified.accountId).single();
-      if (data && data.active) {
-        return mapRowToAccount(data);
+      const { rows } = await pool.query("SELECT * FROM public.accounts WHERE id = $1 LIMIT 1", [verified.accountId]);
+      if (rows.length > 0 && rows[0].active) {
+        return mapRowToAccount(rows[0]);
       }
     }
 
     // 2. Try DB session lookup
     try {
-      const { data: session } = await supabase.from("sessions").select("account_id, expire").eq("id", sessionId).single();
-      if (session) {
+      const { rows: sessionRows } = await pool.query("SELECT account_id, expire FROM public.sessions WHERE id = $1 LIMIT 1", [sessionId]);
+      if (sessionRows.length > 0) {
+        const session = sessionRows[0];
         const now = new Date().getTime();
         const expireTime = new Date(session.expire).getTime();
         if (expireTime > now) {
-          const { data: account } = await supabase.from("accounts").select("*").eq("id", session.account_id).single();
-          if (account && account.active) {
-            return mapRowToAccount(account);
+          const { rows: accountRows } = await pool.query("SELECT * FROM public.accounts WHERE id = $1 LIMIT 1", [session.account_id]);
+          if (accountRows.length > 0 && accountRows[0].active) {
+            return mapRowToAccount(accountRows[0]);
           }
         }
       }
@@ -212,9 +226,9 @@ export async function getAuthenticatedAccount(req?: Request): Promise<Account | 
     const username = req.headers.get("x-admin-username")?.trim();
     const password = req.headers.get("x-admin-password")?.trim();
     if (username && password) {
-      const { data: account } = await supabase.from("accounts").select("*").eq("username", username).single();
-      if (account && account.active && bcrypt.compareSync(password, account.password_hash)) {
-        return mapRowToAccount(account);
+      const { rows } = await pool.query("SELECT * FROM public.accounts WHERE LOWER(username) = LOWER($1) LIMIT 1", [username]);
+      if (rows.length > 0 && rows[0].active && bcrypt.compareSync(password, rows[0].password_hash)) {
+        return mapRowToAccount(rows[0]);
       }
     }
   }

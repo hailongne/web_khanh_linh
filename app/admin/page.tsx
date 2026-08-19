@@ -533,6 +533,7 @@ function AccountPanel({
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [prevUsername, setPrevUsername] = useState(username);
   if (username !== prevUsername) {
@@ -586,6 +587,7 @@ function AccountPanel({
       return;
     }
 
+    setIsSubmitting(true);
     setLoading(true);
     try {
       const response = await fetch("/api/admin/account", {
@@ -610,6 +612,7 @@ function AccountPanel({
     } catch (err) {
       onError(err instanceof Error ? err.message : "Không thể đổi username");
     } finally {
+      setIsSubmitting(false);
       setLoading(false);
     }
   }
@@ -632,6 +635,7 @@ function AccountPanel({
       return;
     }
 
+    setIsSubmitting(true);
     setLoading(true);
     try {
       const response = await fetch("/api/admin/account", {
@@ -659,6 +663,7 @@ function AccountPanel({
     } catch (err) {
       onError(err instanceof Error ? err.message : "Không thể đổi mật khẩu");
     } finally {
+      setIsSubmitting(false);
       setLoading(false);
     }
   }
@@ -697,8 +702,15 @@ function AccountPanel({
               />
             </label>
             <div className="admin-form__actions">
-              <button className="admin-button" type="submit">
-                Cập nhật Tên Đăng Nhập
+              <button className="admin-button" type="submit" disabled={isSubmitting}>
+                {isSubmitting ? (
+                  <>
+                    <i className="fas fa-spinner fa-spin" style={{ marginRight: "6px" }} />
+                    Đang cập nhật...
+                  </>
+                ) : (
+                  "Cập nhật Tên Đăng Nhập"
+                )}
               </button>
             </div>
           </form>
@@ -770,15 +782,22 @@ function AccountPanel({
                   type="button"
                   onClick={() => setShowConfirmPassword((value) => !value)}
                   aria-label={showConfirmPassword ? "Ẩn xác nhận mật khẩu" : "Hiện xác nhận mật khẩu"}
-                  title={showConfirmPassword ? "Ẩn xác nhận mật khẩu" : "Hiện xác nhận mật khẩu"}
+                  title={showConfirmPassword ? "Hiện xác nhận mật khẩu" : "Ẩn xác nhận mật khẩu"}
                 >
                   <i className={`fas ${showConfirmPassword ? "fa-eye-slash" : "fa-eye"}`} />
                 </button>
               </div>
             </label>
             <div className="admin-form__actions">
-              <button className="admin-button" type="submit">
-                Cập nhật Password
+              <button className="admin-button" type="submit" disabled={isSubmitting}>
+                {isSubmitting ? (
+                  <>
+                    <i className="fas fa-spinner fa-spin" style={{ marginRight: "6px" }} />
+                    Đang cập nhật...
+                  </>
+                ) : (
+                  "Cập nhật Password"
+                )}
               </button>
             </div>
           </form>
@@ -826,6 +845,7 @@ function VehiclesPanel({
   const [warning, setWarning] = useState<string | null>(null);
   const [initialViForm, setInitialViForm] = useState<{ name: string; badge: string; price: string; image: string; specs: string } | null>(null);
   const [initialEnForm, setInitialEnForm] = useState<{ name: string; badge: string; price: string; image: string; specs: string } | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     if (warning) showToast("warning", warning);
@@ -1059,39 +1079,40 @@ function VehiclesPanel({
 
   async function saveItem(event: React.FormEvent) {
     event.preventDefault();
-    const vehicleId = editingId || getNextVehicleId();
-    const currentImagePath = viForm.image.trim() || enForm.image.trim();
-    const sharedImagePath = sharedImageFile
-      ? await uploadImage(sharedImageFile, currentImagePath)
-      : currentImagePath;
-
-    const viPayload = {
-      id: vehicleId,
-      name: viForm.name.trim(),
-      badge: viForm.badge.trim(),
-      price: viForm.price.trim(),
-      image: sharedImagePath,
-      specs: viForm.specs
-        .split(",")
-        .map((value) => value.trim())
-        .filter(Boolean)
-        .map((label) => ({ label, icon: "seat" }))
-    };
-    const enPayload = {
-      id: vehicleId,
-      name: enForm.name.trim(),
-      badge: enForm.badge.trim(),
-      price: enForm.price.trim(),
-      image: sharedImagePath,
-      specs: enForm.specs
-        .split(",")
-        .map((value) => value.trim())
-        .filter(Boolean)
-        .map((label) => ({ label, icon: "seat" }))
-    };
-
+    setIsSubmitting(true);
     setLoading(true);
     try {
+      const vehicleId = editingId || getNextVehicleId();
+      const currentImagePath = viForm.image.trim() || enForm.image.trim();
+      const sharedImagePath = sharedImageFile
+        ? await uploadImage(sharedImageFile, currentImagePath)
+        : currentImagePath;
+
+      const viPayload = {
+        id: vehicleId,
+        name: viForm.name.trim(),
+        badge: viForm.badge.trim(),
+        price: viForm.price.trim(),
+        image: sharedImagePath,
+        specs: viForm.specs
+          .split(",")
+          .map((value) => value.trim())
+          .filter(Boolean)
+          .map((label) => ({ label, icon: "seat" }))
+      };
+      const enPayload = {
+        id: vehicleId,
+        name: enForm.name.trim(),
+        badge: enForm.badge.trim(),
+        price: enForm.price.trim(),
+        image: sharedImagePath,
+        specs: enForm.specs
+          .split(",")
+          .map((value) => value.trim())
+          .filter(Boolean)
+          .map((label) => ({ label, icon: "seat" }))
+      };
+
       if (editingId) {
         await Promise.all([
           api.put(`/api/admin/data?type=vehicles&lang=vi&id=${editingId}`, viPayload),
@@ -1110,6 +1131,7 @@ function VehiclesPanel({
     } catch (err) {
       onError(err instanceof Error ? err.message : "Lỗi lưu dữ liệu");
     } finally {
+      setIsSubmitting(false);
       setLoading(false);
     }
   }
@@ -1293,8 +1315,17 @@ function VehiclesPanel({
                   <button className="admin-button admin-button--ghost" type="button" onClick={closeModal}>
                     Hủy
                   </button>
-                  <button className="admin-button" type="submit">
-                    {editingId ? "Lưu thay đổi" : "Thêm sản phẩm"}
+                  <button className="admin-button" type="submit" disabled={isSubmitting}>
+                    {isSubmitting ? (
+                      <>
+                        <i className="fas fa-spinner fa-spin" style={{ marginRight: "6px" }} />
+                        Đang lưu...
+                      </>
+                    ) : editingId ? (
+                      "Lưu thay đổi"
+                    ) : (
+                      "Thêm sản phẩm"
+                    )}
                   </button>
                 </div>
               </div>
@@ -1337,6 +1368,7 @@ function PricingPanel({
     rows: []
   });
   const [warning, setWarning] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const loadData = useCallback(async () => {
     setLoading(true);
@@ -1360,6 +1392,7 @@ function PricingPanel({
 
   async function saveData(event: React.FormEvent) {
     event.preventDefault();
+    setIsSubmitting(true);
     setLoading(true);
     try {
       await Promise.all([
@@ -1370,6 +1403,7 @@ function PricingPanel({
     } catch (err) {
       onError(err instanceof Error ? err.message : "Lỗi lưu dữ liệu");
     } finally {
+      setIsSubmitting(false);
       setLoading(false);
     }
   }
@@ -1628,8 +1662,15 @@ function PricingPanel({
         </div>
 
         <div className="admin-form__actions">
-          <button className="admin-button" type="submit">
-            Lưu bảng giá
+          <button className="admin-button" type="submit" disabled={isSubmitting}>
+            {isSubmitting ? (
+              <>
+                <i className="fas fa-spinner fa-spin" style={{ marginRight: "6px" }} />
+                Đang lưu bảng giá...
+              </>
+            ) : (
+              "Lưu bảng giá"
+            )}
           </button>
         </div>
       </form>
@@ -1659,6 +1700,7 @@ function SalesPanel({
   const [imagePreview, setImagePreview] = useState<string>("");
   const [editingId, setEditingId] = useState<string | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const resetForm = useCallback(() => {
     setForm({ id: "", name: "", phone: "", zalo: "", avatar: "" });
@@ -1819,20 +1861,21 @@ function SalesPanel({
       return;
     }
 
-    const currentAvatar = form.avatar.trim();
-    const avatarPath = imageFile
-      ? await uploadAvatar(imageFile, currentAvatar)
-      : currentAvatar;
-
-    const payload = {
-      ...form,
-      id: editingId || form.id,
-      zalo: form.zalo.trim() || `https://zalo.me/${form.phone.replace(/\s+/g, "")}`,
-      avatar: avatarPath
-    };
-
+    setIsSubmitting(true);
     setLoading(true);
     try {
+      const currentAvatar = form.avatar.trim();
+      const avatarPath = imageFile
+        ? await uploadAvatar(imageFile, currentAvatar)
+        : currentAvatar;
+
+      const payload = {
+        ...form,
+        id: editingId || form.id,
+        zalo: form.zalo.trim() || `https://zalo.me/${form.phone.replace(/\s+/g, "")}`,
+        avatar: avatarPath
+      };
+
       if (editingId) {
         await api.put(`/api/admin/data?type=sales&id=${editingId}`, payload);
         onSuccess("Cập nhật chuyên viên thành công.");
@@ -1845,6 +1888,7 @@ function SalesPanel({
     } catch (err) {
       onError(err instanceof Error ? err.message : "Lỗi lưu dữ liệu");
     } finally {
+      setIsSubmitting(false);
       setLoading(false);
     }
   }
@@ -1978,8 +2022,17 @@ function SalesPanel({
                   <button className="admin-button admin-button--ghost" type="button" onClick={closeModal}>
                     Hủy
                   </button>
-                  <button className="admin-button" type="submit">
-                    {editingId ? "Lưu thay đổi" : "Thêm mới chuyên viên"}
+                  <button className="admin-button" type="submit" disabled={isSubmitting}>
+                    {isSubmitting ? (
+                      <>
+                        <i className="fas fa-spinner fa-spin" style={{ marginRight: "6px" }} />
+                        Đang lưu...
+                      </>
+                    ) : editingId ? (
+                      "Lưu thay đổi"
+                    ) : (
+                      "Thêm mới chuyên viên"
+                    )}
                   </button>
                 </div>
               </div>
@@ -2010,6 +2063,7 @@ function FaqPanel({
   const [viData, setViData] = useState<FaqData>({ heading: "", lead: "", items: [] });
   const [enData, setEnData] = useState<FaqData>({ heading: "", lead: "", items: [] });
   const [warning, setWarning] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const loadData = useCallback(async () => {
     setLoading(true);
@@ -2033,6 +2087,7 @@ function FaqPanel({
 
   async function saveData(event: React.FormEvent) {
     event.preventDefault();
+    setIsSubmitting(true);
     setLoading(true);
     try {
       await Promise.all([
@@ -2043,6 +2098,7 @@ function FaqPanel({
     } catch (err) {
       onError(err instanceof Error ? err.message : "Lỗi lưu dữ liệu");
     } finally {
+      setIsSubmitting(false);
       setLoading(false);
     }
   }
@@ -2223,8 +2279,15 @@ function FaqPanel({
         </div>
 
         <div className="admin-form__actions">
-          <button className="admin-button" type="submit">
-            Lưu FAQ
+          <button className="admin-button" type="submit" disabled={isSubmitting}>
+            {isSubmitting ? (
+              <>
+                <i className="fas fa-spinner fa-spin" style={{ marginRight: "6px" }} />
+                Đang lưu FAQ...
+              </>
+            ) : (
+              "Lưu FAQ"
+            )}
           </button>
         </div>
       </form>

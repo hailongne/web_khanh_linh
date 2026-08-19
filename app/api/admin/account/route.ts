@@ -3,8 +3,8 @@ import { NextResponse } from "next/server";
 import {
   ADMIN_MIN_PASSWORD_LENGTH,
   getAuthenticatedAccount,
-  readAccounts,
-  writeAccounts
+  readAccountsAsync,
+  writeAccountAsync
 } from "../_lib/adminAuth";
 
 export const dynamic = "force-dynamic";
@@ -53,7 +53,7 @@ export async function PUT(req: Request) {
     return badRequest("Invalid action");
   }
 
-  const accounts = readAccounts();
+  const accounts = await readAccountsAsync();
   const accIndex = accounts.findIndex((a) => a.id === account.id);
   if (accIndex === -1) {
     return unauthorizedResponse();
@@ -84,7 +84,7 @@ export async function PUT(req: Request) {
 
     accounts[accIndex].username = newUsername;
     accounts[accIndex].updatedAt = now;
-    writeAccounts(accounts);
+    await writeAccountAsync(accounts[accIndex]);
 
     return NextResponse.json({
       success: true,
@@ -123,7 +123,7 @@ export async function PUT(req: Request) {
   const newHash = bcrypt.hashSync(newPassword, 10);
   accounts[accIndex].passwordHash = newHash;
   accounts[accIndex].updatedAt = now;
-  writeAccounts(accounts);
+  await writeAccountAsync(accounts[accIndex]);
 
   return NextResponse.json({
     success: true,

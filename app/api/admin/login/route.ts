@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import {
-  readAccounts,
-  writeAccounts,
+  readAccountsAsync,
+  writeAccountAsync,
   createSession,
   COOKIE_NAME
 } from "../_lib/adminAuth";
@@ -33,7 +33,7 @@ export async function POST(req: Request) {
       );
     }
 
-    const accounts = readAccounts();
+    const accounts = await readAccountsAsync();
     const accountIndex = accounts.findIndex(
       (a) => a.username.toLowerCase() === username.toLowerCase()
     );
@@ -66,7 +66,7 @@ export async function POST(req: Request) {
     const now = new Date().toISOString();
     accounts[accountIndex].lastLogin = now;
     accounts[accountIndex].updatedAt = now;
-    writeAccounts(accounts);
+    await writeAccountAsync(accounts[accountIndex]);
 
     // Create session UUID in sessions.json
     const sessionId = await createSession(account.id);

@@ -16,7 +16,7 @@ const sampleReviews = [
     id: "rev-102",
     displayName: "Chị Trần Thị Thanh Hương (Hà Nội)",
     rating: 5,
-    content: "Thuê chiếc Kia Carnival trắng phục vụ xe hoa và dâu rể ngày cưới. Xe đẹp long lanh, trang trí hoa tươi chỉn chu. Bác tài ăn mặc lịch sự, tính tình vui vẻ hòa nhã. Gia đình 2 bên ai cũng khen!",
+    content: "Thuê chiếc Kia Carnival 7 chỗ đưa đón sếp và đoàn chuyên gia Nhật Bản đi làm việc tại Vĩnh Phúc. Xe mới êm ái, nội thất thương gia sang trọng. Bác tài ăn mặc lịch sự, tính tình vui vẻ hòa nhã và rất đúng giờ. Công ty mình rất hài lòng!",
     approved: true,
     createdAt: "2026-08-17T14:15:00.000Z"
   },

@@ -13,6 +13,8 @@ export type Review = {
   createdAt: string;
 };
 
+import { supabaseAdmin } from "../../../lib/supabase";
+
 function unauthorizedResponse() {
   return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
 }
@@ -20,13 +22,28 @@ function unauthorizedResponse() {
 async function getReviewsFromSupabase(): Promise<Review[]> {
   try {
     const { rows } = await pool.query("SELECT value FROM public.site_settings WHERE key = 'reviews' LIMIT 1");
-    return Array.isArray(rows[0]?.value) ? rows[0].value : [];
-  } catch {
-    return [];
+    if (rows && rows[0]?.value) {
+      return Array.isArray(rows[0].value) ? rows[0].value : [];
+    }
+  } catch (err) {
+    console.error("PostgreSQL pool.query admin reviews error:", err);
   }
+
+  try {
+    const { data } = await supabaseAdmin.from("site_settings").select("value").eq("key", "reviews").limit(1);
+    if (data && data[0]?.value) {
+      return Array.isArray(data[0].value) ? data[0].value : [];
+    }
+  } catch (err) {
+    console.error("SupabaseAdmin admin reviews query error:", err);
+  }
+
+  return [];
 }
 
 async function saveReviewsToSupabase(reviews: Review[]): Promise<void> {
+  let saved = false;
+
   try {
     await pool.query(
       `INSERT INTO public.site_settings (key, value, updated_at)
@@ -34,8 +51,26 @@ async function saveReviewsToSupabase(reviews: Review[]): Promise<void> {
        ON CONFLICT (key) DO UPDATE SET value = EXCLUDED.value, updated_at = NOW()`,
       [JSON.stringify(reviews)]
     );
+    saved = true;
   } catch (err) {
-    console.error("Error saving reviews to Supabase:", err);
+    console.error("PostgreSQL pool.query admin save reviews error:", err);
+  }
+
+  if (!saved) {
+    try {
+      const { error } = await supabaseAdmin.from("site_settings").upsert({
+        key: "reviews",
+        value: reviews,
+        updated_at: new Date().toISOString()
+      });
+      if (!error) saved = true;
+    } catch (err) {
+      console.error("SupabaseAdmin admin save reviews error:", err);
+    }
+  }
+
+  if (!saved) {
+    throw new Error("DATABASE_SAVE_REVIEWS_FAILED");
   }
 }
 

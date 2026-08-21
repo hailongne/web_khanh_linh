@@ -21,22 +21,61 @@ function sanitizeText(str: string): string {
     .trim();
 }
 
+import { supabaseAdmin } from "../../lib/supabase";
+
 async function getReviewsFromSupabase(): Promise<Review[]> {
   try {
     const { rows } = await pool.query("SELECT value FROM public.site_settings WHERE key = 'reviews' LIMIT 1");
-    return Array.isArray(rows[0]?.value) ? rows[0].value : [];
-  } catch {
-    return [];
+    if (rows && rows[0]?.value) {
+      return Array.isArray(rows[0].value) ? rows[0].value : [];
+    }
+  } catch (err) {
+    console.error("PostgreSQL pool.query reviews error:", err);
   }
+
+  try {
+    const { data } = await supabaseAdmin.from("site_settings").select("value").eq("key", "reviews").limit(1);
+    if (data && data[0]?.value) {
+      return Array.isArray(data[0].value) ? data[0].value : [];
+    }
+  } catch (err) {
+    console.error("SupabaseAdmin reviews query error:", err);
+  }
+
+  return [];
 }
 
 async function saveReviewsToSupabase(reviews: Review[]): Promise<void> {
-  await pool.query(
-    `INSERT INTO public.site_settings (key, value, updated_at)
-     VALUES ('reviews', $1, NOW())
-     ON CONFLICT (key) DO UPDATE SET value = EXCLUDED.value, updated_at = NOW()`,
-    [JSON.stringify(reviews)]
-  );
+  let saved = false;
+
+  try {
+    await pool.query(
+      `INSERT INTO public.site_settings (key, value, updated_at)
+       VALUES ('reviews', $1, NOW())
+       ON CONFLICT (key) DO UPDATE SET value = EXCLUDED.value, updated_at = NOW()`,
+      [JSON.stringify(reviews)]
+    );
+    saved = true;
+  } catch (err) {
+    console.error("PostgreSQL pool.query save reviews error:", err);
+  }
+
+  if (!saved) {
+    try {
+      const { error } = await supabaseAdmin.from("site_settings").upsert({
+        key: "reviews",
+        value: reviews,
+        updated_at: new Date().toISOString()
+      });
+      if (!error) saved = true;
+    } catch (err) {
+      console.error("SupabaseAdmin save reviews error:", err);
+    }
+  }
+
+  if (!saved) {
+    throw new Error("DATABASE_SAVE_REVIEWS_FAILED");
+  }
 }
 
 export async function GET() {

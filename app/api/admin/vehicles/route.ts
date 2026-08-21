@@ -79,6 +79,8 @@ function unauthorizedResponse() {
   return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
 }
 
+import { supabaseAdmin } from "../../../lib/supabase";
+
 export async function GET(req: Request) {
   if (!(await isAuthorized(req))) {
     return unauthorizedResponse();
@@ -86,7 +88,20 @@ export async function GET(req: Request) {
 
   const url = new URL(req.url);
   const lang = getLang(url);
-  const { rows } = await pool.query("SELECT * FROM public.vehicles WHERE lang = $1 ORDER BY id ASC", [lang]);
+
+  let rows: any[] = [];
+  try {
+    const res = await pool.query("SELECT * FROM public.vehicles WHERE lang = $1 ORDER BY id ASC", [lang]);
+    rows = res.rows || [];
+  } catch (err) {
+    console.error("PostgreSQL pool.query admin vehicles error:", err);
+    try {
+      const { data } = await supabaseAdmin.from("vehicles").select("*").eq("lang", lang).order("id", { ascending: true });
+      rows = data || [];
+    } catch (e) {
+      console.error("SupabaseAdmin vehicles GET error:", e);
+    }
+  }
 
   const items: Vehicle[] = (rows || []).map((r) => ({
     id: r.id,
@@ -123,17 +138,45 @@ export async function POST(req: Request) {
 
   const newItem: Vehicle = { id: newId, ...validated.data };
 
-  await pool.query(
-    `INSERT INTO public.vehicles (id, lang, name, badge, price, image, specs, created_at)
-     VALUES ($1, $2, $3, $4, $5, $6, $7, NOW())
-     ON CONFLICT (id, lang) DO UPDATE SET
-       name = EXCLUDED.name,
-       badge = EXCLUDED.badge,
-       price = EXCLUDED.price,
-       image = EXCLUDED.image,
-       specs = EXCLUDED.specs`,
-    [newItem.id, lang, newItem.name, newItem.badge, newItem.price, newItem.image, JSON.stringify(newItem.specs)]
-  );
+  let saved = false;
+  try {
+    await pool.query(
+      `INSERT INTO public.vehicles (id, lang, name, badge, price, image, specs, created_at)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, NOW())
+       ON CONFLICT (id, lang) DO UPDATE SET
+         name = EXCLUDED.name,
+         badge = EXCLUDED.badge,
+         price = EXCLUDED.price,
+         image = EXCLUDED.image,
+         specs = EXCLUDED.specs`,
+      [newItem.id, lang, newItem.name, newItem.badge, newItem.price, newItem.image, JSON.stringify(newItem.specs)]
+    );
+    saved = true;
+  } catch (err) {
+    console.error("PostgreSQL pool.query vehicle POST error:", err);
+  }
+
+  if (!saved) {
+    try {
+      const { error } = await supabaseAdmin.from("vehicles").upsert({
+        id: newItem.id,
+        lang,
+        name: newItem.name,
+        badge: newItem.badge,
+        price: newItem.price,
+        image: newItem.image,
+        specs: newItem.specs,
+        created_at: new Date().toISOString()
+      });
+      if (!error) saved = true;
+    } catch (e) {
+      console.error("SupabaseAdmin vehicle POST error:", e);
+    }
+  }
+
+  if (!saved) {
+    return NextResponse.json({ success: false, error: "Lỗi kết nối CSDL khi lưu xe" }, { status: 503 });
+  }
 
   try { revalidatePath("/"); } catch {}
 
@@ -167,17 +210,45 @@ export async function PUT(req: Request) {
 
   const updatedItem: Vehicle = { id, ...validated.data };
 
-  await pool.query(
-    `INSERT INTO public.vehicles (id, lang, name, badge, price, image, specs, created_at)
-     VALUES ($1, $2, $3, $4, $5, $6, $7, NOW())
-     ON CONFLICT (id, lang) DO UPDATE SET
-       name = EXCLUDED.name,
-       badge = EXCLUDED.badge,
-       price = EXCLUDED.price,
-       image = EXCLUDED.image,
-       specs = EXCLUDED.specs`,
-    [updatedItem.id, lang, updatedItem.name, updatedItem.badge, updatedItem.price, updatedItem.image, JSON.stringify(updatedItem.specs)]
-  );
+  let saved = false;
+  try {
+    await pool.query(
+      `INSERT INTO public.vehicles (id, lang, name, badge, price, image, specs, created_at)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, NOW())
+       ON CONFLICT (id, lang) DO UPDATE SET
+         name = EXCLUDED.name,
+         badge = EXCLUDED.badge,
+         price = EXCLUDED.price,
+         image = EXCLUDED.image,
+         specs = EXCLUDED.specs`,
+      [updatedItem.id, lang, updatedItem.name, updatedItem.badge, updatedItem.price, updatedItem.image, JSON.stringify(updatedItem.specs)]
+    );
+    saved = true;
+  } catch (err) {
+    console.error("PostgreSQL pool.query vehicle PUT error:", err);
+  }
+
+  if (!saved) {
+    try {
+      const { error } = await supabaseAdmin.from("vehicles").upsert({
+        id: updatedItem.id,
+        lang,
+        name: updatedItem.name,
+        badge: updatedItem.badge,
+        price: updatedItem.price,
+        image: updatedItem.image,
+        specs: updatedItem.specs,
+        created_at: new Date().toISOString()
+      });
+      if (!error) saved = true;
+    } catch (e) {
+      console.error("SupabaseAdmin vehicle PUT error:", e);
+    }
+  }
+
+  if (!saved) {
+    return NextResponse.json({ success: false, error: "Lỗi kết nối CSDL khi cập nhật xe" }, { status: 503 });
+  }
 
   try { revalidatePath("/"); } catch {}
 
@@ -197,7 +268,27 @@ export async function DELETE(req: Request) {
     return NextResponse.json({ success: false, error: "Missing id parameter" }, { status: 400 });
   }
 
-  await pool.query("DELETE FROM public.vehicles WHERE id = $1 AND lang = $2", [id, lang]);
+  let deleted = false;
+  try {
+    await pool.query("DELETE FROM public.vehicles WHERE id = $1 AND lang = $2", [id, lang]);
+    deleted = true;
+  } catch (err) {
+    console.error("PostgreSQL pool.query vehicle DELETE error:", err);
+  }
+
+  if (!deleted) {
+    try {
+      const { error } = await supabaseAdmin.from("vehicles").delete().eq("id", id).eq("lang", lang);
+      if (!error) deleted = true;
+    } catch (e) {
+      console.error("SupabaseAdmin vehicle DELETE error:", e);
+    }
+  }
+
+  if (!deleted) {
+    return NextResponse.json({ success: false, error: "Lỗi kết nối CSDL khi xóa xe" }, { status: 503 });
+  }
+
   try { revalidatePath("/"); } catch {}
 
   return NextResponse.json({ success: true });

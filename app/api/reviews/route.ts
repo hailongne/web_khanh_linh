@@ -31,16 +31,12 @@ async function getReviewsFromSupabase(): Promise<Review[]> {
 }
 
 async function saveReviewsToSupabase(reviews: Review[]): Promise<void> {
-  try {
-    await pool.query(
-      `INSERT INTO public.site_settings (key, value, updated_at)
-       VALUES ('reviews', $1, NOW())
-       ON CONFLICT (key) DO UPDATE SET value = EXCLUDED.value, updated_at = NOW()`,
-      [JSON.stringify(reviews)]
-    );
-  } catch (err) {
-    console.error("Error saving reviews to Supabase:", err);
-  }
+  await pool.query(
+    `INSERT INTO public.site_settings (key, value, updated_at)
+     VALUES ('reviews', $1, NOW())
+     ON CONFLICT (key) DO UPDATE SET value = EXCLUDED.value, updated_at = NOW()`,
+    [JSON.stringify(reviews)]
+  );
 }
 
 export async function GET() {
@@ -108,26 +104,34 @@ export async function POST(req: Request) {
     return NextResponse.json({ success: false, error: "Số sao đánh giá phải từ 1 đến 5 sao" }, { status: 400 });
   }
 
-  const reviews = await getReviewsFromSupabase();
+  try {
+    const reviews = await getReviewsFromSupabase();
 
-  const newReview: Review = {
-    id: crypto.randomUUID(),
-    displayName,
-    rating,
-    content,
-    approved: false,
-    createdAt: new Date().toISOString()
-  };
+    const newReview: Review = {
+      id: crypto.randomUUID(),
+      displayName,
+      rating,
+      content,
+      approved: false,
+      createdAt: new Date().toISOString()
+    };
 
-  reviews.push(newReview);
-  await saveReviewsToSupabase(reviews);
+    reviews.push(newReview);
+    await saveReviewsToSupabase(reviews);
 
-  return NextResponse.json(
-    {
-      success: true,
-      message: "Cảm ơn bạn. Đánh giá sẽ được kiểm duyệt trước khi hiển thị.",
-      review: newReview
-    },
-    { status: 201 }
-  );
+    return NextResponse.json(
+      {
+        success: true,
+        message: "Cảm ơn bạn. Đánh giá sẽ được kiểm duyệt trước khi hiển thị.",
+        review: newReview
+      },
+      { status: 201 }
+    );
+  } catch (err) {
+    console.error("Error submitting review:", err);
+    return NextResponse.json(
+      { success: false, error: "Lỗi hệ thống khi lưu đánh giá." },
+      { status: 500 }
+    );
+  }
 }

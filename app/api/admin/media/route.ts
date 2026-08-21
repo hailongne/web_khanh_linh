@@ -20,7 +20,7 @@ const SYSTEM_STATIC_FILES = [
   "phone.png",
   "zalo.png",
   "banner.png",
-  "banner+.png",
+  "banner1.png",
   "mobile.png",
   "_mobile.png"
 ];

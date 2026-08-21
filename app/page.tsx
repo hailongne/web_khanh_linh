@@ -357,7 +357,7 @@ export default function HomePage() {
 
   const heroBannerSlides = [
     { desktopSrc: "/images/banner.png", mobileSrc: "/images/mobile.png", alt: "Khánh Linh Trans Banner 1" },
-    { desktopSrc: "/images/banner+.png", mobileSrc: "/images/_mobile.jpg", alt: "Khánh Linh Trans Banner 2" },
+    { desktopSrc: "/images/banner1.png", mobileSrc: "/images/_mobile.jpg", alt: "Khánh Linh Trans Banner 2" },
   ];
 
   const [bannerIndex, setBannerIndex] = useState(0);

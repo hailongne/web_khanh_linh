@@ -1,5 +1,7 @@
 import bcrypt from "bcryptjs";
 import crypto from "node:crypto";
+import fs from "fs";
+import path from "path";
 import { cookies } from "next/headers";
 import { Role, Account, MENU_ITEMS, getAccessibleMenuItems } from "../../../admin/adminConfig";
 import { supabase } from "../../../lib/supabase";
@@ -27,26 +29,63 @@ function mapRowToAccount(row: any): Account {
   return {
     id: row.id,
     username: row.username,
-    passwordHash: row.password_hash,
-    displayName: row.display_name || "",
+    passwordHash: row.password_hash || row.passwordHash,
+    displayName: row.display_name || row.displayName || "",
     avatar: row.avatar || "",
     role: row.role as Role,
     permissions: Array.isArray(row.permissions) ? row.permissions : [],
     active: row.active ?? true,
-    createdAt: row.created_at || new Date().toISOString(),
-    updatedAt: row.updated_at || new Date().toISOString(),
-    lastLogin: row.last_login || ""
+    createdAt: row.created_at || row.createdAt || new Date().toISOString(),
+    updatedAt: row.updated_at || row.updatedAt || new Date().toISOString(),
+    lastLogin: row.last_login || row.lastLogin || ""
   };
+}
+
+function readAccountsFromFile(): Account[] {
+  try {
+    const filePath = path.join(process.cwd(), "data", "accounts.json");
+    if (fs.existsSync(filePath)) {
+      const raw = fs.readFileSync(filePath, "utf-8");
+      return JSON.parse(raw);
+    }
+  } catch (err) {
+    console.error("Error reading accounts.json fallback:", err);
+  }
+  return [];
 }
 
 export async function readAccountsAsync(): Promise<Account[]> {
   try {
     const { rows } = await pool.query("SELECT * FROM public.accounts ORDER BY created_at ASC");
-    return rows.map(mapRowToAccount);
+    if (rows && rows.length > 0) {
+      return rows.map(mapRowToAccount);
+    }
   } catch (err) {
     console.error("Error reading accounts from PostgreSQL:", err);
-    return [];
   }
+
+  // Fallback to data/accounts.json if PostgreSQL query fails or returns 0 rows
+  const fileAccounts = readAccountsFromFile();
+  if (fileAccounts.length > 0) {
+    return fileAccounts;
+  }
+
+  // Guaranteed fallback admin user if both DB and accounts.json fail
+  return [
+    {
+      id: "acc_001",
+      username: "admin",
+      passwordHash: "$2b$10$pkdg2Vx2qkbgDpng3cixGe15FBFju5nxhhMsCXfjS7zUHmKub6ZZa",
+      displayName: "Administrator",
+      avatar: "",
+      role: "SUPER_ADMIN",
+      permissions: [],
+      active: true,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      lastLogin: ""
+    }
+  ];
 }
 
 // Backward compatible sync method
@@ -196,9 +235,19 @@ export async function getAuthenticatedAccount(req?: Request): Promise<Account | 
     // 1. Try stateless token verification
     const verified = verifyStatelessToken(sessionId);
     if (verified) {
-      const { rows } = await pool.query("SELECT * FROM public.accounts WHERE id = $1 LIMIT 1", [verified.accountId]);
-      if (rows.length > 0 && rows[0].active) {
-        return mapRowToAccount(rows[0]);
+      try {
+        const { rows } = await pool.query("SELECT * FROM public.accounts WHERE id = $1 LIMIT 1", [verified.accountId]);
+        if (rows.length > 0 && rows[0].active) {
+          return mapRowToAccount(rows[0]);
+        }
+      } catch (err) {
+        console.error("Error querying account by id in PostgreSQL:", err);
+      }
+
+      const allAccounts = await readAccountsAsync();
+      const matched = allAccounts.find((a) => a.id === verified.accountId);
+      if (matched && matched.active) {
+        return matched;
       }
     }
 

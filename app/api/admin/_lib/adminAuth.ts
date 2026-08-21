@@ -1,10 +1,8 @@
 import bcrypt from "bcryptjs";
 import crypto from "node:crypto";
-import fs from "fs";
-import path from "path";
 import { cookies } from "next/headers";
 import { Role, Account, MENU_ITEMS, getAccessibleMenuItems } from "../../../admin/adminConfig";
-import { supabase } from "../../../lib/supabase";
+import { supabaseAdmin } from "../../../lib/supabase";
 import { pool } from "../../../lib/dbPool";
 
 export type { Role, Account };
@@ -41,51 +39,32 @@ function mapRowToAccount(row: any): Account {
   };
 }
 
-function readAccountsFromFile(): Account[] {
-  try {
-    const filePath = path.join(process.cwd(), "data", "accounts.json");
-    if (fs.existsSync(filePath)) {
-      const raw = fs.readFileSync(filePath, "utf-8");
-      return JSON.parse(raw);
-    }
-  } catch (err) {
-    console.error("Error reading accounts.json fallback:", err);
-  }
-  return [];
-}
-
 export async function readAccountsAsync(): Promise<Account[]> {
+  // 1. Primary: PostgreSQL Direct Connection / Pooler
   try {
     const { rows } = await pool.query("SELECT * FROM public.accounts ORDER BY created_at ASC");
-    if (rows && rows.length > 0) {
+    if (rows && Array.isArray(rows)) {
       return rows.map(mapRowToAccount);
     }
   } catch (err) {
-    console.error("Error reading accounts from PostgreSQL:", err);
+    console.error("PostgreSQL pool.query accounts error:", err);
   }
 
-  // Fallback to data/accounts.json if PostgreSQL query fails or returns 0 rows
-  const fileAccounts = readAccountsFromFile();
-  if (fileAccounts.length > 0) {
-    return fileAccounts;
-  }
-
-  // Guaranteed fallback admin user if both DB and accounts.json fail
-  return [
-    {
-      id: "acc_001",
-      username: "admin",
-      passwordHash: "$2b$10$pkdg2Vx2qkbgDpng3cixGe15FBFju5nxhhMsCXfjS7zUHmKub6ZZa",
-      displayName: "Administrator",
-      avatar: "",
-      role: "SUPER_ADMIN",
-      permissions: [],
-      active: true,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-      lastLogin: ""
+  // 2. Secondary: Supabase Admin SDK (Service Role Key bypasses RLS)
+  try {
+    const { data, error } = await supabaseAdmin.from("accounts").select("*").order("created_at", { ascending: true });
+    if (!error && data && Array.isArray(data)) {
+      return data.map(mapRowToAccount);
     }
-  ];
+    if (error) {
+      console.error("SupabaseAdmin accounts query error:", error.message);
+    }
+  } catch (err) {
+    console.error("SupabaseAdmin SDK accounts error:", err);
+  }
+
+  // If DB cannot be queried at all, throw explicit connection error
+  throw new Error("DATABASE_CONNECTION_ERROR");
 }
 
 // Backward compatible sync method
@@ -244,10 +223,14 @@ export async function getAuthenticatedAccount(req?: Request): Promise<Account | 
         console.error("Error querying account by id in PostgreSQL:", err);
       }
 
-      const allAccounts = await readAccountsAsync();
-      const matched = allAccounts.find((a) => a.id === verified.accountId);
-      if (matched && matched.active) {
-        return matched;
+      try {
+        const allAccounts = await readAccountsAsync();
+        const matched = allAccounts.find((a) => a.id === verified.accountId);
+        if (matched && matched.active) {
+          return matched;
+        }
+      } catch (err) {
+        console.error("Error reading accounts fallback in token verification:", err);
       }
     }
 

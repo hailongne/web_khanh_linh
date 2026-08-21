@@ -98,6 +98,13 @@ export async function POST(req: Request) {
     return response;
   } catch (error: unknown) {
     console.error("Login error:", error);
+    if (error instanceof Error && error.message === "DATABASE_CONNECTION_ERROR") {
+      return NextResponse.json(
+        { success: false, error: "Hệ thống CSDL tạm thời không thể kết nối. Vui lòng kiểm tra cấu hình hoặc thử lại sau." },
+        { status: 503 }
+      );
+    }
+
     const errorMsg = process.env.NODE_ENV === "production" ? "Lỗi hệ thống khi đăng nhập." : (error instanceof Error ? error.message : "Lỗi hệ thống khi đăng nhập.");
     return NextResponse.json(
       { success: false, error: errorMsg },
